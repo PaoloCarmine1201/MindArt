@@ -39,7 +39,7 @@ Team Members
 </tr>
 <tr>
 <td><a href="https://github.com/alessaless" target="_blank">Alessandro Zoccola</a></td>
-<td><a href="https://github.com/alessaless" target="_blank">Andrea Carbone</a></td>
+<td><a href="https://github.com/Andrea-Fhii" target="_blank">Andrea Carbone</a></td>
 </tr>
 <tr>
 <td></td>
@@ -47,7 +47,7 @@ Team Members
 </tr>
 <tr>
 <td></td>
-<td><a href="https://github.com/alessaless" target="_blank">Maurilio La Rocca</a></td>
+<td><a href="https://github.com/Maurino666" target="_blank">Maurilio La Rocca</a></td>
 </tr>
 <tr>
 <td></td>
@@ -63,7 +63,7 @@ Team Members
 </tr>
 <tr>
 <td></td>
-<td><a href="https://github.com/alessaless" target="_blank">Giuseppe Sica</a></td>
+<td><a href="https://github.com/Giuseppe0075" target="_blank">Giuseppe Sica</a></td>
 </tr>
 </table>
 

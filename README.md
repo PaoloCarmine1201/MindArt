@@ -17,7 +17,7 @@ L'obiettivo è promuovere inclusione, creatività e benessere psicologico del pa
 <table>
 <tr>
 <th align="left">
-<img width="441" height="1">
+<img width="341" height="1">
 <p> 
 <h2>
 Project Manager
@@ -25,7 +25,7 @@ Project Manager
 </p>
 </th>
 <th align="left">
-<img width="441" height="1">
+<img width="341" height="1">
 <p> 
 <h2>
 Team Members
@@ -59,7 +59,7 @@ Team Members
 </tr>
 <tr>
 <td></td>
-<td><a href="https://github.com/alessaless" target="_blank">Gabriele Ristallo</a></td>
+<td><a href="https://github.com/gabrieleristallo" target="_blank">Gabriele Ristallo</a></td>
 </tr>
 <tr>
 <td></td>

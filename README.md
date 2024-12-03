@@ -3,17 +3,17 @@
   <h2>Progetto combinato di <strong> "Ingegneria del Software" </strong> e <strong> "Gestione Progetti Software" </strong></h2>
 </div>
 
-## Introduzione
+## Introduzione 🏫
 Questa repository raccoglie tutti gli artefatti prodotti durante il progetto combinato tra studenti triennali e magistrali dei corsi di Ingegneria del Software e Gestione Progetti Software svolti nell'Anno Accademico 2024/25 presso l'Università degli Studi di Salerno.
 
-## Scope del Progetto
+## Scope del Progetto 🎨 
 **MindArt** mira a creare una piattaforma per supportare bambini con difficoltà psichiatriche tramite strumenti creativi e interattivi, favorendo la crescita emotiva e le capacità sociali.  
 
 La piattaforma include funzionalità per permettere al bambino di disegnare in maniera individuale e/o collaborativa e l'accesso a materiali educativi. I terapeuti possono monitorare i pazienti, gestire sessioni di gruppo o individuali e valutare i disegni realizzati dai bambini.  
 
 L'obiettivo è promuovere inclusione, creatività e benessere psicologico del paziente e aiutarlo nell'espressione delle proprie emozioni.
 
-## Organizzazione del Team
+## Organizzazione del Team 👨🏻‍💻
 <table>
 <tr>
 <th align="left">

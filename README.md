@@ -43,7 +43,7 @@ Team Members
 </tr>
 <tr>
 <td></td>
-<td><a href="https://github.com/alessaless" target="_blank">Emanuele Falanga</a></td>
+<td><a href="https://github.com/Emanuele19" target="_blank">Emanuele Falanga</a></td>
 </tr>
 <tr>
 <td></td>

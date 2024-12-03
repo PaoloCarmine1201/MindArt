@@ -35,7 +35,7 @@ Team Members
 </tr>
 <tr>
 <td><a href="https://github.com/PaoloCarmine1201" target="_blank">Paolo Carmine Valletta</a></td>
-<td><a href="https://github.com/alessaless" target="_blank">Emanuele Luigi Amore</a></td>
+<td><a href="https://github.com/NumberZeroo" target="_blank">Emanuele Luigi Amore</a></td>
 </tr>
 <tr>
 <td><a href="https://github.com/alessaless" target="_blank">Alessandro Zoccola</a></td>
@@ -55,7 +55,7 @@ Team Members
 </tr>
 <tr>
 <td></td>
-<td><a href="https://github.com/alessaless" target="_blank">Alessandro Pinto</a></td>
+<td><a href="https://github.com/Snap997" target="_blank">Alessandro Pinto</a></td>
 </tr>
 <tr>
 <td></td>

@@ -51,7 +51,7 @@ Team Members
 </tr>
 <tr>
 <td></td>
-<td><a href="https://github.com/alessaless" target="_blank">Pasquale Livrieri</a></td>
+<td><a href="https://github.com/pacoz03" target="_blank">Pasquale Livrieri</a></td>
 </tr>
 <tr>
 <td></td>

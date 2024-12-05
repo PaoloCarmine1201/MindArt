@@ -5,7 +5,12 @@ import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneSessione.model.Sessione;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,38 +18,84 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Rappresenta un terapeuta registrato nel sistema.
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Terapeuta {
 
+    /**
+     * Identificativo univoco del terapeuta.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    /**
+     * Nome del terapeuta.
+     */
     private String nome;
+
+    /**
+     * Cognome del terapeuta.
+     */
     private String cognome;
+
+    /**
+     * Email del terapeuta.
+     */
     private String email;
 
+    /**
+     * Data di nascita del terapeuta.
+     */
     private Date dataDiNascita;
 
+    /**
+     * Password del terapeuta per l'accesso al sistema.
+     */
     private String password;
 
-    @OneToMany(mappedBy = "terapeuta",cascade = CascadeType.ALL,orphanRemoval = true)
+    /**
+     * Elenco degli eventi associati al terapeuta.
+     */
+    @OneToMany(mappedBy = "terapeuta",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Evento> eventi;
 
-    @OneToMany(mappedBy = "terapeuta", cascade = CascadeType.ALL, orphanRemoval = true)
+    /**
+     * Elenco dei materiali creati o gestiti dal terapeuta.
+     */
+    @OneToMany(mappedBy = "terapeuta",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Materiale> materiali;
 
-    @OneToMany(mappedBy = "terapeuta", cascade = CascadeType.ALL, orphanRemoval = true)
+    /**
+     * Elenco delle sessioni condotte dal terapeuta.
+     */
+    @OneToMany(mappedBy = "terapeuta",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Sessione> sessioni;
 
-    @OneToMany(mappedBy = "terapeuta", cascade = CascadeType.ALL, orphanRemoval = true)
+    /**
+     * Elenco dei disegni creati sotto la supervisione del terapeuta.
+     */
+    @OneToMany(mappedBy = "terapeuta",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Disegno> disegni;
 
-    @OneToMany(mappedBy = "terapeuta", cascade = CascadeType.ALL, orphanRemoval = true)
+    /**
+     * Elenco dei bambini seguiti dal terapeuta.
+     */
+    @OneToMany(mappedBy = "terapeuta",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Bambino> bambini;
-
 }

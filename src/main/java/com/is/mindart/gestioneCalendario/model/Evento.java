@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneCalendario.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class Evento {
 
     @ManyToOne
     @JoinColumn(name = "terapeuta_id")
+    @JsonManagedReference
     private Terapeuta terapeuta;
 
 }

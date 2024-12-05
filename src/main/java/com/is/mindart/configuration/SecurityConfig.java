@@ -11,17 +11,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     /**
-     * Configura la sicurezza dell'applicazione.
-     * @param http
-     * @return SecurityFilterChain
-     * @throws Exception
-     */
+
+     Configura la sicurezza dell'applicazione.
+     @param http
+     @return SecurityFilterChain
+     @throws Exception*/
     @Bean
     public SecurityFilterChain securityFilterChain(
             final HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(authz -> authz.anyRequest().permitAll());
-        return http.build();
-    }
+        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(authz -> authz.anyRequest().permitAll());
+        return http.build();}
 }

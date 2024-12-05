@@ -1,6 +1,4 @@
-import logo from './logo.svg';
 import './App.css';
-import GestioneBambiniComponents from './components/GestioneBambiniComponents'
 import VisualizzaBambiniComponent from './components/VisualizzaBambiniComponent'
 
 function App() {

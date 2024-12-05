@@ -5,9 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import GestioneBambiniComponents from "./components/GestioneBambiniComponents";
+import GestioneBambini from "./pages/GestioneBambini";
 import { configureStore } from '@reduxjs/toolkit'
-import DettaglioBambinoComponent from "./components/DettaglioBambinoComponent";
+import DettaglioBambino from "./pages/DettagliBambino";
 
 const router = createBrowserRouter([
     {
@@ -18,17 +18,17 @@ const router = createBrowserRouter([
     {
         path: '/gestioneBambini',
         name: "Gestione Bambini",
-        element: <GestioneBambiniComponents />
+        element: <GestioneBambini/>
     },
     {
         path: '/aggiungiBambino',
         name: 'Aggiungi Bambino',
-        element: <GestioneBambiniComponents/>
+        element: <GestioneBambini/>
     },
     {
         path: '/dettaglioBambino/:id',
         name: 'Dettaglio',
-        element: <DettaglioBambinoComponent/>
+        element: <DettaglioBambino/>
     }
 ])
 

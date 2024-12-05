@@ -10,7 +10,7 @@ import '../style/GestioneBambini.css'
  * è possibile cliccare sui bambini per visualizzarne i dettagli
  * è possibile cliccare su aggiungi bambino per aggiungerne uno
  */
-function GestioneBambiniComponents() {
+function GestioneBambiniComponent() {
     const [bambini, setBambini] = useState([]);
 
     useEffect(() => {
@@ -64,4 +64,4 @@ function GestioneBambiniComponents() {
     );
 }
 
-export default GestioneBambiniComponents;
+export default GestioneBambiniComponent;

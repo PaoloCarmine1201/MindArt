@@ -3,7 +3,7 @@ package com.is.mindart.configuration;
 import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneCalendario.service.EventDto;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import com.is.mindart.gestioneTerapeuta.service.TerapeutaDto;
+import com.is.mindart.gestioneTerapeuta.service.TerapeutaDtoEvento;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ public class AppConfig {
             }
         });
 
-        mapper.addMappings(new PropertyMap<Terapeuta, TerapeutaDto>() {
+        mapper.addMappings(new PropertyMap<Terapeuta, TerapeutaDtoEvento>() {
             @Override
             protected void configure() {
                 map().setId(source.getId());

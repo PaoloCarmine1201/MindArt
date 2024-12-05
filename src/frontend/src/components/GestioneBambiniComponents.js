@@ -35,7 +35,7 @@ function GestioneBambiniComponents() {
                 {
                     bambini && bambini.length > 0 ? (
                         bambini.map((bambino) => (
-                            <Link to={`/dettaglioBambino/${bambino.id}`}><BambinoListItemComponent key={bambino.id} bambino={bambino} /></Link>
+                            <Link to={`/dettaglioBambino/${bambino.id}`} style={{textDecoration:"none"}}><BambinoListItemComponent key={bambino.id} bambino={bambino} /></Link>
                         ))
                     ) : (
                         <p>Nessun bambino trovato</p>

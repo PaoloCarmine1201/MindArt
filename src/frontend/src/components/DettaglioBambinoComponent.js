@@ -142,7 +142,7 @@ function DettaglioBambinoComponent() {
                 </Link>
             </div>
 
-            <Link to={'/'} style={styles.buttonLink}>
+            <Link to={'/gestioneBambini'} style={styles.buttonLink}>
                 <p style={{ ...styles.buttonText, ...styles.buttonLeft }}>↩︎ Indietro</p>
             </Link>
         </div>

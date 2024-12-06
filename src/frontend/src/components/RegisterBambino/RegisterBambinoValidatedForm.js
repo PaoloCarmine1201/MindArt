@@ -1,4 +1,3 @@
-import {Col, FloatingLabel, Form, Row} from "react-bootstrap";
 import * as formik from "formik";
 import * as yup from "yup";
 import '../../style/RegisterBambino.css';

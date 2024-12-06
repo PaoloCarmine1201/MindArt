@@ -14,18 +14,14 @@ function GestioneBambiniComponent() {
     const [bambini, setBambini] = useState([]);
 
     useEffect(() => {
-        const fetchBambini = async () => {
-            const datiSimulati = [
-                { id: 1, codice: 11111, nome: "Giacomo", cognome: "Rossi", sesso: "M", dataDiNascita: "21-12-2009", codiceFiscale: "AAABBB09A21D390N", emailGenitore: "genitor@gmail.com", telefonoGenitore: "1234567890" },
-                { id: 2, codice: 22222, nome: "Luca", cognome: "Verdi", sesso: "M", dataDiNascita: "15-05-2010", codiceFiscale: "CCCDDD10E15G123K", emailGenitore: "genitore2@gmail.com", telefonoGenitore: "0987654321" },
-                { id: 3, codice: 33333, nome: "Sofia", cognome: "Bianchi", sesso: "F", dataDiNascita: "03-09-2011", codiceFiscale: "EEFFFF11C03H456L", emailGenitore: "genitore3@gmail.com", telefonoGenitore: "1122334455" },
-                { id: 4, codice: 44444, nome: "Matteo", cognome: "Neri", sesso: "M", dataDiNascita: "27-07-2008", codiceFiscale: "GGGHHH08G27J789M", emailGenitore: "genitore4@gmail.com", telefonoGenitore: "2233445566" },
-                { id: 5, codice: 55555, nome: "Emma", cognome: "Rosa", sesso: "F", dataDiNascita: "10-03-2012", codiceFiscale: "IIJJJJ12H10K012N", emailGenitore: "genitore5@gmail.com", telefonoGenitore: "3344556677" },
-                { id: 6, codice: 66666, nome: "Mario", cognome: "Marroni", sesso: "M", dataDiNascita: "19-07-2010", codiceFiscale: "IIJJ012DFS7S7D6N", emailGenitore: "genitore5@gmail.com", telefonoGenitore: "3344556677" }
-            ];
-            setBambini(datiSimulati);
+        const fetchData = async () => {
+            const result = await fetch('http://localhost:8080/api/bambino/getall');
+            console.log(result);
+            const data = await result.json();
+            console.log(data);
+            setBambini(data);
         };
-        fetchBambini();
+        fetchData();
     }, []);
 
     return (

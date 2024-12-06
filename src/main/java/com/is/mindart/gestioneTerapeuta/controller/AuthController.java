@@ -22,7 +22,7 @@ public class AuthController {
 
     /**
      * @param terapeutaDto - DTO del terapeuta
-     * @return ResponseEntity ResponseEntity
+     * @return ResponseEntity
      */
     @PostMapping("/register")
     public ResponseEntity<TerapeutaDTO> registerTerapeuta(

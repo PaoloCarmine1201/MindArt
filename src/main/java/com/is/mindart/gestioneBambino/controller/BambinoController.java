@@ -32,6 +32,12 @@ public class BambinoController {
         return ResponseEntity.ok(bambini);
     }
 
+    @GetMapping("/getallbyterapeuta")
+    public ResponseEntity<List<BambinoDTO>> getAllBambiniByTerapeuta(@RequestParam Long terapeuta) {
+        List<BambinoDTO> bambini = bambinoService.getBambiniByT(terapeuta);
+        return ResponseEntity.ok(bambini);
+    }
+
     /**
      * @author gabrieleristallo
      * Restituisce il bambino con l'identificativo specificato.

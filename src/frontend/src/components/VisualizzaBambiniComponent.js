@@ -9,12 +9,12 @@ import {Link} from "react-router-dom";
  * un link offre la possibilità di accedere alla pagina per la propria gestione
  */
 
-function VisualizzaBambiniComponent() {
+function VisualizzaBambiniComponent(props) {
     const [bambini, setBambini] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await fetch('http://localhost:8080/api/bambino/getall');
+            const result = await fetch('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + props.idTerapeuta);
             console.log(result);
             const data = await result.json();
             console.log(data);

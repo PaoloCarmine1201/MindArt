@@ -51,4 +51,13 @@ public class BambinoService {
         Bambino bambino = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Bambino non trovato"));
         return modelMapper.map(bambino, BambinoDTO.class);
     }
+
+    public List<BambinoDTO> getBambiniByT(Long terapeuta) {
+        List<Bambino> bambini = repository.findAll();
+
+        return bambini.stream()
+                .filter(bambino -> bambino.getTerapeuta().getId().equals(terapeuta))
+                .map(bambino -> modelMapper.map(bambino, BambinoDTO.class))
+                .collect(Collectors.toList());
+    }
 }

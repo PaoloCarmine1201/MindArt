@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import BambinoListItemComponent from './BambinoListItemComponent.js';
 import {Link} from "react-router-dom";
 import '../style/GestioneBambini.css'
+import BambiniListComponent from "./BambiniListComponent";
 
 /**
  *
@@ -13,9 +13,11 @@ import '../style/GestioneBambini.css'
 function GestioneBambiniComponent() {
     const [bambini, setBambini] = useState([]);
 
+    const idTerapeuta = localStorage.getItem("idTerapeuta");
+
     useEffect(() => {
         const fetchData = async () => {
-            const result = await fetch('http://localhost:8080/api/bambino/getall');
+            const result = await fetch('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + idTerapeuta);
             console.log(result);
             const data = await result.json();
             console.log(data);
@@ -25,19 +27,8 @@ function GestioneBambiniComponent() {
     }, []);
 
     return (
-        <div style={{backgroundColor: "#B8E1FF", padding: "7px", margin: "5px", borderRadius: "5px"}}>
-            <h2 style={{color: "#f6f5e3", fontWeight: "bold"}}>Gestione Bambini</h2>
-            <div className="container">
-                {
-                    bambini && bambini.length > 0 ? (
-                        bambini.map((bambino) => (
-                            <Link to={`/dettaglioBambino/${bambino.id}`} style={{textDecoration:"none"}}><BambinoListItemComponent key={bambino.id} bambino={bambino} /></Link>
-                        ))
-                    ) : (
-                        <p>Nessun bambino trovato</p>
-                    )
-                }
-            </div>
+        <>
+            <BambiniListComponent bambini={bambini}/>
             <Link to={'/aggiungiBambino'} style={{textDecoration: "none", fontWeight: "bold"}}><p style={{
                 textAlign: "right",
                 marginTop: "10px",
@@ -56,7 +47,7 @@ function GestioneBambiniComponent() {
                 fontWeight: "bold"
             }}>↩︎ Indietro</p>
             </Link>
-        </div>
+        </>
     );
 }
 

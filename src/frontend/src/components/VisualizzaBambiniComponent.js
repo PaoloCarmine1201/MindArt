@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react";
-import BambinoListItemComponent from "./BambinoListItemComponent";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {Link} from "react-router-dom";
+import BambiniListComponent from "./BambiniListComponent";
 
 /**
  * @autor gabrieleristallo
@@ -10,42 +11,22 @@ import {Link} from "react-router-dom";
  */
 
 function VisualizzaBambiniComponent(props) {
-    const [bambini, setBambini] = useState([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await fetch('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + props.idTerapeuta);
-            console.log(result);
-            const data = await result.json();
-            console.log(data);
-            setBambini(data);
-        };
-        fetchData();
-    }, []);
+    const bambini = props.bambini;
 
     return (
-        <div style={{backgroundColor: "#B8E1FF", padding: "7px", margin: "5px", borderRadius: "5px"}}>
-            <h2 style={{color: "#f6f5e3", fontWeight: "bold"}}>I tuoi pazienti</h2>
-            <div className="container">
-                {
-                    bambini && bambini.length > 0 ? (
-                        bambini.slice(0, 3).map((bambino) => (
-                            <BambinoListItemComponent key={bambino.id} bambino={bambino} />
-                        ))
-                    ) : (
-                        <p>Nessun bambino trovato</p>
-                    )
-                }
-            </div>
-            <Link to={'/gestioneBambini'} style={{textDecoration: "none", fontWeight: "bold"}}><p style={{
-                textAlign: "right",
-                textDecoration: "none",
-                marginTop: "10px",
-                cursor: "pointer",
-                paddingRight: "10px",
-                color: "#2c3e50"
-            }}>Vedi tutto →</p></Link>
-        </div>
+        <>
+            <BambiniListComponent bambini={bambini}/>
+                <Link to={'/gestioneBambini'}
+                      style={{textDecoration: "none", fontWeight: "bold"}}
+                      state={bambini}><p style={{
+                    textAlign: "right",
+                    textDecoration: "none",
+                    marginTop: "10px",
+                    cursor: "pointer",
+                    paddingRight: "10px",
+                    color: "#2c3e50"
+                }}>Vedi tutto →</p></Link>
+        </>
     );
 }
 

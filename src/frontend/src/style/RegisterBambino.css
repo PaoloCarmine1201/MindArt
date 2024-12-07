@@ -1,0 +1,17 @@
+.floating-label-feedback {
+    margin-bottom: 2rem; /* Spazio extra sotto il campo */
+    position: relative; /* Assicura che gli elementi siano ben contenuti */
+}
+
+.tooltip {
+    position: absolute; /* Posizionamento relativo al genitore */
+    top: 100%; /* Sposta il tooltip sotto il campo */
+    left: 0;
+    z-index: 10; /* Mantieni sopra gli altri elementi */
+    transform: translateY(0.5rem); /* Regola la distanza dal campo */
+    white-space: nowrap; /* Impedisce il wrapping del testo */
+}
+
+.form-floating {
+    margin-bottom: 2rem; /* Incrementa la distanza tra i campi */
+}

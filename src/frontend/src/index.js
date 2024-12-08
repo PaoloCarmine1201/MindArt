@@ -8,6 +8,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import GestioneBambini from "./pages/GestioneBambini";
 import { configureStore } from '@reduxjs/toolkit'
 import DettaglioBambino from "./pages/DettagliBambino";
+import EventiTeraputa from "./pages/EventiTeraputa";
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,11 @@ const router = createBrowserRouter([
         path: '/dettaglioBambino/:id',
         name: 'Dettaglio',
         element: <DettaglioBambino/>
+    },
+    {
+        path: '/calendarioEventi',
+        name:'Calendario',
+        element: <EventiTeraputa/>
     }
 ])
 

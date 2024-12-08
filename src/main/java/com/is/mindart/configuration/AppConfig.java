@@ -24,9 +24,7 @@ public class AppConfig {
         mapper.addMappings(new PropertyMap<Evento, EventDto>() {
             @Override
             protected void configure() {
-                map().setTerapeuta(source.getTerapeuta().getId());
-                // La lista dei partecipanti verrà mappata automaticamente
-            }
+                map().setTerapeuta(source.getTerapeuta().getId());}
         });
 
         mapper.addMappings(new PropertyMap<Terapeuta, TerapeutaEventoDTO>() {

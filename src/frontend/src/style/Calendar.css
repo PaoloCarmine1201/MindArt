@@ -1,0 +1,125 @@
+/* Stile generale del calendario */
+/*.rbc-calendar {
+    font-family: 'Arial, sans-serif';
+    background-color: #e8e8e8;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+}*/
+
+/* Header della toolbar */
+.rbc-toolbar {
+    background-color: #001446;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.rbc-toolbar button {
+    background-color: #001446;
+    color: #fdfdfd;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.rbc-toolbar button:hover {
+    background-color: #38466e;
+    color: #ffffff;
+}
+
+.rbc-toolbar button:hover {
+    background-color: #38466e;
+    color: #ffffff;
+}
+
+/* Titolo della toolbar */
+.rbc-toolbar-label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Giorni della settimana */
+.rbc-header {
+    background-color: #001446;
+    color: #fdfdfd;
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Stile per le celle del calendario */
+.rbc-day-bg {
+    background-color: #ffffff;
+}
+
+.rbc-day-bg.rbc-today {
+    background-color: #e6f7ff;
+}
+
+/* Eventi nel calendario */
+.rbc-event {
+    background-color: #a4e586;
+    color: #001446;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+.rbc-event:hover {
+    background-color: #b2e19f;
+}
+
+.rbc-event .rbc-selected {
+    background-color: #b2e19f;
+}
+
+/* Vista del mese */
+.rbc-month-view {
+    border: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Vista della settimana e del giorno */
+.rbc-time-view {
+    border: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Scorciatoie per la navigazione */
+.rbc-btn-group {
+    display: flex;
+    align-items: center;
+}
+
+/* Disabilita il bordo inferiore degli slot */
+.rbc-timeslot-group {
+    border-bottom: none;
+}
+
+/* Bordo per le righe degli orari */
+.rbc-time-slot {
+    border-top: 1px solid #ddd;
+}
+
+/* Vista agenda */
+.rbc-agenda-view table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.rbc-agenda-view td,
+.rbc-agenda-view th {
+    border: 1px solid #ddd;
+    padding: 10px;
+}

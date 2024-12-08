@@ -1,0 +1,52 @@
+/* Stile per centrare il modal */
+.modal-dialog {
+    margin: auto;
+    max-width: 500px;
+}
+
+/* Stile personalizzato per il titolo del modal */
+.modal-title {
+    color: #001446;
+    font-weight: bold;
+}
+
+/* Stile per le label */
+.custom-label {
+    color: #001446;
+    font-weight: 500;
+}
+
+/* Stile per i campi di input */
+.custom-control {
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+/* Stile per i bottoni */
+.custom-save-btn {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.custom-cancel-btn {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.custom-delete-btn {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.custom-save-btn:hover {
+    background-color: #218838;
+}
+
+.custom-cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.custom-delete-btn:hover {
+    background-color: #c82333;
+}

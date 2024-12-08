@@ -3,6 +3,7 @@ package com.is.mindart.gestioneCalendario.service;
 import com.is.mindart.gestioneCalendario.exception.EventNotFoundException;
 import com.is.mindart.gestioneCalendario.model.EventRespository;
 import com.is.mindart.gestioneCalendario.model.Evento;
+import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,11 @@ public class EventService {
      * Repository per la gestione delle operazioni sugli eventi.
      */
     private final EventRespository eventRepository;
+
+    /**
+     * Repository per la gestione delle operazioni sui terapeuti.
+     */
+    private final TerapeutaRepository terapeutaRepository;
 
     /**
      * Mapper per la conversione tra {@link Evento} e {@link EventDto}.
@@ -114,6 +120,8 @@ public class EventService {
      * @return l'entità corrispondente
      */
     private Evento mapToEvent(EventDto eventDto) {
-        return modelMapper.map(eventDto, Evento.class);
+        Evento evento = modelMapper.map(eventDto, Evento.class);
+        evento.setTerapeuta(terapeutaRepository.getReferenceById(eventDto.getTerapeuta()));
+        return evento;
     }
 }

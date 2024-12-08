@@ -59,8 +59,8 @@ function RegisterBambinoForm({
                                 value={values.sesso}
                                 isInvalid={touched.sesso && !!errors.sesso}
                             >
-                                <option value="maschio">Maschio</option>
-                                <option value="femmina">Femmina</option>
+                                <option value="MASCHIO">Maschio</option>
+                                <option value="FEMMINA">Femmina</option>
                             </Form.Select>
                             <Form.Control.Feedback type="invalid" tooltip>
                                 {typeof errors.sesso === 'string' ? errors.sesso : ''}

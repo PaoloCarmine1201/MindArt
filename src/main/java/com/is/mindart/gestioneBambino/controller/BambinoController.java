@@ -2,6 +2,7 @@ package com.is.mindart.gestioneBambino.controller;
 
 import com.is.mindart.gestioneBambino.service.BambinoDTO;
 import com.is.mindart.gestioneBambino.service.BambinoService;
+import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,10 +52,10 @@ public class BambinoController {
         return ResponseEntity.ok(bambino);
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<BambinoDTO> addBambino(
-//            @Valid @RequestBody final BambinoDTO bambinoDto) {
-//        bambinoService.addBambino(bambinoDto);
-//        return ResponseEntity.ok(bambinoDto);
-//    }
+    @PostMapping("/add")
+    public ResponseEntity<RegisterBambinoDTO> addBambino(
+            @Valid @RequestBody final RegisterBambinoDTO bambinoDto) {
+        bambinoService.addBambino(bambinoDto);
+        return ResponseEntity.ok(bambinoDto);
+    }
 }

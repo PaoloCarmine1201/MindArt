@@ -4,6 +4,7 @@ import com.is.mindart.gestioneBambino.model.Sesso;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,14 +44,14 @@ public class BambinoDTO {
         /**
         * Data di nascita del bambino.
         */
-        @NotBlank(message = "La data di nascita non può essere vuota")
+        @NotNull(message = "La data di nascita non può essere vuota")
         @Past(message = "La data di nascita deve essere nel passato")
         private Date dataDiNascita;
 
         /**
         * Sesso del bambino.
         */
-        @NotBlank(message = "Il sesso non può essere vuoto")
+        @NotNull(message = "Il sesso non può essere vuoto")
         private Sesso sesso;
 
         /**

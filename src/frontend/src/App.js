@@ -1,6 +1,7 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
 import VisualizzaBambiniComponent from './components/VisualizzaBambiniComponent'
+import RegisterBambino from "./components/RegisterBambino/RegisterBambino";
 
 function App() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); //id del terapeuta loggato DA MODIFICARE
@@ -22,6 +23,7 @@ function App() {
       <>
           /*HOME DEL TERAPEUTA (CI SARANNO I VARI COMPONENTS)*/
           <VisualizzaBambiniComponent bambini={bambini}/>
+          <RegisterBambino/>
       </>
   );
 }

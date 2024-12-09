@@ -1,4 +1,4 @@
-import TerapeutaEventiComponent from "../components/TerapeutaEventiComponent";
+import TerapeutaEventiComponent from "../components/GestioneCalendario/TerapeutaEventiComponent";
 import "../style/Calendar.css";
 function GestioneEventiTerapeuta() {
     return (

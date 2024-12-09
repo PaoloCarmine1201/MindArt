@@ -55,14 +55,16 @@ public class EventService {
      */
     public EventDto getEventById(Long id) {
         Evento event = eventRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Event not found"));
+                .orElseThrow(() ->
+                        new EventNotFoundException("Event not found"));
         return mapToEventDto(event);
     }
 
     /**
      * Aggiunge un nuovo evento al calendario.
      *
-     * @param eventDto un oggetto {@link EventDto} rappresentante i dati dell'evento
+     * @param eventDto un oggetto {@link EventDto}
+     *                 rappresentante i dati dell'evento
      * @return l'evento salvato come {@link EventDto}
      */
     public EventDto addEvent(EventDto eventDto) {
@@ -74,13 +76,15 @@ public class EventService {
     /**
      * Aggiorna un evento esistente nel calendario.
      *
-     * @param eventDto un oggetto {@link EventDto} con i dati aggiornati dell'evento
+     * @param eventDto un oggetto {@link EventDto}
+     *                 con i dati aggiornati dell'evento
      * @return l'evento aggiornato come {@link EventDto}
      * @throws EventNotFoundException se l'evento non esiste
      */
     public EventDto updateEvent(EventDto eventDto) {
         Evento existingEvent = eventRepository.findById(eventDto.getId())
-                .orElseThrow(() -> new EventNotFoundException("Event not found"));
+                .orElseThrow(() ->
+                        new EventNotFoundException("Event not found"));
 
         // Aggiorna i campi necessari
         existingEvent.setNome(eventDto.getNome());
@@ -99,7 +103,8 @@ public class EventService {
      */
     public void deleteEvent(Long id) {
         Evento event = eventRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Event not found"));
+                .orElseThrow(() ->
+                        new EventNotFoundException("Event not found"));
         eventRepository.delete(event);
     }
 
@@ -121,7 +126,9 @@ public class EventService {
      */
     private Evento mapToEvent(EventDto eventDto) {
         Evento evento = modelMapper.map(eventDto, Evento.class);
-        evento.setTerapeuta(terapeutaRepository.getReferenceById(eventDto.getTerapeuta()));
+        evento.setTerapeuta(
+                terapeutaRepository.getReferenceById(eventDto.getTerapeuta())
+        );
         return evento;
     }
 }

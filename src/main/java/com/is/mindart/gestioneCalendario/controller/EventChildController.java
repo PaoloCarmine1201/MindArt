@@ -67,7 +67,7 @@ public class EventChildController {
      */
     @PostMapping("/event")
     public ResponseEntity<EventDto> addEvent(
-            @Valid @RequestBody EventDto eventDto) {
+             @RequestBody EventDto eventDto) {
         EventDto event = eventService.addEvent(eventDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }

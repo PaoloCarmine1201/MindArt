@@ -34,8 +34,8 @@
     color: #ffffff;
 }
 
-.rbc-toolbar button:hover {
-    background-color: #38466e;
+.rbc-toolbar button:active, .rbc-toolbar button.rbc-active{
+    background-color: #4a5371;
     color: #ffffff;
 }
 
@@ -51,7 +51,7 @@
     color: #fdfdfd;
     padding: 15px;
     border-radius: 8px 8px 0 0;
-    font-weight: bold;
+    font-weight: 800;
     text-align: center;
     border-bottom: 1px solid #ddd;
 }
@@ -122,4 +122,22 @@
 .rbc-agenda-view th {
     border: 1px solid #ddd;
     padding: 10px;
+}
+
+.rbc-button-link {
+    font-weight: bold;
+}
+
+.rbc-event.rbc-selected{
+    background-color: #e8e8e8;
+}
+
+/* styles.css */
+
+.app-container {
+    transition: filter 0.3s ease-in-out;
+}
+
+.blur {
+    filter: blur(5px);
 }

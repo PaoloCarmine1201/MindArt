@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, momentLocalizer, } from 'react-big-calendar';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
+import 'moment/locale/it';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import MyModal from './MyModal';
+import EventoForm from "./EventoForm";
 
-
-moment.locale('IT');
+moment.locale('it');
 const localizer = momentLocalizer(moment);
 
 function MyCalendar() {
@@ -14,12 +14,7 @@ function MyCalendar() {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/terapeuta/1/events', {
-            /*credentials: 'include',
-            headers: {
-                'Authorization': 'Bearer <token>'
-            }*/
-        })
+        fetch('http://localhost:8080/api/terapeuta/1/events')
             .then(res => res.json())
             .then(data => {
                 const converted = data.map(ev => ({
@@ -50,7 +45,6 @@ function MyCalendar() {
     };
 
     const handleCreateEvent = (eventData) => {
-        // eventData: {title, start, end, terapeuta}
         const payload = {
             nome: eventData.title,
             inizio: eventData.start.toISOString(),
@@ -79,7 +73,6 @@ function MyCalendar() {
     };
 
     const handleUpdateEvent = (eventData) => {
-        // eventData: {id, title, start, end, terapeuta}
         const payload = {
             id: eventData.id,
             nome: eventData.title,
@@ -119,7 +112,6 @@ function MyCalendar() {
     };
 
     const handleSaveOrUpdate = (eventData) => {
-        // Questa funzione decide se chiamare handleCreateEvent o handleUpdateEvent
         if (eventData.id) {
             handleUpdateEvent(eventData);
         } else {
@@ -128,34 +120,36 @@ function MyCalendar() {
     };
 
     return (
-        <div style={{ height: '60vh' }}>
-            <Calendar
-                localizer={localizer}
-                views={['month', 'week', 'day']}
-                defaultView="week"
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                messages={{
-                    next: 'Successivo',
-                    previous: 'Precedente',
-                    today: 'Oggi',
-                    month: 'Mese',
-                    week: 'Settimana',
-                    day: 'Giorno',
-
-                }}
-
-                selectable
-                onSelectSlot={handleSelectSlot}
-                onSelectEvent={handleSelectEvent}
-            />
+        <div className={`app-container ${showModal ? 'blur' : ''}`}>
+            <div style={{ height: '60vh' }}>
+                <Calendar
+                    localizer={localizer}
+                    culture='it'
+                    views={['month', 'week', 'day']}
+                    defaultView="week"
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    messages={{
+                        next: 'Successivo',
+                        previous: 'Precedente',
+                        today: 'Oggi',
+                        month: 'Mese',
+                        week: 'Settimana',
+                        day: 'Giorno',
+                    }}
+                    selectable
+                    onSelectSlot={handleSelectSlot}
+                    onSelectEvent={handleSelectEvent}
+                />
+            </div>
             {showModal && (
-                <MyModal
+                <EventoForm
                     event={selectedEvent}
                     onSave={handleSaveOrUpdate}
                     onDelete={handleDeleteEvent}
                     onClose={() => setShowModal(false)}
+                    existingEvents={events}
                 />
             )}
         </div>

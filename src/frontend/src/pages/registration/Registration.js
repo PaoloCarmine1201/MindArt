@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../style/Login.css';
+import '../../style/Registration.css';
 import {Link} from "react-router-dom";
 import {Button, FloatingLabel, Form, Stack} from "react-bootstrap";
 import axios from 'axios';

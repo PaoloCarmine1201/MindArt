@@ -8,6 +8,8 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import GestioneBambini from "./pages/GestioneBambini";
 import { configureStore } from '@reduxjs/toolkit'
 import DettaglioBambino from "./pages/DettagliBambino";
+import Login from "./pages/login/Login";
+import Registration from "./pages/registration/Registration";
 
 const router = createBrowserRouter([
     {
@@ -29,6 +31,16 @@ const router = createBrowserRouter([
         path: '/dettaglioBambino/:id',
         name: 'Dettaglio',
         element: <DettaglioBambino/>
+    },
+    {
+        path:"/login",
+        name: "Login",
+        element : <Login />
+    },
+    {
+        path:"/register",
+        name: "Registrazione",
+        element : <Registration />
     }
 ])
 

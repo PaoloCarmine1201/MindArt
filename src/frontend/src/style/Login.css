@@ -3,10 +3,16 @@
 .login-container {
     background-color: #001447;
 }
+/*
+.title {
+    color: white;
+}
+
+ */
 
 /* Form background: Uranian Blue */
 .login-form {
-    background-color: #001447;
+    background-color: white;
     border-radius: 10px;
     max-width: 500px; /* Reduced the width slightly */
     width: 90%; /* Ensures responsiveness */

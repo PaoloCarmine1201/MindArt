@@ -2,6 +2,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import {useRef, useState} from "react";
 import RegisterBambinoValidatedForm from "./RegisterBambinoValidatedForm";
+import "../../style/RegisterBambino.css";
+import "../../style/Button.css";
+import "../../style/Modal.css";
 
 function RegisterBambino(){
 
@@ -48,16 +51,17 @@ function RegisterBambino(){
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>Aggiungi Bambino</Button>
+            <Button variant="btn-outline-primary btn-conferma" onClick={handleShow}>Aggiungi Bambino</Button>
             <Modal show={show}
                    onHide={handleClose}
                    backdrop="static"
                    keyboard={false}
                    aria-labelledby="contained-modal-title-vcenter"
                    centered
+                   dialogClassName="custom-modal"
             >
-                <Modal.Header >
-                    <Modal.Title>Registra un bambino</Modal.Title>
+                <Modal.Header className="border-0">
+                    <Modal.Title className="text-center w-100 fw-bold">Registra un bambino</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
@@ -67,9 +71,9 @@ function RegisterBambino(){
                     ></RegisterBambinoValidatedForm>
                 </Modal.Body>
 
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>Annulla</Button>
-                    <Button variant="primary" onClick={() => formRef.current.submitForm()}>Conferma</Button>
+                <Modal.Footer className="border-0 d-flex justify-content-end">
+                    <Button variant="btn-outline-secondary btn-annulla" onClick={handleClose}>Annulla</Button>
+                    <Button variant="btn-outline-primary btn-conferma" onClick={() => formRef.current.submitForm()}>Conferma</Button>
                 </Modal.Footer>
             </Modal>
         </>

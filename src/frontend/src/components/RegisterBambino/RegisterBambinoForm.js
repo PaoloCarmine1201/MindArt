@@ -126,7 +126,7 @@ function RegisterBambinoForm({
 
             {/* Telefono tutore */}
             <Form.Group controlId="registerBambino.telefonoGenitore">
-                <FloatingLabel controlId="registerBambino.telefonoGenitore" label="Numero telefono tutore">
+                <FloatingLabel controlId="registerBambino.telefonoGenitore" className="last-field" label="Numero telefono tutore">
                     <Form.Control
                         name="telefonoGenitore"
                         type="text"

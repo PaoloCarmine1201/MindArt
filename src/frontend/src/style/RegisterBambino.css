@@ -15,3 +15,13 @@
 .form-floating {
     margin-bottom: 2rem; /* Incrementa la distanza tra i campi */
 }
+
+.form-floating.last-field{
+    margin-bottom: 0; /* Elimina lo spazio sotto l'ultimo campo */
+}
+
+/* Floating labels */
+.floating-label .form-control:focus {
+    border-color: #28a745 !important; /* Verde per il focus */
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Ombra verde */
+}

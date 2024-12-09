@@ -76,5 +76,9 @@ public class RegisterBambinoDTO {
     @Email(message = "Devi inserire un'email valida")
     private String emailGenitore;
 
+
+    /**
+     * Id del Terapeuta associato.
+     */
     private Long terapeutaId;
 }

@@ -1,6 +1,5 @@
 package com.is.mindart.gestioneBambino.model;
 
-import com.is.mindart.gestioneBambino.model.Bambino;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

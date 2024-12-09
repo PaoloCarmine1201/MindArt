@@ -8,7 +8,7 @@ function RegisterBambinoValidatedForm({handleSubmit , formRef}) {
 
     const { Formik } = formik;
 
-    // Define the validation schema
+    // Validation schema
     const schema = yup.object().shape({
         nome: yup
             .string()

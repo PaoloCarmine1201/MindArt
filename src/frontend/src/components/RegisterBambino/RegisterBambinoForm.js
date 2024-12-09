@@ -1,6 +1,7 @@
 // BambinoFormFields.js
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap';
 
+// Form per la registrazione di un bambino
 function RegisterBambinoForm({
                                handleChange,
                                handleBlur,

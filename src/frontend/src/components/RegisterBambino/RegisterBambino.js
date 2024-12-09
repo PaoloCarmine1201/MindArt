@@ -8,15 +8,18 @@ import "../../style/Modal.css";
 
 function RegisterBambino(){
 
+    // Mostra o nasconde il modale
     const [show, setShow] = useState(false);
-
+    // Riferimento al form per farne il submit
     const formRef = useRef(null);
 
+    // Funzioni per mostrare e nascondere il modale
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    // Funzione per inviare i dati del form al server
     const handleSubmit = async (values) => {
-
+        // Aggiungi l'id del terapeuta
         const terapeutaId = 1;
 
         // TODO Recupera l'id del terapeuta loggato e generare codice bimbo
@@ -44,6 +47,7 @@ function RegisterBambino(){
             alert('Form inviato con successo!');
             handleClose(); // Chiudi il modale
         } catch (error) {
+            //TODO: Gestire l'errore in modo più appropriato
             console.error('Errore:', error);
             alert('Si è verificato un errore.');
         }

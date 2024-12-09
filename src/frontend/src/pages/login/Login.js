@@ -54,7 +54,7 @@ const Login = () => {
     return (
 
         <Stack gap={4} className="login-container d-flex justify-content-center align-items-center vh-100" >
-
+            <img src={require('../../assets/logo_vertical_1024x1024_white.png')}  width="175" height="175" alt=""/>
             <Form onSubmit={handleLogin} className="card p-4 shadow-sm login-form">
                 <h2 className="title">Login</h2>
                 <br/>

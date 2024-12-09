@@ -1,0 +1,14 @@
+/* Background color: Penn Blue */
+
+.login-container {
+    background-color: #B8E1FF;
+}
+
+/* Form background: Uranian Blue */
+.login-form {
+    background-color: #001447;
+    border-radius: 10px;
+    max-width: 500px; /* Reduced the width slightly */
+    width: 90%; /* Ensures responsiveness */
+    padding: 2.5rem 2rem; /* Increased padding for more height */
+}

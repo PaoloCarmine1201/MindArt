@@ -1,11 +1,12 @@
 package com.is.mindart.gestioneBambino.controller;
-
 import com.is.mindart.gestioneBambino.service.BambinoDTO;
 import com.is.mindart.gestioneBambino.service.BambinoService;
+import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class BambinoController {
     private BambinoService bambinoService;
 
     /**
-     * @autor gabrieleristallo
+     * @author gabrieleristallo
      * Restituisce tutti i bambini presenti nel database.
      *
      * @return lista di bambini presenti nel database
@@ -31,9 +32,17 @@ public class BambinoController {
         List<BambinoDTO> bambini = bambinoService.getAllBambini();
         return ResponseEntity.ok(bambini);
     }
-
+    /**
+     * @author gabrieleristallo
+     * Restituisce tutti i bambini relativi a un terapeuta.
+     *
+     * @param terapeuta identificativo del terapeuta
+     * @return lista di bambini del terapeuta
+     */
     @GetMapping("/getallbyterapeuta")
-    public ResponseEntity<List<BambinoDTO>> getAllBambiniByTerapeuta(@RequestParam Long terapeuta) {
+    public ResponseEntity<List<BambinoDTO>> getAllBambiniByTerapeuta(
+            @RequestParam final Long terapeuta
+    ) {
         List<BambinoDTO> bambini = bambinoService.getBambiniByT(terapeuta);
         return ResponseEntity.ok(bambini);
     }
@@ -51,10 +60,18 @@ public class BambinoController {
         return ResponseEntity.ok(bambino);
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<BambinoDTO> addBambino(
-//            @Valid @RequestBody final BambinoDTO bambinoDto) {
-//        bambinoService.addBambino(bambinoDto);
-//        return ResponseEntity.ok(bambinoDto);
-//    }
+    /**
+     * @author gabrieleristallo
+     * Aggiunge le informazioni del bambino al database.
+     *
+     * @param bambinoDto un oggetto {@link RegisterBambinoDTO}
+     *                   contenente i dati del bambino.
+     * @return bambino salvato come {@link RegisterBambinoDTO}
+     */
+    @PostMapping("/add")
+    public ResponseEntity<RegisterBambinoDTO> addBambino(
+            @Valid @RequestBody final RegisterBambinoDTO bambinoDto) {
+        bambinoService.addBambino(bambinoDto);
+        return ResponseEntity.ok(bambinoDto);
+    }
 }

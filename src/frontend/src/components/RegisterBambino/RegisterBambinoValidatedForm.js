@@ -4,11 +4,11 @@ import '../../style/RegisterBambino.css';
 import RegisterBambinoForm from "./RegisterBambinoForm";
 
 
-function RegisterBambinoValidatedForm({handleSubmit}) {
+function RegisterBambinoValidatedForm({handleSubmit , formRef}) {
 
     const { Formik } = formik;
 
-    // Define the validation schema
+    // Validation schema
     const schema = yup.object().shape({
         nome: yup
             .string()
@@ -20,7 +20,7 @@ function RegisterBambinoValidatedForm({handleSubmit}) {
             .required('campo cognome richiesto'),
         sesso: yup
             .string()
-            .oneOf(['maschio', 'femmina'], 'formato sesso non valido')
+            .oneOf(['MASCHIO', 'FEMMINA'], 'formato sesso non valido')
             .required('campo sesso richiesto'),
         dataDiNascita: yup
             .date()
@@ -43,19 +43,20 @@ function RegisterBambinoValidatedForm({handleSubmit}) {
     return (
         // Formik component to handle the form state and validation
         <Formik
+            innerRef={formRef}
             validationSchema={schema}
             onSubmit={handleSubmit}
+            validateOnBlur={true}
+            validateOnChange={true}
             initialValues={{
                 nome: '',
                 cognome: '',
-                sesso: 'maschio',
+                sesso: 'MASCHIO',
                 dataDiNascita: '',
                 codiceFiscale: '',
                 emailGenitore: '',
                 telefonoGenitore: ''
             }}
-            validateOnBlur={true}
-            validateOnChange={true}
         >
             {/* Form component with the form fields */}
             {({handleSubmit, handleChange, handleBlur, values, errors, touched}) => (

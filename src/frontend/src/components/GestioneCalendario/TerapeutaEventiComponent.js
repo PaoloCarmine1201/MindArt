@@ -149,7 +149,6 @@ function MyCalendar() {
                     onSave={handleSaveOrUpdate}
                     onDelete={handleDeleteEvent}
                     onClose={() => setShowModal(false)}
-                    existingEvents={events}
                 />
             )}
         </div>

@@ -11,7 +11,7 @@ import ConfirmModal from "./ConfirmModal";
 
 
 // Validation schema using Yup
-const EventoSchema = (existingEvents, currentEventId) => Yup.object().shape({
+const EventoSchema = () => Yup.object().shape({
     title: Yup.string()
         .min(3, 'Il titolo deve essere lungo almeno 3 caratteri')
         .max(100, 'Il titolo non può superare i 100 caratteri')
@@ -20,27 +20,10 @@ const EventoSchema = (existingEvents, currentEventId) => Yup.object().shape({
         .required('La data e l\'ora di inizio sono obbligatorie'),
     end: Yup.date()
         .min(Yup.ref('start'), 'La data di fine deve essere successiva all\'inizio')
-        .required('La data e l\'ora di fine sono obbligatorie')
-        .test('no-overlap', 'L\'evento si sovrappone con un altro evento esistente', function(value) {
-            const { start } = this.parent;
-            if (!start || !value) return true; // Handled by other validations
-            const newStart = new Date(start);
-            const newEnd = new Date(value);
-
-            const isOverlap = existingEvents.some(ev => {
-                if (currentEventId && ev.id === currentEventId) {
-                    // Skip the current event when editing
-                    return false;
-                }
-                const evStart = new Date(ev.start);
-                const evEnd = new Date(ev.end);
-                return (newStart < evEnd) && (evStart < newEnd);
-            });
-
-            return !isOverlap;
-        }),
+        .required('La data e l\'ora di fine sono obbligatorie'),
 });
-function EventoForm({ event, onSave, onDelete, onClose, existingEvents}) {
+
+function EventoForm({ event, onSave, onDelete, onClose}) {
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 

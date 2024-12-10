@@ -55,7 +55,7 @@ function EventoForm({ event, onSave, onDelete, onClose}) {
             <Modal show onHide={onClose} centered className={`app-container ${showConfirmModal ? 'blur' : ''}`}>
                 <Formik
                     initialValues={initialValues}
-                    validationSchema={EventoSchema(existingEvents,event.id)}
+                    validationSchema={EventoSchema(event.id)}
                     onSubmit={handleSubmit}
                 >
                     {({ isSubmitting , errors, touched}) => (

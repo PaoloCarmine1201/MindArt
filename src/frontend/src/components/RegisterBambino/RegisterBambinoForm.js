@@ -1,6 +1,7 @@
 // BambinoFormFields.js
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap';
 
+// Form per la registrazione di un bambino
 function RegisterBambinoForm({
                                handleChange,
                                handleBlur,
@@ -59,8 +60,8 @@ function RegisterBambinoForm({
                                 value={values.sesso}
                                 isInvalid={touched.sesso && !!errors.sesso}
                             >
-                                <option value="maschio">Maschio</option>
-                                <option value="femmina">Femmina</option>
+                                <option value="MASCHIO">Maschio</option>
+                                <option value="FEMMINA">Femmina</option>
                             </Form.Select>
                             <Form.Control.Feedback type="invalid" tooltip>
                                 {typeof errors.sesso === 'string' ? errors.sesso : ''}
@@ -126,7 +127,7 @@ function RegisterBambinoForm({
 
             {/* Telefono tutore */}
             <Form.Group controlId="registerBambino.telefonoGenitore">
-                <FloatingLabel controlId="registerBambino.telefonoGenitore" label="Numero telefono tutore">
+                <FloatingLabel controlId="registerBambino.telefonoGenitore" className="last-field" label="Numero telefono tutore">
                     <Form.Control
                         name="telefonoGenitore"
                         type="text"

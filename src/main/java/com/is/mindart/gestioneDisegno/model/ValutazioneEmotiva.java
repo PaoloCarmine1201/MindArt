@@ -2,29 +2,22 @@ package com.is.mindart.gestioneDisegno.model;
 
 import lombok.ToString;
 
-/**
- * Rappresenta le valutazioni emotive che possono essere associate a un disegno.
- */
 @ToString
 public enum ValutazioneEmotiva {
-
     /**
-     * Indica che l'emozione valutata è tristezza.
+     * Valutazione emotiva triste.
      */
-    TRISTEZZA,
-
+    TRISTE,
     /**
-     * Indica che l'emozione valutata è felicità.
+     * Valutazione emotiva felice.
      */
-    FELICITA,
-
+    FELICE,
     /**
-     * Indica che l'emozione valutata è rabbia.
+     * Valutazione emotiva arrabbiato.
      */
-    RABBIA,
-
+    ARRABBIATO,
     /**
-     * Indica che l'emozione valutata è paura.
+     * Valutazione emotiva spaventato.
      */
-    PAURA
+    SPAVENTATO
 }

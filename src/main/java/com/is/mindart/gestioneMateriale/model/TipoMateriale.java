@@ -3,7 +3,7 @@ package com.is.mindart.gestioneMateriale.model;
 import lombok.ToString;
 
 /**
- * Rappresenta i diversi tipi di materiale che possono essere associati a una sessione terapeutica.
+ * Rappresenta i diversi tipi di materiale disponibili.
  */
 @ToString
 public enum TipoMateriale {

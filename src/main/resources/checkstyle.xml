@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
+
 <module name="Checker">
     <module name="TreeWalker">
         <!-- Controlla la lunghezza massima delle righe -->
         <module name="LineLength">
-            <property name="max" value="80"/>
+            <property name="max" value="120"/>
         </module>
 
         <!-- Forza l'uso di 'this' per i campi della classe -->

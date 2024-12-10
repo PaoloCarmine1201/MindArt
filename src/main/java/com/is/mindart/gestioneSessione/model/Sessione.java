@@ -1,6 +1,5 @@
 package com.is.mindart.gestioneSessione.model;
 
-
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.Entity;
@@ -32,7 +31,7 @@ public class Sessione {
     private Long id;
 
     /**
-     * Tema assegnato alla sessione.
+     * Tema assegnato alla sessione terapeutica.
      */
     private String temaAssegnato;
 
@@ -42,17 +41,17 @@ public class Sessione {
     private Date data;
 
     /**
-     * Nota associata alla sessione.
+     * Nota aggiuntiva relativa alla sessione.
      */
     private String nota;
 
     /**
-     * Tipo di sessione (Disegno, Colore, Apprendimento).
+     * Tipo della sessione (ad esempio: Disegno, Colore, Apprendimento).
      */
     private TipoSessione tipo;
 
     /**
-     * Materiale utilizzato nella sessione.
+     * Materiale utilizzato durante la sessione.
      */
     @ManyToOne
     @JoinColumn(name = "materiale_id")

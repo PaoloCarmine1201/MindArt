@@ -10,10 +10,20 @@ function GestioneBambiniComponent() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await fetch('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + idTerapeuta);
-            const data = await result.json();
-            setBambini(data);
+            try {
+                const result = await fetch('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + idTerapeuta);
+
+                if (!result.ok) {
+                    throw new Error('Errore nella risposta del server: ' + result.status);
+                }
+
+                const data = await result.json();
+                setBambini(data);
+            } catch (error) {
+                console.error('Errore nel recupero dei dati:', error);
+            }
         };
+
         fetchData();
     }, []);
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import '../../style/GestioneBambiniStyle.css';
 import BambiniListComponent from "./BambiniListComponent";
+import RegisterBambino from "../RegisterBambino/RegisterBambino";
 
 function GestioneBambiniComponent() {
     const [bambini, setBambini] = useState([]);
@@ -36,9 +37,7 @@ function GestioneBambiniComponent() {
                         ↩︎ Indietro
                     </Link>
 
-                    <Link to={'/aggiungiBambino'} className="aggiungi-bambino-link">
-                        Aggiungi Bambino →
-                    </Link>
+                    <RegisterBambino/>
                 </div>
             </div>
         </div>

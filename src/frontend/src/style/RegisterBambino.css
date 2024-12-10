@@ -1,0 +1,27 @@
+.floating-label-feedback {
+    margin-bottom: 2rem; /* Spazio extra sotto il campo */
+    position: relative; /* Assicura che gli elementi siano ben contenuti */
+}
+
+.tooltip {
+    position: absolute; /* Posizionamento relativo al genitore */
+    top: 100%; /* Sposta il tooltip sotto il campo */
+    left: 0;
+    z-index: 10; /* Mantieni sopra gli altri elementi */
+    transform: translateY(0.5rem); /* Regola la distanza dal campo */
+    white-space: nowrap; /* Impedisce il wrapping del testo */
+}
+
+.form-floating {
+    margin-bottom: 2rem; /* Incrementa la distanza tra i campi */
+}
+
+.form-floating.last-field{
+    margin-bottom: 0; /* Elimina lo spazio sotto l'ultimo campo */
+}
+
+/* Floating labels */
+.floating-label .form-control:focus {
+    border-color: #28a745 !important; /* Verde per il focus */
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Ombra verde */
+}

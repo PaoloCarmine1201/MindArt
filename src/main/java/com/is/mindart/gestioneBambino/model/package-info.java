@@ -1,7 +1,6 @@
 /**
  * Questo pacchetto contiene le classi e le enumerazioni per la gestione
  * dei dati relativi ai bambini seguiti dai terapeuti nel sistema.
- *
  * Include:
  * <ul>
  *     <li>{@link com.is.mindart.gestioneBambino.model.Bambino} -

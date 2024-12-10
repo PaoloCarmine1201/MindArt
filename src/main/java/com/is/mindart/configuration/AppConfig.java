@@ -1,5 +1,7 @@
 package com.is.mindart.configuration;
 
+import com.is.mindart.gestioneBambino.model.Bambino;
+import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneCalendario.service.EventDto;
 import org.modelmapper.ModelMapper;
@@ -26,6 +28,19 @@ public class AppConfig {
             }
         });
 
+
+//        mapper.addMappings(new PropertyMap<RegisterBambinoDTO, Bambino>() {
+//            @Override
+//            protected void configure() {
+//                map().setNome(source.getNome());
+//                map().setCognome(source.getCognome());
+//                map().setSesso(source.getSesso());
+//                map().setDataDiNascita(source.getDataDiNascita());
+//                map().setCodiceFiscale(source.getCodiceFiscale());
+//                map().setEmailGenitore(source.getEmailGenitore());
+//                map().setTelefonoGenitore(source.getTelefonoGenitore());
+//            }
+//        });
 
         return mapper;
     }

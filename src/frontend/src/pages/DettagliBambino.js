@@ -1,4 +1,4 @@
-import DettaglioBambinoComponent from "../components/DettaglioBambinoComponent";
+import DettaglioBambinoComponent from "../components/VisualizzazioneBambino/DettaglioBambinoComponent";
 
 function DettagliBambino() {
     return (

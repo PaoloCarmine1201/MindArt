@@ -1,0 +1,33 @@
+/* Pulsante Conferma (Verde con hover)
+    Da aggiungere assieme a btn-outline-primary
+ */
+.btn-conferma {
+    color: black; /* Testo verde */
+    border: 2px solid #28a745; /* Bordo verde */
+    background-color: white; /* Sfondo bianco */
+    border-radius: 5px; /* Smusso angoli */
+    padding: 8px 16px; /* Margine interno */
+    transition: all 0.3s ease; /* Transizione morbida */
+}
+
+.btn-conferma:hover {
+    background-color: #28a745; /* Sfondo verde */
+    color: white; /* Testo bianco */
+}
+
+/* Pulsante Annulla (Grigio con hover)
+    Da aggiungere assieme a btn-outline-secondary
+ */
+.btn-annulla {
+    color: black; /* Testo grigio */
+    border: 2px solid #6c757d; /* Bordo grigio */
+    background-color: white; /* Sfondo bianco */
+    border-radius: 5px; /* Smusso angoli */
+    padding: 8px 16px; /* Margine interno */
+    transition: all 0.3s ease; /* Transizione morbida */
+}
+
+.btn-annulla:hover {
+    background-color: #6c757d; /* Sfondo grigio */
+    color: white; /* Testo bianco */
+}

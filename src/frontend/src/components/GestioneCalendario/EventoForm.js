@@ -1,11 +1,14 @@
 // src/components/EventoForm.jsx
 
 import React, {useState} from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import {Modal, Button, Form, FloatingLabel} from 'react-bootstrap';
 import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import '../../style/EventModal.css';
+import '../../style/RegisterBambino.css';
+import '../../style/Button.css';
+
 import ConfirmModal from "./ConfirmModal";
+
 
 // Validation schema using Yup
 const EventoSchema = (existingEvents, currentEventId) => Yup.object().shape({
@@ -72,7 +75,7 @@ function EventoForm({ event, onSave, onDelete, onClose, existingEvents}) {
                     validationSchema={EventoSchema(existingEvents,event.id)}
                     onSubmit={handleSubmit}
                 >
-                    {({ isSubmitting }) => (
+                    {({ isSubmitting , errors, touched}) => (
                         <FormikForm>
                             <Modal.Header closeButton>
                                 <Modal.Title className="modal-title">
@@ -80,51 +83,65 @@ function EventoForm({ event, onSave, onDelete, onClose, existingEvents}) {
                                 </Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <Form.Group className="mb-3">
-                                    <Form.Label className="custom-label">Titolo</Form.Label>
-                                    <Field
-                                        type="text"
-                                        name="title"
-                                        placeholder="Inserisci il titolo dell'evento"
-                                        className="form-control custom-control"
-                                    />
-                                    <div className="text-danger">
-                                        <ErrorMessage name="title" />
-                                    </div>
+                                <Form.Group controlId="eventoForm.title" className="form-floating">
+                                    <FloatingLabel label="Titolo">
+                                        <Field
+                                            name="title"
+                                            type="text"
+                                            placeholder="Inserisci il titolo dell'evento"
+                                            as={Form.Control}
+                                            isInvalid={!!errors.title && touched.title}
+                                        />
+                                        <Form.Control.Feedback type="invalid" className="tooltip">
+                                            <ErrorMessage name="title" />
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
                                 </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label className="custom-label">Inizio</Form.Label>
-                                    <Field
-                                        type="datetime-local"
-                                        name="start"
-                                        className="form-control custom-control"
-                                    />
-                                    <div className="text-danger">
-                                        <ErrorMessage name="start" />
-                                    </div>
+                                <Form.Group controlId="eventoForm.start" className="form-floating">
+                                    <FloatingLabel label="Inizio">
+                                        <Field
+                                            name="start"
+                                            type="datetime-local"
+                                            as={Form.Control}
+                                            isInvalid={!!errors.start && touched.start}
+                                        />
+                                        <Form.Control.Feedback type="invalid" className="tooltip">
+                                            <ErrorMessage name="start" />
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
                                 </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label className="custom-label">Fine</Form.Label>
-                                    <Field
-                                        type="datetime-local"
-                                        name="end"
-                                        className="form-control custom-control"
-                                    />
-                                    <div className="text-danger">
-                                        <ErrorMessage name="end" />
-                                    </div>
+                                <Form.Group controlId="eventoForm.end" className="form-floating">
+                                    <FloatingLabel label="Fine">
+                                        <Field
+                                            name="end"
+                                            type="datetime-local"
+                                            as={Form.Control}
+                                            isInvalid={!!errors.end && touched.end}
+                                        />
+                                        <Form.Control.Feedback type="invalid" className="tooltip">
+                                            <ErrorMessage name="end" />
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
                                 </Form.Group>
                             </Modal.Body>
                             <Modal.Footer>
                                 {event.id && (
-                                    <Button variant="danger" onClick={() => {setShowConfirmModal(true);}} className="custom-delete-btn">
+                                    <Button
+                                        onClick={() => setShowConfirmModal(true)}
+                                        className="btn-cancella btn-outline-primary"
+                                    >
                                         Elimina
                                     </Button>
                                 )}
-                                <Button variant="secondary" onClick={onClose} className="custom-cancel-btn">
+                                <Button variant="secondary" onClick={onClose} className="btn-annulla btn-outline-primary">
                                     Annulla
                                 </Button>
-                                <Button variant="primary" type="submit" disabled={isSubmitting} className="custom-save-btn">
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="btn-conferma btn-outline-primary"
+                                >
                                     Salva
                                 </Button>
                             </Modal.Footer>

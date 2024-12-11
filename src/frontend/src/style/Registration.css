@@ -39,3 +39,10 @@
 .btn-success:hover {
     background-color: #82e19e;
 }
+
+.text-danger {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}

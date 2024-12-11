@@ -58,7 +58,7 @@ function RegisterBambino(){
                     {
                         position: 'bottom-right'
                     });
-                //handleClose(); // Chiudi il modale
+                handleClose(); // Chiudi il modale
             }
         } catch (error) {
             console.error('Errore:', error);

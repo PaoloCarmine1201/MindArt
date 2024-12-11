@@ -2,14 +2,13 @@ import './App.css';
 import React, {useEffect, useState} from 'react';
 import VisualizzaBambiniComponent from './components/VisualizzazioneBambino/VisualizzaBambiniComponent';
 import { Link } from "react-router-dom";
+import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); //id del terapeuta loggato DA MODIFICARE
     localStorage.setItem("idTerapeuta", idTerapeuta);
     const [bambini, setBambini] = useState([]);
-
-
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +49,7 @@ function App() {
                   </div>
               </div>
             </div>
+          <ToastContainer position="bottom-right"/>
       </>
   );
 }

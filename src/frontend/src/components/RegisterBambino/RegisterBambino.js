@@ -1,10 +1,12 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import {useRef, useState} from "react";
+import {toast} from "react-toastify";
 import RegisterBambinoValidatedForm from "./RegisterBambinoValidatedForm";
 import "../../style/RegisterBambino.css";
 import "../../style/Button.css";
 import "../../style/Modal.css";
+
 
 function RegisterBambino(){
 
@@ -21,12 +23,13 @@ function RegisterBambino(){
     const handleSubmit = async (values) => {
         // Aggiungi l'id del terapeuta
         const terapeutaId = 1;
+        const codice = 'BGYHHU';
 
         // TODO Recupera l'id del terapeuta loggato e generare codice bimbo
         const payload = {
             ...values,
             terapeutaId, // Aggiungi l'id del terapeuta
-            codice: 'BGYHHU'// Genera un codice univoco
+            codice// Genera un codice univoco
         };
         try {
             console.log('Dati inviati:', values);
@@ -41,15 +44,29 @@ function RegisterBambino(){
             });
 
             if (!response.ok) {
-                throw new Error('Errore durante l\'invio dei dati');
+                console.log('Errore richiesta:', response);
+                toast.error(
+                    'Si è verificato un errore durante la registrazione del bambino.',
+                    {
+                        position: 'bottom-right'
+                    });
             }
-
-            alert('Form inviato con successo!');
-            handleClose(); // Chiudi il modale
+            else {
+                console.log('Bambino registrato con successo:', response);
+                toast.success(
+                    'Bambino registrato con successo!',
+                    {
+                        position: 'bottom-right'
+                    });
+                handleClose(); // Chiudi il modale
+            }
         } catch (error) {
-            //TODO: Gestire l'errore in modo più appropriato
             console.error('Errore:', error);
-            alert('Si è verificato un errore.');
+            toast.error(
+                'Si è verificato un errore durante la registrazione del bambino.',
+                {
+                    position: 'bottom-right'
+                });
         }
     };
 
@@ -58,7 +75,7 @@ function RegisterBambino(){
             <Button variant="btn-outline-primary btn-conferma" onClick={handleShow}>Aggiungi Bambino</Button>
             <Modal show={show}
                    onHide={handleClose}
-                   backdrop="static"
+                   backdropClassName="custom-backdrop"
                    keyboard={false}
                    aria-labelledby="contained-modal-title-vcenter"
                    centered

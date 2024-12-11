@@ -13,3 +13,8 @@
     font-weight: 700; /* Grassetto */
     font-size: 1.5rem;
 }
+
+.custom-backdrop {
+    backdrop-filter: blur(10px); /* Applica l'effetto blur */
+    background-color: rgba(0, 0, 0, 0.5); /* Colore semi-trasparente */
+}

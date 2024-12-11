@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import {useRef, useState} from "react";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import RegisterBambinoValidatedForm from "./RegisterBambinoValidatedForm";
 import "../../style/RegisterBambino.css";
 import "../../style/Button.css";

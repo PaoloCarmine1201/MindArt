@@ -14,15 +14,26 @@ function DettaglioBambinoComponent() {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log(id);
-            const result = await fetch('http://localhost:8080/api/bambino/get/' + id);
-            console.log(result);
-            const data = await result.json();
-            console.log(data);
-            setBambino(data);
+            try {
+                console.log(id);
+                const result = await fetch('http://localhost:8080/api/bambino/get/' + id);
+
+                if (!result.ok) {
+                    throw new Error('Errore nella risposta del server: ' + result.status);
+                }
+
+                console.log(result);
+                const data = await result.json();
+                console.log(data);
+                setBambino(data);
+            } catch (error) {
+                console.error('Errore nel recupero dei dati:', error);
+            }
         };
+
         fetchData();
     }, []);
+
 
     if (!bambino) {
         return <p>Caricamento in corso...</p>;

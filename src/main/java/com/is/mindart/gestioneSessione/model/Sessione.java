@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,7 @@ public class Sessione {
     /**
      * Materiale utilizzato durante la sessione.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "materiale_id")
     private Materiale materiale;
@@ -57,6 +59,7 @@ public class Sessione {
     /**
      * Terapeuta associato alla sessione.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "terapeuta_id")
     private Terapeuta terapeuta;
@@ -64,6 +67,7 @@ public class Sessione {
     /**
      * Bambini associati alla sessione
      */
+    @ToString.Exclude
     @ManyToMany(mappedBy = "sessioni")
     private List<Bambino> bambini;
 }

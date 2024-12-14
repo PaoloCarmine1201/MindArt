@@ -1,12 +1,12 @@
 package com.is.mindart.gestioneBambino.model;
 
-import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -62,6 +62,7 @@ public class Bambino {
     /**
      * Terapeuta associato al bambino.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "terapeuta_id")
     private Terapeuta terapeuta;
@@ -69,11 +70,12 @@ public class Bambino {
     /**
      * Associazione molti a molti Disegno - Bambino
      */
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(
-            name = "bambino_disegno",
+            name = "bambino_sessione",
             joinColumns = @JoinColumn(name = "bambino_id"),
-            inverseJoinColumns = @JoinColumn(name = "disegno_id"))
+            inverseJoinColumns = @JoinColumn(name = "sessione_id"))
     private List<Sessione> sessioni;
 
 }

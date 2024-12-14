@@ -65,6 +65,9 @@ public class Bambino {
     @JoinColumn(name = "terapeuta_id")
     private Terapeuta terapeuta;
 
+    /**
+     * Associazione molti a molti Disegno - Bambino
+     */
     @ManyToMany
     @JoinTable(
             name = "bambino_disegno",

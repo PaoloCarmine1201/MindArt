@@ -1,6 +1,7 @@
 package com.is.mindart.gestioneBambino.model;
 
 import com.is.mindart.gestioneDisegno.model.Disegno;
+import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -73,6 +74,6 @@ public class Bambino {
             name = "bambino_disegno",
             joinColumns = @JoinColumn(name = "bambino_id"),
             inverseJoinColumns = @JoinColumn(name = "disegno_id"))
-    private List<Disegno> disegni;
+    private List<Sessione> sessioni;
 
 }

@@ -64,6 +64,6 @@ public class Sessione {
     /**
      * Bambini associati alla sessione
      */
-    @ManyToMany(mappedBy = "bambino_disegno")
+    @ManyToMany(mappedBy = "sessioni")
     private List<Bambino> bambini;
 }

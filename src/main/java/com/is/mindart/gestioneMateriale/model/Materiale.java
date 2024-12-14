@@ -1,15 +1,14 @@
 package com.is.mindart.gestioneMateriale.model;
 
-
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +17,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Rappresenta un materiale associato a un terapeuta
- * e a una sessione terapeutica.
+ * Rappresenta un materiale utilizzato durante le sessioni terapeutiche.
  */
 @Entity
 @AllArgsConstructor
@@ -45,7 +43,7 @@ public class Materiale {
     private TipoMateriale tipo;
 
     /**
-     * Percorso del file del materiale.
+     * Percorso del file associato al materiale.
      */
     private String path;
 
@@ -57,11 +55,11 @@ public class Materiale {
     private Terapeuta terapeuta;
 
     /**
-     * Elenco delle sessioni che utilizzano questo materiale.
+     * Elenco delle sessioni terapeutiche
+     * che utilizzano questo materiale.
      */
     @OneToMany(mappedBy = "materiale",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Sessione> sessioni;
-
 }

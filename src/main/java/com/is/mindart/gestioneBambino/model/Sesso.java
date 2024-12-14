@@ -1,13 +1,10 @@
 package com.is.mindart.gestioneBambino.model;
 
-
-import lombok.ToString;
-
 /**
- * Rappresenta il sesso di un bambino.
+ * Enumerazione che rappresenta il sesso di un bambino.
  */
-@ToString
 public enum Sesso {
+
     /**
      * Indica che il sesso è maschile.
      */
@@ -18,4 +15,3 @@ public enum Sesso {
      */
     FEMMINA
 }
-

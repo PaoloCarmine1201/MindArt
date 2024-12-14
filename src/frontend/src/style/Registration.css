@@ -1,0 +1,48 @@
+/* Background color: Penn Blue */
+.registration-container {
+    background-color: #B8E1FF;
+    color: #B8E1FF;
+}
+
+/* Form background: Uranian Blue */
+.registration-form {
+    background-color: #001447;
+    border-radius: 10px;
+    max-width: 500px; /* Same as login form */
+    width: 90%; /* Ensures responsiveness */
+    padding: 2.5rem 2rem; /* Increased padding for more height */
+}
+
+/* Logo adjustments */
+.logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Label color: Periwinkle */
+.form-label {
+    color: white;
+}
+
+/* Title */
+.registration-title {
+    color: white; /* Same light blue as Ice Blue */
+    margin-top: 0.5rem; /* Reduced space between logo and text */
+}
+
+/* Button: Light Green */
+.btn-success {
+    background-color: #94FBAB;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #82e19e;
+}
+
+.text-danger {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}

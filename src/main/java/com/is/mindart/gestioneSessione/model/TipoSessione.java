@@ -9,17 +9,17 @@ import lombok.ToString;
 public enum TipoSessione {
 
     /**
-     * Sessione di disegno.
+     * Sessione dedicata al disegno.
      */
     DISEGNO,
 
     /**
-     * Sessione di colore.
+     * Sessione dedicata all'uso del colore.
      */
     COLORE,
 
     /**
-     * Sessione di apprendimento.
+     * Sessione orientata all'apprendimento.
      */
     APPRENDIMENTO
 }

@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneTerapeuta.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneDisegno.model.Disegno;
@@ -65,6 +66,7 @@ public class Terapeuta {
     @OneToMany(mappedBy = "terapeuta",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonBackReference
     private List<Evento> eventi;
 
     /**
@@ -81,6 +83,7 @@ public class Terapeuta {
     @OneToMany(mappedBy = "terapeuta",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonBackReference
     private List<Sessione> sessioni;
 
     /**
@@ -89,6 +92,7 @@ public class Terapeuta {
     @OneToMany(mappedBy = "terapeuta",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonBackReference
     private List<Disegno> disegni;
 
     /**
@@ -97,5 +101,6 @@ public class Terapeuta {
     @OneToMany(mappedBy = "terapeuta",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonBackReference
     private List<Bambino> bambini;
 }

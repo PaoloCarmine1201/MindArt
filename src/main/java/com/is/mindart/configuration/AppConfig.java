@@ -1,7 +1,5 @@
 package com.is.mindart.configuration;
 
-import com.is.mindart.gestioneBambino.model.Bambino;
-import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneCalendario.service.EventDto;
 import org.modelmapper.ModelMapper;

@@ -4,6 +4,7 @@ import VisualizzaBambiniComponent from './components/VisualizzazioneBambino/Visu
 import { Link } from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import AvviaSessioneButton from "./components/AvvioSessione/AvviaSessioneButton";
 
 function App() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); //id del terapeuta loggato DA MODIFICARE
@@ -50,6 +51,8 @@ function App() {
               </div>
             </div>
           <ToastContainer position="bottom-right"/>
+
+          <AvviaSessioneButton/>
       </>
   );
 }

@@ -1,13 +1,22 @@
-import * as Yup from 'yup';
+import * as yup from 'yup';
 
-export const stepOneSchema = Yup.object().shape({
-    tipoSessione: Yup.string().required('Il tipo è obbligatorio').matches(/(attività|apprendimento)/, 'Il tipo deve essere attività o apprendimento'),
+export const stepOneSchema = yup.object().shape({
+    tipoSessione: yup
+        .string()
+        .required('Il tipo è obbligatorio')
+        .matches(/^(attività|apprendimento)$/, 'Il tipo deve essere attività o apprendimento')
 });
 
-export const stepTwoSchema = Yup.object().shape({
-    materiale: Yup.string().required('Il materiale è obbligatorio') //todo regex path materiale
+export const stepTwoSchema = yup.object().shape({
+    materiale: yup
+        .string()
+        .required('Il materiale è obbligatorio')
+    //todo regex path materiale
 });
 
-export const stepThreeSchema = Yup.object().shape({
-    bambino: Yup.string().required('Il bambino è obbligatorio') //todo regex list bambini
+export const stepThreeSchema = yup.object().shape({
+    bambino: yup
+        .string()
+        .required('Il bambino è obbligatorio')
+    //todo regex list bambini
 });

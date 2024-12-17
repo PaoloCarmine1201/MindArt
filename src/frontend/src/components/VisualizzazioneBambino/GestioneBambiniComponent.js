@@ -12,7 +12,8 @@ function GestioneBambiniComponent() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await fetch('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + idTerapeuta);
+                const result = await
+                    fetch('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + idTerapeuta);
 
                 if (!result.ok) {
                     throw new Error('Errore nella risposta del server: ' + result.status);

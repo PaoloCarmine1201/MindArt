@@ -50,7 +50,8 @@ function DettaglioBambinoComponent() {
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Sesso:</label>
                     <span className="dettaglio-value">
-                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'M' ? 'Maschio' : 'Femmina'}
+                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'M' ?
+                            'Maschio' : 'Femmina'}
                     </span>
                 </div>
                 <div className="dettaglio-data-row">

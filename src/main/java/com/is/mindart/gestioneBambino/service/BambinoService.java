@@ -57,21 +57,16 @@ public class BambinoService {
         return modelMapper.map(bambino, BambinoDTO.class);
     }
 
-    //TODO da scrivere meglio e da aggiungere javadoc corretto.
     /**
      * @author gabrieleristallo
-     * Restituisce bambini di un terapeuta.
+     * Restituisce tutti i bambini associati ad un terapeuta.
      *
      * @param terapeuta identificativo del terapeuta.
-     * @return lista di bambini del terapeuta.
+     * @return List<BambinoDTO> lista di bambini del terapeuta.
      */
     public List<BambinoDTO> getBambiniByT(final Long terapeuta) {
-        List<Bambino> bambini = repository.findAll();
-
-        return bambini.stream()
-                .filter(bambino ->
-                        bambino.getTerapeuta().getId().equals(terapeuta))
-                .map(bambino -> modelMapper.map(bambino, BambinoDTO.class))
+        return repository.findAllByTerapeutaId(terapeuta).stream()
+                .map(this::mapToBambinoDto)
                 .collect(Collectors.toList());
     }
 
@@ -94,5 +89,9 @@ public class BambinoService {
                         )
         );
         repository.save(bambino);
+    }
+
+    private BambinoDTO mapToBambinoDto(Bambino bambino) {
+        return modelMapper.map(bambino, BambinoDTO.class);
     }
 }

@@ -8,9 +8,6 @@ function BambiniListComponent(props) {
     const bambini = props.bambini;
     const button = props.button;
     const from = props.from;
-    if(button) {
-        console.log("BUTTON IS TRUEEEEE!!!!!!");
-    }
     return (
         <>
             <div className="bambini-list-container">

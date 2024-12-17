@@ -22,7 +22,6 @@ function DettaglioBambinoComponent() {
                     throw new Error('Errore nella risposta del server: ' + result.status);
                 }
 
-                console.log(result);
                 const data = await result.json();
                 console.log(data);
                 setBambino(data);

@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ValidSessioneDTO
 public class SessioneDTO {
 
     /**
@@ -49,7 +50,7 @@ public class SessioneDTO {
      * Lista dei bambini partecipanti alla sessione.
      * Dovrebbe contenere un solo bambino se {@link TipoSessione} è di disegno.
      */
-    @NotNull(message = "La lista di bambini non può essere vuota")
+    @NotNull(message = "La lista di bambini non può essere nulla")
     private List<Long> bambini;
 
 

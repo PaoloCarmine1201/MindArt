@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -76,7 +77,7 @@ public class SessioneMapper {
 
     public Sessione toEntity(SessioneDTO sessioneDTO) {
         Sessione sessione = modelMapper.map(sessioneDTO, Sessione.class);
-        sessione.setData(new Date());
+        sessione.setData(LocalDateTime.now());
         sessione.setNota("");
         return sessione;
     }

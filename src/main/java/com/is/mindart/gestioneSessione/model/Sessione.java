@@ -4,6 +4,7 @@ import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -24,7 +25,7 @@ public class Sessione {
 
     public Sessione(Long id,
                     String temaAssegnato,
-                    Date data,
+                    LocalDateTime data,
                     String nota,
                     TipoSessione tipo,
                     Materiale materiale,

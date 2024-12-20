@@ -3,6 +3,7 @@ package com.is.mindart.gestioneSessione.service;
 import com.is.mindart.configuration.SessioneMapper;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
+import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +47,9 @@ public class SessioneService {
      * @param sessioneDto - proveniente dall'endpoint di creazione
      */
     @Transactional
-    public void creaSessione(final SessioneDTO sessioneDto) {
+    public void creaSessione(final SessioneDTO sessioneDto, final Terapeuta terapeuta) {
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
+        sessione.setTerapeuta(terapeuta);
         if (sessione.getBambini() != null) {
             sessione.getBambini().forEach(
                     bambino -> bambino.getSessioni().add(sessione));

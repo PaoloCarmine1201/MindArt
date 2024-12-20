@@ -2,8 +2,12 @@ package com.is.mindart.gestioneMateriale.controller;
 
 import com.is.mindart.gestioneMateriale.service.GetMaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
+import com.is.mindart.security.model.TerapeutaDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,10 +36,13 @@ public class MaterialeController {
      * Endpoint per l'ottenimento dei materiali caricati da un terapeuta.
      * @return 200 e json per successo e 204 se No Content
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping()
     public ResponseEntity<List<GetMaterialeDTO>> getMateriale() {
-        long idTerapeuta = 5; // TODO: cambia quando viene implementato il meccanismo di sessioni
-        List<GetMaterialeDTO> materiali = materialeService.getClientMateriale(idTerapeuta);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+
+        List<GetMaterialeDTO> materiali = materialeService.getClientMateriale(principal.getTerapeuta().getId());
 
         if (materiali.isEmpty()) {
             return ResponseEntity.noContent().build(); // Restituisce 204 No Content

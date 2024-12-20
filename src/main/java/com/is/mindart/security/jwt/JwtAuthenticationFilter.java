@@ -67,8 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.error("Errore nell'estrazione dell'username dal token", e);
             }
         }
-
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            //TODO: Aggiungere un controllo per distinguere tra Terapeuta e Bambino usando i Claims dei token
             if(username.contains("@")) {
                 var userDetails = terapeutaUserDetailsService
                         .loadUserByUsername(username);
@@ -84,7 +84,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .setAuthentication(authToken);
                 }
             } else {
-
                 var userDetails = bambinoUserDetailsService
                         .loadBambinoByCodice(username);
 

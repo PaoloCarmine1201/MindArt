@@ -20,8 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 
 /**
@@ -80,9 +83,18 @@ public class DataLoader implements CommandLineRunner {
     private JdbcTemplate jdbcTemplate;
 
     /**
+     * Password encoder per la codifica delle password.
+     */
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    /**
      * Oggetto per la gestione delle date.
      */
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    /**
+     * Oggetto per la gestione delle date e delle ore.
+     */
     SimpleDateFormat sdfh = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     /**
@@ -101,13 +113,13 @@ public class DataLoader implements CommandLineRunner {
             if (terapeutaRepository.count() == 0) {
                 terapeutaRepository.saveAll(List.of(
                     new Terapeuta(null, "Mario", "Rossi", "mariorossi@gmail.com",
-                            sdf.parse("1980-01-01"), "password123",
+                            sdf.parse("1980-01-01"), passwordEncoder.encode("password123"),
                             null, null, null, null, null),
                     new Terapeuta(null, "Luca", "Verdi", "lucaverdi@gmail.com",
-                            sdf.parse("1985-01-01"), "password123",
+                            sdf.parse("1985-01-01"), passwordEncoder.encode("password123"),
                             null, null, null, null, null),
                     new Terapeuta(null, "Giuseppe", "Bianchi", "giuseppebianchi@gmail.com",
-                            sdf.parse("1990-01-01"), "password123",
+                            sdf.parse("1990-01-01"), passwordEncoder.encode("password123"),
                             null, null, null, null, null)
                 ));
             } else {
@@ -251,31 +263,31 @@ public class DataLoader implements CommandLineRunner {
             Bambino bambino3T3 = bambiniT3.get(2);
 
             sessioneRepository.saveAll(List.of(
-                new Sessione(null, "Tema di disegno", sdf.parse("2024-01-15"),
+                new Sessione(null, "Tema di disegno", LocalDateTime.now(),false,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta1,
                         List.of(bambino1T1)),
-                new Sessione(null, "Apprendimento motorio", sdf.parse("2024-01-16"),
+                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusHours(2),false,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta1,
                         List.of(bambino2T1, bambino3T1)),
-                new Sessione(null, "Tecniche di colore", sdf.parse("2024-01-17"),
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(1),false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta1,
                         List.of(bambino1T1, bambino2T1, bambino3T1)),
-                new Sessione(null, "Tema di disegno", sdf.parse("2024-01-18"),
+                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(1),false,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta2,
                         List.of(bambino1T2, bambino2T2)),
-                new Sessione(null, "Apprendimento motorio", sdf.parse("2024-01-19"),
+                new Sessione(null, "Apprendimento motorio",LocalDateTime.now().plusDays(1).plusHours(3),false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale2, terapeuta2,
                         List.of(bambino3T2)),
-                new Sessione(null, "Tecniche di colore", sdf.parse("2024-01-20"),
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(2),false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta2,
                         List.of(bambino1T2, bambino3T2)),
-                new Sessione(null, "Tema di disegno", sdf.parse("2024-01-21"),
+                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(3),false,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta3,
                         List.of(bambino1T3, bambino2T3)),
-                new Sessione(null, "Apprendimento motorio", sdf.parse("2024-01-22"),
+                new Sessione(null, "Apprendimento motorio",LocalDateTime.now().plusDays(4),false,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta3,
                         List.of(bambino3T3)),
-                new Sessione(null, "Tecniche di colore", sdf.parse("2024-01-23"),
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(5),false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta3,
                         List.of(bambino2T3))
             ));
@@ -286,8 +298,8 @@ public class DataLoader implements CommandLineRunner {
             Sessione sessione3 = sessioni.get(2);
             Sessione sessione4 = sessioni.get(3);
             Sessione sessione5 = sessioni.get(4);
-
-            disegnoRepository.saveAll(List.of(
+            //TODO: rivedere
+           /* disegnoRepository.saveAll(List.of(
                 new Disegno(null, 7, sessione1.getData(), ValutazioneEmotiva.FELICE,
                         sessione1.getTerapeuta(), sessione1,
                         sessione1.getBambini()),
@@ -303,7 +315,7 @@ public class DataLoader implements CommandLineRunner {
                 new Disegno(null, 7, sessione5.getData(), ValutazioneEmotiva.ARRABBIATO,
                         sessione5.getTerapeuta(), sessione5,
                         sessione5.getBambini())
-            ));
+            ));*/
         } catch (Exception e) {
             System.err.println("Exception Message: " + e.getMessage());
 

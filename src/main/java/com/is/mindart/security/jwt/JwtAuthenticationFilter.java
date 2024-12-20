@@ -32,16 +32,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     @Autowired
     private UserDetailsService terapeutaUserDetailsService;
+    /**
+     * Questo UserDetailsService è usato per caricare l'utente dal token.
+     * In questo esempio, usiamo un solo UserDetailsService per entrambi i tipi di utente.
+     * In un'applicazione reale, potresti avere due UserDetailsService separati per Terapeuta e Bambino.
+     */
     @Autowired
     private BambinoUserDetailsService bambinoUserDetailsService;
-
-    // In caso di bambino, potremmo dover gestire diversamente.
-    // Tuttavia, una volta validato il token,
-    // potremmo considerare che il token può appartenere
-    // sia a un bambino che a un terapeuta.
-    // In questo esempio semplifichiamo assumendo che il token
-    // identifichi l'utente solo con username,
-    // potresti distinguere i due flussi con prefissi o ruoli nel token.
 
     /**
      * Questo metodo si occupa di estrarre il token JWT
@@ -49,8 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param request La richiesta HTTP
      * @param response La risposta HTTP
      * @param filterChain Il chain dei filtri
-     * @throws ServletException
-     * @throws IOException
+     * @throws ServletException Se si verifica un errore durante la gestione della richiesta
+     * @throws IOException Se si verifica un errore di I/O
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -67,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.getUsernameFromToken(token);
             } catch (Exception e) {
-                // token non valido
+                logger.error("Errore nell'estrazione dell'username dal token", e);
             }
         }
 
@@ -78,7 +75,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if(jwtUtil.validateToken(token)) {
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities()
+                                    userDetails, null,
+                                    userDetails.getAuthorities()
                             );
                     authToken.setDetails(new WebAuthenticationDetailsSource()
                             .buildDetails(request));
@@ -86,12 +84,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .setAuthentication(authToken);
                 }
             } else {
+
                 var userDetails = bambinoUserDetailsService
                         .loadBambinoByCodice(username);
+
                 if (jwtUtil.validateToken(token)) {
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities()
+                                    userDetails, null,
+                                    userDetails.getAuthorities()
                             );
                     authToken.setDetails(new WebAuthenticationDetailsSource()
                             .buildDetails(request));

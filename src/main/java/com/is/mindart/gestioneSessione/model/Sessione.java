@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -34,12 +37,13 @@ public class Sessione {
     /**
      * Data in cui si svolge la sessione.
      */
-    private Date data;
+    private LocalDateTime data;
 
     /**
-     * Data in cui si svolge la sessione.
+     * Indica se la sessione è terminata
      */
-    private Date fine;
+    @ColumnDefault("false")
+    private Boolean terminata;
 
     /**
      * Nota aggiuntiva relativa alla sessione.

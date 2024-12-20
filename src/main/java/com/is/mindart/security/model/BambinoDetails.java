@@ -30,7 +30,6 @@ public class BambinoDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        // username = codiceFiscale
         return bambino.getCodiceFiscale();
     }
 

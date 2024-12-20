@@ -1,17 +1,70 @@
 package com.is.mindart.gestioneSessione.service;
 
-import com.is.mindart.gestioneBambino.model.BambinoRepository;
+import com.is.mindart.configuration.SessioneMapper;
+import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class SessioneService {
-    private final SessioneRepository sessioneRepository;
-    private final BambinoRepository bambinoRepository;
 
+    /**
+     * Repository della sessione.
+     */
+    private final SessioneRepository repository;
+    /**
+     * Custom mapper della sessione.
+     */
+    private final SessioneMapper sessioneMapper;
+    /**
+     * Repository della sessione.
+     */
+    private final SessioneRepository sessioneRepository;
+
+    /**
+     * Costruttore.
+     * @param repository
+     * @param sessioneMapper
+     * @param sessioneRepository
+     */
     @Autowired
-    public SessioneService(SessioneRepository sessioneRepository, BambinoRepository bambinoRepository) {
+    public SessioneService(final SessioneRepository repository,
+                           final SessioneMapper sessioneMapper,
+                           final SessioneRepository sessioneRepository) {
+        this.repository = repository;
+        this.sessioneMapper = sessioneMapper;
         this.sessioneRepository = sessioneRepository;
-        this.bambinoRepository = bambinoRepository;
+    }
+
+    /**
+     * Creazione della sessione.
+     * Mappa {@link SessioneDTO} a {@link Sessione} e
+     * aggiorna la lista delle sessioni per ogni Bambino
+     * @param sessioneDto - proveniente dall'endpoint di creazione
+     */
+    @Transactional
+    public void creaSessione(final SessioneDTO sessioneDto) {
+        Sessione sessione = sessioneMapper.toEntity(sessioneDto);
+        if (sessione.getBambini() != null) {
+            sessione.getBambini().forEach(
+                    bambino -> bambino.getSessioni().add(sessione));
+        }
+        repository.save(sessione);
+    }
+
+    /**
+     * Terminazione della sessione.
+     * @param id id sessione
+     * @throws EntityNotFoundException se l'id non viene trovato
+     */
+    @Transactional
+    public void terminaSessione(final long id) throws EntityNotFoundException {
+        if (sessioneRepository.terminaSessione(id) == 0) {
+            throw new EntityNotFoundException(
+                    "Sessione con id " + id + " non trovato");
+        }
     }
 }

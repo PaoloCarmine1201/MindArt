@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
  * Fornisce operazioni CRUD e di query specifiche
  * per la gestione delle sessioni.
  */
+import java.util.List;
+
 public interface SessioneRepository extends JpaRepository<Sessione, Long> {
     /**
      * Imposta il campo "terminata" della sessione.

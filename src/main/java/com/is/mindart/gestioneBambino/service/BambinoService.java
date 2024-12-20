@@ -51,27 +51,22 @@ public class BambinoService {
      * @param id identificativo del bambino.
      * @return bambino con l'identificativo specificato.
      */
-    public BambinoDTO getBambino(final Long id) {
+    public BambinoDTOSimple getBambino(final Long id) {
         Bambino bambino = repository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Bambino non trovato"));
-        return modelMapper.map(bambino, BambinoDTO.class);
+        return modelMapper.map(bambino, BambinoDTOSimple.class);
     }
 
-    //TODO da scrivere meglio e da aggiungere javadoc corretto.
     /**
      * @author gabrieleristallo
-     * Restituisce bambini di un terapeuta.
+     * Restituisce tutti i bambini associati ad un terapeuta.
      *
      * @param terapeuta identificativo del terapeuta.
-     * @return lista di bambini del terapeuta.
+     * @return List<BambinoDTO> lista di bambini del terapeuta.
      */
-    public List<BambinoDTO> getBambiniByT(final Long terapeuta) {
-        List<Bambino> bambini = repository.findAll();
-
-        return bambini.stream()
-                .filter(bambino ->
-                        bambino.getTerapeuta().getId().equals(terapeuta))
-                .map(bambino -> modelMapper.map(bambino, BambinoDTO.class))
+    public List<BambinoDTOSimple> getBambiniByT(final Long terapeuta) {
+        return repository.findAllByTerapeutaId(terapeuta).stream()
+                .map(this::mapToBambinoDto)
                 .collect(Collectors.toList());
     }
 
@@ -94,5 +89,9 @@ public class BambinoService {
                         )
         );
         repository.save(bambino);
+    }
+
+    private BambinoDTOSimple mapToBambinoDto(Bambino bambino) {
+        return modelMapper.map(bambino, BambinoDTOSimple.class);
     }
 }

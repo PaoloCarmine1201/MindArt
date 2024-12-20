@@ -4,6 +4,7 @@ import VisualizzaBambiniComponent from './components/VisualizzazioneBambino/Visu
 import { Link } from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import TerapeutaEventiComponent from "./components/GestioneCalendario/TerapeutaEventiComponent";
 
 function App() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); //id del terapeuta loggato DA MODIFICARE
@@ -36,7 +37,9 @@ function App() {
               <div className="content">
                   <div className="left-column">
                       <div className="box" id="box-pazienti">
-                          <Link to={"/gestioneBambini"} style={{textDecoration: "none"}}><VisualizzaBambiniComponent bambini={bambini}/></Link>
+                          <Link to={"/gestioneBambini"} style={{textDecoration: "none"}}>
+                              <VisualizzaBambiniComponent bambini={bambini}/>
+                          </Link>
                       </div>
                       <div className="box" id="box-materiali">
                           <h3>I tuoi materiali</h3>
@@ -44,7 +47,7 @@ function App() {
                   </div>
                   <div className="right-column">
                       <div className="box" id="box-sessione">
-                          {/* Area per i contenuti */}
+                          <TerapeutaEventiComponent/>
                       </div>
                   </div>
               </div>

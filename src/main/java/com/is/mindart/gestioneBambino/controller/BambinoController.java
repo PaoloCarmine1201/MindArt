@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneBambino.controller;
 import com.is.mindart.gestioneBambino.service.BambinoDTO;
+import com.is.mindart.gestioneBambino.service.BambinoDTOSimple;
 import com.is.mindart.gestioneBambino.service.BambinoService;
 import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import jakarta.validation.Valid;
@@ -40,10 +41,10 @@ public class BambinoController {
      * @return lista di bambini del terapeuta
      */
     @GetMapping("/getallbyterapeuta")
-    public ResponseEntity<List<BambinoDTO>> getAllBambiniByTerapeuta(
+    public ResponseEntity<List<BambinoDTOSimple>> getAllBambiniByTerapeuta(
             @RequestParam final Long terapeuta
     ) {
-        List<BambinoDTO> bambini = bambinoService.getBambiniByT(terapeuta);
+        List<BambinoDTOSimple> bambini = bambinoService.getBambiniByT(terapeuta);
         return ResponseEntity.ok(bambini);
     }
 
@@ -55,8 +56,8 @@ public class BambinoController {
      * @return bambino con l'identificativo specificato
      */
     @GetMapping("/get/{id}")
-    public ResponseEntity<BambinoDTO> getBambino(@PathVariable final Long id) {
-        BambinoDTO bambino = bambinoService.getBambino(id);
+    public ResponseEntity<BambinoDTOSimple> getBambino(@PathVariable final Long id) {
+        BambinoDTOSimple bambino = bambinoService.getBambino(id);
         return ResponseEntity.ok(bambino);
     }
 

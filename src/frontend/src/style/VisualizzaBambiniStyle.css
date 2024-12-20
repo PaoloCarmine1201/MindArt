@@ -7,23 +7,29 @@
     margin: 0;
     height: 100%;
     overflow-y: auto;
+    position: relative;
 }
 
 .visualizza-bambini-titolo {
     z-index: 100;
-    position: fixed;
+    position: sticky;
+    top: 0;
+    background-color: white;
     font-size: 18px;
     font-weight: bold;
     color: #000;
-    margin-bottom: 15px;
+    padding: 10px 0;
+    margin: 0;
 }
 
 .list-box {
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
-.title-container {
+
+
+/*.title-container {
     z-index: 100;
     background-color: white;
-}
+}*/
 

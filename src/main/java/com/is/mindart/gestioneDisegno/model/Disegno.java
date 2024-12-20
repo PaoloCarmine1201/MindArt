@@ -64,7 +64,7 @@ public class Disegno {
      * Relazione obbligatoria.
      */
     @NonNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "sessione_id", referencedColumnName = "id")
     private Sessione profilo;
 
@@ -73,7 +73,7 @@ public class Disegno {
      */
     @ManyToMany
     @JoinTable(
-            name = "disegno_bambino",
+            name = "bambino_disegno",
             joinColumns = @JoinColumn(name = "disegno_id"),
             inverseJoinColumns = @JoinColumn(name = "bambino_id"))
     private List<Bambino> bambini;

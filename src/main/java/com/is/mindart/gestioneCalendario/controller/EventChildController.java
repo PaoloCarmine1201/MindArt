@@ -2,12 +2,16 @@ package com.is.mindart.gestioneCalendario.controller;
 
 import com.is.mindart.gestioneCalendario.service.EventDto;
 import com.is.mindart.gestioneCalendario.service.EventService;
+import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
+import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +31,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/terapeuta")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class EventChildController {
     /**
      * Servizio per la gestione della logica degli eventi del calendario.
@@ -37,13 +40,18 @@ public class EventChildController {
     /**
      * Recupera tutti gli eventi associati a un terapeuta specifico.
      *
-     * @param id l'identificativo del terapeuta
      * @return una lista di {@link EventDto} associati al terapeuta
      */
-    @GetMapping("/{id}/events")
-    public ResponseEntity<List<EventDto>> getAllEvents(
-            @NotNull @PathVariable Long id) {
-        List<EventDto> events = eventService.getAllEvents(id);
+    @PreAuthorize("hasRole('TERAPEUTA')")
+    @GetMapping("/events")
+    public ResponseEntity<List<EventDto>> getAllEvents() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+
+        // Ora hai accesso al terapeuta completo
+        Terapeuta terapeuta = principal.getTerapeuta();
+        Long terapeutaId = terapeuta.getId();
+        List<EventDto> events = eventService.getAllEvents(terapeutaId);
         return ResponseEntity.ok(events);
     }
 
@@ -53,23 +61,18 @@ public class EventChildController {
      * @param id l'identificativo dell'evento
      * @return un {@link EventDto} rappresentante l'evento
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/event/{id}")
     public ResponseEntity<EventDto> getEventById(@PathVariable final Long id) {
-        EventDto event = eventService.getEventById(id);
-        return ResponseEntity.ok(event);
-    }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
 
-    /**
-     * Aggiunge un nuovo evento al calendario.
-     *
-     * @param eventDto un oggetto {@link EventDto} contenente i dati dell'evento
-     * @return l'evento salvato come {@link EventDto}
-     */
-    @PostMapping("/event")
-    public ResponseEntity<EventDto> addEvent(
-             @RequestBody EventDto eventDto) {
-        EventDto event = eventService.addEvent(eventDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(event);
+        // Ora hai accesso al terapeuta completo
+        Terapeuta terapeuta = principal.getTerapeuta();
+        Long terapeutaId = terapeuta.getId();
+
+        EventDto event = eventService.getEventByIdAndTerapeutaId(id, terapeutaId);
+        return ResponseEntity.ok(event);
     }
 
     /**
@@ -79,10 +82,14 @@ public class EventChildController {
      *        contenente i dati aggiornati dell'evento
      * @return l'evento aggiornato come {@link EventDto}
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @PutMapping("/event")
     public ResponseEntity<EventDto> updateEvent(
             @Valid @RequestBody EventDto eventDto) {
-        EventDto updatedEvent = eventService.updateEvent(eventDto);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+
+        EventDto updatedEvent = eventService.updateEvent(eventDto, principal.getTerapeuta().getId());
         return ResponseEntity.ok(updatedEvent);
     }
 
@@ -92,11 +99,32 @@ public class EventChildController {
      * @param id l'identificativo dell'evento da eliminare
      * @return una risposta HTTP senza corpo
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @DeleteMapping("/event/{id}")
     public ResponseEntity<Void> deleteEvent(
             @NotNull(message = "Il campo id deve essere valorizzato")
             @PathVariable Long id) {
-        eventService.deleteEvent(id);
-        return ResponseEntity.noContent().build();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+
+        eventService.deleteEvent(id, principal.getTerapeuta().getId());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Aggiunge un nuovo evento al calendario.
+     *
+     * @param eventDto un oggetto {@link EventDto} contenente i dati dell'evento
+     * @return l'evento salvato come {@link EventDto}
+     */
+    @PreAuthorize("hasRole('TERAPEUTA')")
+    @PostMapping("/event")
+    public ResponseEntity<EventDto> addEvent(
+            @RequestBody EventDto eventDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+
+        EventDto event = eventService.addEvent(eventDto, principal.getTerapeuta().getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
 }

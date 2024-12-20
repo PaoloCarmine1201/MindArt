@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/terapeuta")
-public class AuthController {
+public class AuthController1 {
 
     /**
      * Prende il service del terapeuta.

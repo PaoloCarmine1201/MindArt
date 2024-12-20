@@ -26,7 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Terapeuta {
+public class Terapeuta{
 
     /**
      * Identificativo univoco del terapeuta.

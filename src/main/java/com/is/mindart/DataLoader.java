@@ -97,7 +97,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("DataLoader.run");
         try {
-            clearDatabase();
+            clearDatabase(); //commentare per fare in modo che il DB non venga ripristinto all'avvio
             if (terapeutaRepository.count() == 0) {
                 terapeutaRepository.saveAll(List.of(
                     new Terapeuta(null, "Mario", "Rossi", "mariorossi@gmail.com",
@@ -185,12 +185,12 @@ public class DataLoader implements CommandLineRunner {
             ));
 
             eventRepository.saveAll(List.of(
-                new Evento(null, "Visita di controllo", sdfh.parse("2024-01-15 09:00"),
-                        sdfh.parse("2024-01-15 10:00"), terapeuta1),
-                new Evento(null, "Seduta terapia", sdfh.parse("2024-01-16 14:00"),
-                        sdfh.parse("2024-01-16 15:00"), terapeuta1),
-                new Evento(null, "Colloquio con i genitori", sdfh.parse("2024-01-17 11:00"),
-                        sdfh.parse("2024-01-17 12:00"), terapeuta1),
+                new Evento(null, "Visita di controllo", sdfh.parse("2024-12-20 09:00"),
+                        sdfh.parse("2024-12-20 10:00"), terapeuta1),
+                new Evento(null, "Seduta terapia", sdfh.parse("2024-12-21 14:00"),
+                        sdfh.parse("2024-12-21 15:00"), terapeuta1),
+                new Evento(null, "Colloquio con i genitori", sdfh.parse("2024-12-22 11:00"),
+                        sdfh.parse("2024-12-22 12:00"), terapeuta1),
 
                 new Evento(null, "Visita di controllo", sdfh.parse("2024-01-18 10:00"),
                         sdfh.parse("2024-01-18 11:00"), terapeuta2),
@@ -208,8 +208,8 @@ public class DataLoader implements CommandLineRunner {
             ));
 
             materialeRepository.saveAll(List.of(
-                new Materiale(null, "Materiale disegno 1", TipoMateriale.PDF,
-                        "/path/to/materiale1", terapeuta1, null),
+                new Materiale(null, "PDF di prova", TipoMateriale.PDF,
+                        "/src/frontend/src/assets/materiali/materiale1.pdf", terapeuta1, null),
                 new Materiale(null, "Materiale apprendimento 1", TipoMateriale.IMMAGINE,
                         "/path/to/materiale2", terapeuta1, null),
                 new Materiale(null, "Materiale colore 1", TipoMateriale.VIDEO,
@@ -298,7 +298,7 @@ public class DataLoader implements CommandLineRunner {
                         sessione3.getTerapeuta(), sessione3,
                         sessione3.getBambini()),
                 new Disegno(null, 10, sessione4.getData(), ValutazioneEmotiva.SPAVENTATO,
-                        sessione3.getTerapeuta(), sessione4,
+                        sessione4.getTerapeuta(), sessione4,
                         sessione4.getBambini()),
                 new Disegno(null, 7, sessione5.getData(), ValutazioneEmotiva.ARRABBIATO,
                         sessione5.getTerapeuta(), sessione5,

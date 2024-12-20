@@ -11,6 +11,8 @@ import DettaglioBambino from "./pages/DettagliBambino";
 import EventiTeraputa from "./pages/EventiTeraputa";
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
+import ChildLogin from "./pages/ChildLogin";
+import HomePage from "./pages/HomePage";
 
 const router = createBrowserRouter([
     {
@@ -47,6 +49,16 @@ const router = createBrowserRouter([
         path:"/register",
         name: "Registrazione",
         element : <Registration />
+    },
+    {
+        path:"/childlogin",
+        name: "Child Login",
+        element : <ChildLogin />
+    },
+    {
+        path:"/home",
+        name: "Home",
+        element : <HomePage />
     }
 ])
 

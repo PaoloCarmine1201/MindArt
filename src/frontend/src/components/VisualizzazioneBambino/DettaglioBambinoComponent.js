@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
+import NavBar from "../HomePageTerapeuta/NavBar";
 
 /**
  * @autor gabrieleristallo
@@ -56,7 +57,9 @@ function DettaglioBambinoComponent() {
                 </div>
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Data di Nascita:</label>
-                    <span className="dettaglio-value">{bambino.dataDiNascita}</span>
+                    <span className="dettaglio-value">
+                        {new Date(bambino.dataDiNascita).toLocaleDateString('it-IT')}
+                    </span>
                 </div>
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Codice Fiscale:</label>

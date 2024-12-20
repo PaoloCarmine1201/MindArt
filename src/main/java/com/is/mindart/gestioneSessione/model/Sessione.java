@@ -4,7 +4,6 @@ import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -17,10 +16,28 @@ import java.util.List;
  * Rappresenta una sessione terapeutica.
  */
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Sessione {
+
+    public Sessione(Long id,
+                    String temaAssegnato,
+                    Date data,
+                    String nota,
+                    TipoSessione tipo,
+                    Materiale materiale,
+                    Terapeuta terapeuta,
+                    List<Bambino> bambini) {
+        this.id = id;
+        this.temaAssegnato = temaAssegnato;
+        this.data = data;
+        this.nota = nota;
+        this.tipo = tipo;
+        this.materiale = materiale;
+        this.terapeuta = terapeuta;
+        this.bambini = bambini;
+        this.terminata = false;
+    }
 
     /**
      * Identificativo univoco della sessione.

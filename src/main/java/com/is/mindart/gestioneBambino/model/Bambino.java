@@ -1,7 +1,5 @@
 package com.is.mindart.gestioneBambino.model;
 
-import com.is.mindart.gestioneDisegno.model.Disegno;
-import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;
@@ -79,12 +77,4 @@ public class Bambino {
             joinColumns = @JoinColumn(name = "bambino_id"),
             inverseJoinColumns = @JoinColumn(name = "sessione_id"))
     private List<Sessione> sessioni;
-
-    @ManyToMany
-    @JoinTable(
-            name = "bambino_sessione",
-            joinColumns = @JoinColumn(name = "bambino_id"),
-            inverseJoinColumns = @JoinColumn(name = "sessione_id"))
-    private List<Sessione> sessioni;
-
 }

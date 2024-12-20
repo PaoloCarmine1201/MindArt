@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
 import java.util.List;
@@ -47,6 +48,12 @@ public class Sessione {
      * Tipo della sessione (ad esempio: Disegno, Colore, Apprendimento).
      */
     private TipoSessione tipo;
+
+    /**
+     * Indica se la sessione è terminata
+     */
+    @ColumnDefault("false")
+    private Boolean terminata;
 
     /**
      * Materiale utilizzato durante la sessione.

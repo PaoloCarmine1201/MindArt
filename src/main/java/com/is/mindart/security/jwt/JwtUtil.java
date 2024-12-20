@@ -43,7 +43,7 @@ public class JwtUtil {
             return Jwts.builder()
                     .setSubject(username)
                     .setIssuedAt(now)
-                    .setExpiration(new Date(now.getTime() + expirationTerapeuta))
+                    .setExpiration(new Date(now.getTime() + expirationBambino))
                     .signWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
                     .compact();
         }

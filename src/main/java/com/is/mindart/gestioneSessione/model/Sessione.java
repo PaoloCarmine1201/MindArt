@@ -40,6 +40,11 @@ public class Sessione {
     private Date data;
 
     /**
+     * Data in cui si svolge la sessione.
+     */
+    private Date fine;
+
+    /**
      * Nota aggiuntiva relativa alla sessione.
      */
     private String nota;

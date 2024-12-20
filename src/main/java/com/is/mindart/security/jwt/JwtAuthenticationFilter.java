@@ -72,11 +72,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Carichiamo l'utente dal TerapeutaUserDetailsService:
-            // In un caso reale, dovresti avere un modo per distinguere se username è un email (terapeuta)
-            // o un codiceFiscale (bambino), magari memorizzando anche un claim nel token.
-
-            // Per semplicità, supponiamo che se l'username contiene '@' è un terapeuta
             if(username.contains("@")) {
                 var userDetails = terapeutaUserDetailsService
                         .loadUserByUsername(username);
@@ -91,11 +86,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .setAuthentication(authToken);
                 }
             } else {
-                // È un bambino (username = codiceFiscale)
-                // Dato che non abbiamo un bambinoUserDetailsService come UserDetailsService standard,
-                // serve logica aggiuntiva. In questo caso, potremmo salvare nel token un claim custom
-                // con "ruolo" o "tipoUtente".
-                // Per semplicità tralasciamo e consideriamo che se non è un terapeuta, non autentichiamo.
                 var userDetails = bambinoUserDetailsService
                         .loadBambinoByCodice(username);
                 if (jwtUtil.validateToken(token)) {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
 import {Form, Button, Stack} from 'react-bootstrap';
 import "../../style/Login.css"
+import axios from "axios";
 
 
 const Login = () => {
@@ -20,26 +21,35 @@ const Login = () => {
 
     const performLogin = async () => {
         try {
-
             console.log("Sending request");
-            const response = await fetch("https://24c15a1a-94de-45f6-959c-d6c7d0789d61.mock.pstmn.io/api/terapeuta/login", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
 
-            });
+            const response = await axios.post(
+                "http://localhost:8080/auth/terapeuta/login",
+                { email, password },
+                {headers: {'Content-Type': 'application/json'}}
+            );
             console.log("getting response");
 
-            if (!response.ok) {
-                throw new Error('Invalid credentials');
+            const data = response.data
+            if(data === ""){
+                throw Error("invalid username or password");
             }
-
-            const data = await response.json();
             console.log('Login successful:', data);
+            localStorage.setItem("jwtToken", data);
+            axios.interceptors.request.use((config) => {
+                const token = localStorage.getItem('jwtToken');
+                if (token) {
+                    config.headers['Authorization'] = 'Bearer ' + token;
+                }
+                return config;
+            }, (error) => {
+                return Promise.reject(error);
+            });
 
             // Redirect or handle login success
-            window.location.href = '/dashboard';
+            window.location.href = '/';
         } catch (err) {
+            console.log("Errore nella richiesta di login", err)
             setError(err.message || 'An unexpected error occurred.');
         }
     };
@@ -54,7 +64,7 @@ const Login = () => {
     return (
 
         <Stack gap={4} className="login-container d-flex justify-content-center align-items-center vh-100" >
-
+            <h1>{error}</h1>
             <Form onSubmit={handleLogin} className="card p-4 shadow-sm login-form">
                 <h2 className="title">Login</h2>
                 <br/>

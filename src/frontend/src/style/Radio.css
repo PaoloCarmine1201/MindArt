@@ -1,0 +1,27 @@
+.custom-radio .form-check-input {
+    width: 20px; /* Dimensione del pallino */
+    height: 20px;
+    border: 2px solid green; /* Bordo verde */
+    background-color: white; /* Sfondo bianco */
+    appearance: none; /* Rimuove lo stile predefinito del browser */
+    border-radius: 50%; /* Forma circolare */
+    outline: none;
+    cursor: pointer
+}
+
+.custom-radio .form-check-input:checked {
+    background-color: green; /* Colore verde quando selezionato */
+    border-color: green;
+}
+.custom-radio .form-check-label {
+    font-size: 1.2rem; /* Scritte più grandi */
+    /* border-bottom: 1px solid gray; */
+}
+.custom-radio{
+    margin-bottom: 10px;
+    border-bottom: 1px gray;
+}
+
+.radio-divider{
+    margin-left: 20px;
+}

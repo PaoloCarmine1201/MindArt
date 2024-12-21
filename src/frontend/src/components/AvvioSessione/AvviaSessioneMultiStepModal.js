@@ -73,7 +73,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
         const currentErrors = Object.keys(errs).filter(key => errs[key] !== undefined);
 
         if (currentErrors.length === 0) {
-            if (currentStep === 1 && values.tipoSessione !== 'apprendimento') {
+            if (currentStep === 1 && values.tipoSessione === 'DISEGNO') {
                 setCurrentStep(prev => prev + 2);
             } else {
                 setCurrentStep(prev => prev + 1);
@@ -81,9 +81,9 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
         }
     };
 
-    const handleBack = () => {
+    const handleBack = (values) => {
         setDirection('backward');
-        if(currentStep === 3 && initialValues.tipoSessione !== 'apprendimento') {
+        if(currentStep === 3 && values.tipoSessione === 'DISEGNO') {
             setCurrentStep(prev => prev - 2);
         } else {
             setCurrentStep(prev => prev - 1);
@@ -151,7 +151,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                         <Modal.Header>
                             <Modal.Title className="w-100 text-center">Avvia Sessione</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body className="tall-modal-body" style={{ height: '350px', overflow: 'hidden' }}>
+                        <Modal.Body className="tall-modal-body" style={{paddingLeft: '40px', height: '350px', overflow: 'hidden',  }}>
                             <TransitionGroup>
                                 <CSSTransition
                                     key={currentStep}
@@ -171,7 +171,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                                 Annulla
                             </Button>
                             {currentStep > 1 && (
-                                <Button variant="btn-outline-secondary btn-annulla" onClick={handleBack}>
+                                <Button variant="btn-outline-secondary btn-annulla" onClick={() => handleBack(values)}>
                                     Indietro
                                 </Button>
                             )}

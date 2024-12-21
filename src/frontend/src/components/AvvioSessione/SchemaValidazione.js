@@ -4,7 +4,7 @@ export const stepOneSchema = yup.object().shape({
     tipoSessione: yup
         .string()
         .required('Il tipo è obbligatorio')
-        .matches(/^(attività|apprendimento)$/, 'Il tipo deve essere attività o apprendimento')
+        .matches(/^(DISEGNO|COLORE|APPRENDIMENTO)$/, 'Il tipo deve essere attività o apprendimento')
 });
 
 export const stepTwoSchema = yup.object().shape({

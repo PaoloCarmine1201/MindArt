@@ -1,11 +1,13 @@
 package com.is.mindart.gestioneSessione.controller;
 
+import com.is.mindart.gestioneBambino.controller.BambinoController;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
+import com.is.mindart.security.model.BambinoDetails;
 import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -15,9 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/sessione")
+@RequiredArgsConstructor
 public class SessioneController {
 
-    @Autowired
+    /**
+     * Servizio per la gestione delle sessioni.
+     */
     private SessioneService sessioneService;
 
     /**
@@ -25,10 +30,8 @@ public class SessioneController {
      * @param sessioneDTO DTO proveniente dal client
      * @return 200 OK
      */
-    @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping("/create")
-    public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO){
-
+    public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
 
@@ -41,14 +44,13 @@ public class SessioneController {
      * @param id id sessione
      * @return 200 OK oppure 404 Not Found
      */
-    @PreAuthorize("hasRole('TERAPEUTA')")
     @PatchMapping("/sessioni/{id}/termina")
-    public ResponseEntity<Void> terminaSessione (@PathVariable long id){
-        try{
+    public ResponseEntity<Void> terminaSessione (@PathVariable long id) {
+        try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+            BambinoDetails principal = (BambinoDetails) authentication.getPrincipal();
 
-            sessioneService.terminaSessione(id);
+            sessioneService.terminaSessione(id, principal.getBambino());
             return ResponseEntity.ok().build();
         } catch(EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

@@ -1,7 +1,6 @@
 
 package com.is.mindart.security.controller;
 
-import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.security.jwt.JwtUtil;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,21 +20,38 @@ import java.time.LocalDateTime;
 @RequestMapping("/auth")
 public class AuthController {
 
+    /**
+     * L'oggetto AuthenticationManager è fornito da Spring Security e viene utilizzato
+     * per autenticare un utente.
+     */
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * L'oggetto TerapeutaUserDetailsService è fornito da Spring Security e viene utilizzato
+     * per gestire i dettagli dell'utente terapeuta.
+     */
     @Autowired
     private TerapeutaUserDetailsService terapeutaUserDetailsService;
 
+    /**
+     * L'oggetto BambinoUserDetailsService è fornito da Spring Security e viene utilizzato
+     * per gestire i dettagli dell'utente bambino.
+     */
     @Autowired
     private BambinoUserDetailsService bambinoUserDetailsService;
 
-    @Autowired
-    private BambinoRepository bambinoRepository;
 
+    /**
+     * Il repository delle sessioni viene utilizzato per verificare se esiste almeno una sessione
+     */
     @Autowired
     private SessioneRepository sessioneRepository;
 
+    /**
+     * L'oggetto JwtUtil è fornito da Spring Security e viene utilizzato
+     * per generare il token JWT.
+     */
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -50,16 +65,26 @@ public class AuthController {
         public String codice;
     }
 
+    /**
+     * Questo metodo gestisce la richiesta di login per un terapeuta.
+     * @param request La richiesta di login
+     * @return Il token JWT
+     */
     @PostMapping("/terapeuta/login")
-    public ResponseEntity<String> loginTerapeuta(@RequestBody TerapeutaLoginRequest request) {
+    public ResponseEntity<String> loginTerapeuta(@RequestBody final TerapeutaLoginRequest request) {
 
 
         UserDetails userDetails = terapeutaUserDetailsService.loadUserByUsername(request.email);
-        return ResponseEntity.ok(jwtUtil.generateToken(userDetails.getUsername()));
+        return ResponseEntity.ok(jwtUtil.generateToken(userDetails.getUsername(), "ROLE_TERAPEUTA"));
     }
 
+    /**
+     * Questo metodo gestisce la richiesta di login per un bambino.
+     * @param request La richiesta di login
+     * @return Il token JWT
+     */
     @PostMapping("/bambino/login")
-    public ResponseEntity<String> loginBambino(@RequestBody BambinoLoginRequest request) {
+    public ResponseEntity<String> loginBambino(@RequestBody final BambinoLoginRequest request) {
 
         UserDetails userDetails = bambinoUserDetailsService.loadUserByUsername(request.codice);
 
@@ -67,9 +92,9 @@ public class AuthController {
         // Verifica se esiste almeno una sessione programmata per oggi
         Sessione session = sessioneRepository.findByTerminataFalseAndBambini_CodiceOrderByDataAsc(request.codice).stream()
                 .findFirst()
-                .orElse( null);
+                .orElse(null);
 
-        if( session == null ) {
+        if (session == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("No session scheduled for today.");
         }
@@ -80,7 +105,6 @@ public class AuthController {
                     .body("Session not started yet.");
         }
 
-
-        return ResponseEntity.ok(jwtUtil.generateToken(userDetails.getUsername()));
+        return ResponseEntity.ok(jwtUtil.generateToken(userDetails.getUsername(), "ROLE_BAMBINO"));
     }
 }

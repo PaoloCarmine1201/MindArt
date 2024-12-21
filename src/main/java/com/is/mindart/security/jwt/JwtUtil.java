@@ -1,7 +1,10 @@
 
 package com.is.mindart.security.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
@@ -16,15 +19,17 @@ public class JwtUtil {
     private String secret;
 
     /**
-     *  Tempo prima che scada la sessione del terapeuta
+     *  Tempo prima che scada
+     *  la sessione del terapeuta
      */
     @Value("${jwt.expiration}")
     private long expirationTerapeuta;
 
-    public String generateToken(String username) {
+    public String generateToken(String username,String role) {
         Date now = new Date();
 
         return Jwts.builder()
+                .claim("role", role)
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expirationTerapeuta))
@@ -32,16 +37,28 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String getUsernameFromToken(String token) {
+    /**
+     * Metodo per ottenere l'username dal token
+     * @param token Il token
+     * @return L'username
+     */
+    public String getUsernameFromToken(final String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
+                .setSigningKey(io.jsonwebtoken.security.Keys
+                        .hmacShaKeyFor(secret.getBytes()))
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    /**
+     * Metodo per ottenere il ruolo dal
+     * token
+     * @param token Il token da validare
+     * @return se il token è valido o meno
+     */
+    public boolean validateToken(final String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
@@ -53,17 +70,18 @@ public class JwtUtil {
         }
     }
 
-    //voglio far scadere il token del bambino
-    public void expirationBambino(String token) {
-        Jws<Claims> claims = Jwts.parserBuilder()
+    public Claims extractAllClaims(final String token) {
+        return Jwts.parserBuilder()
                 .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
                 .build()
-                .parseClaimsJws(token);
-        Date expiration = claims.getBody().getExpiration();
-        Date now = new Date();
-        if (now.after(expiration)) {
-            throw new JwtException("Token scaduto");
-        }
+                .parseClaimsJws(token)
+                .getBody();
     }
+
+    public String extractClaim(final String token, final String claimKey) {
+        Claims claims = extractAllClaims(token);
+        return claims.get(claimKey, String.class); // Ritorna il valore del claim specifico
+    }
+
 }
 

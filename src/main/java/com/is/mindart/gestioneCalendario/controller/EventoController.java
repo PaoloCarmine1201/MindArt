@@ -31,7 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/terapeuta")
 @RequiredArgsConstructor
-public class EventChildController {
+public class EventoController {
     /**
      * Servizio per la gestione della logica degli eventi del calendario.
      */
@@ -45,8 +45,10 @@ public class EventChildController {
     @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/events")
     public ResponseEntity<List<EventDto>> getAllEvents() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal =
+                (TerapeutaDetails) authentication.getPrincipal();
 
         // Ora hai accesso al terapeuta completo
         Terapeuta terapeuta = principal.getTerapeuta();
@@ -61,17 +63,19 @@ public class EventChildController {
      * @param id l'identificativo dell'evento
      * @return un {@link EventDto} rappresentante l'evento
      */
-    @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/event/{id}")
     public ResponseEntity<EventDto> getEventById(@PathVariable final Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal =
+                (TerapeutaDetails) authentication.getPrincipal();
 
         // Ora hai accesso al terapeuta completo
         Terapeuta terapeuta = principal.getTerapeuta();
         Long terapeutaId = terapeuta.getId();
 
-        EventDto event = eventService.getEventByIdAndTerapeutaId(id, terapeutaId);
+        EventDto event = eventService
+                .getEventByIdAndTerapeutaId(id, terapeutaId);
         return ResponseEntity.ok(event);
     }
 
@@ -82,14 +86,16 @@ public class EventChildController {
      *        contenente i dati aggiornati dell'evento
      * @return l'evento aggiornato come {@link EventDto}
      */
-    @PreAuthorize("hasRole('TERAPEUTA')")
     @PutMapping("/event")
     public ResponseEntity<EventDto> updateEvent(
-            @Valid @RequestBody EventDto eventDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+            @Valid @RequestBody final EventDto eventDto) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal =
+                (TerapeutaDetails) authentication.getPrincipal();
 
-        EventDto updatedEvent = eventService.updateEvent(eventDto, principal.getTerapeuta().getId());
+        EventDto updatedEvent = eventService.updateEvent(
+                eventDto, principal.getTerapeuta().getId());
         return ResponseEntity.ok(updatedEvent);
     }
 
@@ -103,9 +109,11 @@ public class EventChildController {
     @DeleteMapping("/event/{id}")
     public ResponseEntity<Void> deleteEvent(
             @NotNull(message = "Il campo id deve essere valorizzato")
-            @PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+            @PathVariable final Long id) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal =
+                (TerapeutaDetails) authentication.getPrincipal();
 
         eventService.deleteEvent(id, principal.getTerapeuta().getId());
         return ResponseEntity.ok().build();
@@ -120,11 +128,14 @@ public class EventChildController {
     @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping("/event")
     public ResponseEntity<EventDto> addEvent(
-            @RequestBody EventDto eventDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+            @RequestBody final EventDto eventDto) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDetails principal =
+                (TerapeutaDetails) authentication.getPrincipal();
 
-        EventDto event = eventService.addEvent(eventDto, principal.getTerapeuta().getId());
+        EventDto event = eventService
+                .addEvent(eventDto, principal.getTerapeuta().getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
 }

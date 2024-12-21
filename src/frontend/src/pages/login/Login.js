@@ -36,15 +36,6 @@ const Login = () => {
             }
             console.log('Login successful:', data);
             localStorage.setItem("jwtToken", data);
-            axios.interceptors.request.use((config) => {
-                const token = localStorage.getItem('jwtToken');
-                if (token) {
-                    config.headers['Authorization'] = 'Bearer ' + token;
-                }
-                return config;
-            }, (error) => {
-                return Promise.reject(error);
-            });
 
             // Redirect or handle login success
             window.location.href = '/';

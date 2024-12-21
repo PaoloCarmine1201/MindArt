@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Formik } from 'formik';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import axios from 'axios';
 import {
     stepOneSchema,
     stepTwoSchema,
@@ -14,7 +13,8 @@ import SelezioneBambino from './SelezioneBambino';
 
 import '../../style/Button.css';
 import '../../style/Modal.css';
-import '../../style/Transition.css'; // Stile per le animazioni
+import '../../style/Transition.css';
+import axiosInstance from "../../config/axiosInstance"; // Stile per le animazioni
 
 const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -47,7 +47,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
             setLoadingChildren(true);
             setChildrenError(null);
 
-            axios.get('http://localhost:8080/api/terapeuta/getallbyterapeuta')
+            axiosInstance.get('http://localhost:8080/api/bambino/getallbyterapeuta')
                 .then(response => {
                     setChildrenList(response.data);
                     setLoadingChildren(false);
@@ -91,7 +91,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     };
 
     const handleSubmit = (values, { resetForm }) => {
-        axios.post('http://localhost:8080/api/sessione/create', values)
+        axiosInstance.post('http://localhost:8080/api/sessione/create', values)
             .then(r => alert('Sessione creata con successo'))
 
         resetForm();

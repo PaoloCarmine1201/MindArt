@@ -3,9 +3,12 @@ package com.is.mindart.security.controller;
 
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
+import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTO;
+import com.is.mindart.gestioneTerapeuta.service.TerapeutaService;
 import com.is.mindart.security.jwt.JwtUtil;
 import com.is.mindart.security.service.BambinoUserDetailsService;
 import com.is.mindart.security.service.TerapeutaUserDetailsService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +55,9 @@ public class AuthController {
      * L'oggetto JwtUtil è fornito da Spring Security e viene utilizzato
      * per generare il token JWT.
      */
+    @Autowired
+    private TerapeutaService terapeutaService;
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -106,5 +112,12 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(jwtUtil.generateToken(userDetails.getUsername(), "ROLE_BAMBINO"));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<TerapeutaDTO> registerTerapeuta(
+            @Valid @RequestBody final TerapeutaDTO terapeutaDto) {
+        terapeutaService.registerTerapeuta(terapeutaDto);
+        return ResponseEntity.ok(terapeutaDto);
     }
 }

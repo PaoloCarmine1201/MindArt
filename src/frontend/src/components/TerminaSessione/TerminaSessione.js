@@ -7,6 +7,7 @@ const TerminaSessione = () => {
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [idSessione] = useState("");
 
     const handleLogout = async () => {
         setLoading(true);
@@ -35,13 +36,13 @@ const TerminaSessione = () => {
     return (
         <div className="container text-center mt-5">
             <button
-                className="btn btn-danger"
+                className="btn btn-danger center mt-5"
                 onClick={handleOpenModal}
             >
                 Termina Sessione
             </button>
 
-            /* Modal modificato senza 'Close' */
+            {/*Modal di conferma*/}
             <TerminateModal
                 show={showModal}
                 onClose={() => setShowModal(false)}
@@ -49,7 +50,7 @@ const TerminaSessione = () => {
                 loading={loading}
             />
 
-            /* Messaggio di risultato */
+            {/*Messaggio di successo o errore*/}
             {message && (
                 <div className={`alert mt-3 ${message.includes("successo") ? "alert-success" : "alert-danger"}`} role="alert">
                     {message}

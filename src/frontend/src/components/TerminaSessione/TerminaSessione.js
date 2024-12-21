@@ -36,7 +36,7 @@ const TerminaSessione = () => {
     return (
         <div className="container text-center mt-5">
             <button
-                className="btn btn-danger center mt-5"
+                className="btn btn-danger"
                 onClick={handleOpenModal}
             >
                 Termina Sessione

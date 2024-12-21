@@ -91,7 +91,9 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     };
 
     const handleSubmit = (values, { resetForm }) => {
-        console.log('Form values: ', values);
+        axios.post('http://localhost:8080/api/sessione/create', values)
+            .then(r => alert('Sessione creata con successo'))
+
         resetForm();
         setCurrentStep(1);
         onHide();

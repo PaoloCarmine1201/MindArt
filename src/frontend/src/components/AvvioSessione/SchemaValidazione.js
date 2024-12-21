@@ -16,7 +16,7 @@ export const stepTwoSchema = yup.object().shape({
 
 export const stepThreeSchema = yup.object().shape({
     bambino: yup
-        .string()
-        .required('Il bambino è obbligatorio')
-    //todo regex list bambini
+        .array()
+        .min(1, 'Devi selezionare almeno un bambino')
+        .required('Requisito')
 });

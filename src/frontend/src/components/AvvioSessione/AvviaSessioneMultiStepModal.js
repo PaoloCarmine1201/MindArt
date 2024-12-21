@@ -1,21 +1,34 @@
-import React, {useState} from 'react';
-import {Modal, Button, Form, FormLabel, FormGroup} from 'react-bootstrap';
-import {Formik} from 'formik';
-import {stepOneSchema, stepTwoSchema, stepThreeSchema} from './SchemaValidazione';
-import SelezioneTipo from "./SelezioneTipo";
-import SelezioneMateriale from "./SelezioneMateriale";
-import SelezioneBambino from "./SelezioneBambino";
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { Formik } from 'formik';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import axios from 'axios';
+import {
+    stepOneSchema,
+    stepTwoSchema,
+    stepThreeSchema
+} from './SchemaValidazione';
+import SelezioneTipo from './SelezioneTipo';
+import SelezioneMateriale from './SelezioneMateriale';
+import SelezioneBambino from './SelezioneBambino';
 
-const AvviaSessioneMultiStepModal = ({show, onHide}) => {
+import '../../style/Button.css';
+import '../../style/Modal.css';
+import '../../style/Transition.css'; // Stile per le animazioni
+
+const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [currentStep, setCurrentStep] = useState(1);
+    const [childrenList, setChildrenList] = useState([]);
+    const [loadingChildren, setLoadingChildren] = useState(false);
+    const [childrenError, setChildrenError] = useState(null);
+    const [direction, setDirection] = useState('forward'); // 'forward' o 'backward'
 
     const initialValues = {
         tipoSessione: '',
         materiale: '',
-        bambino: '',
+        bambino: [],
     };
 
-    // Funzione per ottenere lo schema in base allo step corrente
     const getValidationSchema = () => {
         switch (currentStep) {
             case 1:
@@ -29,9 +42,27 @@ const AvviaSessioneMultiStepModal = ({show, onHide}) => {
         }
     };
 
-    const handleNext = async (validateForm, setTouched, values, errors) => {
-        // Forziamo la validazione
+    useEffect(() => {
+        if (currentStep === 3) {
+            setLoadingChildren(true);
+            setChildrenError(null);
+
+            axios.get('http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=1') /*TODO: Sostituire con l'ID del terapeuta loggato*/
+                .then(response => {
+                    setChildrenList(response.data);
+                    setLoadingChildren(false);
+                })
+                .catch(error => {
+                    setChildrenError('Errore nel caricamento dei bambini.');
+                    setLoadingChildren(false);
+                });
+        }
+    }, [currentStep]);
+
+    const handleNext = async (validateForm, touched, setTouched, values, errors) => {
+
         const errs = await validateForm();
+        setDirection('forward');
         setTouched(
             Object.keys(errs).reduce((acc, key) => {
                 acc[key] = true;
@@ -39,94 +70,121 @@ const AvviaSessioneMultiStepModal = ({show, onHide}) => {
             }, {})
         );
 
-        // Se non ci sono errori relativi allo step corrente, passiamo allo step successivo
-        const currentErrors = Object.keys(errs).filter((key) => {
-            // Qui potresti filtrare i campi di pertinenza dello step corrente,
-            // per semplicità consideriamo qualsiasi errore come bloccante.
-            return errs[key] !== undefined;
-        });
+        const currentErrors = Object.keys(errs).filter(key => errs[key] !== undefined);
 
         if (currentErrors.length === 0) {
-            if(currentStep === 1 && !(values['tipoSessione'] === 'apprendimento')){
-                setCurrentStep((prev) => prev + 2);
-            }else {
-                setCurrentStep((prev) => prev + 1);
+            if (currentStep === 1 && values.tipoSessione !== 'apprendimento') {
+                setCurrentStep(prev => prev + 2);
+            } else {
+                setCurrentStep(prev => prev + 1);
             }
         }
     };
 
     const handleBack = () => {
-        setCurrentStep((prev) => prev - 1);
+        setDirection('backward');
+        if(currentStep === 3 && initialValues.tipoSessione !== 'apprendimento') {
+            setCurrentStep(prev => prev - 2);
+        } else {
+            setCurrentStep(prev => prev - 1);
+        }
     };
 
-    const handleSubmit = (values) => {
-        console.log('Form values: ', values); //todo: invia i dati al server
+    const handleSubmit = (values, { resetForm }) => {
+        console.log('Form values: ', values);
+        resetForm();
+        setCurrentStep(1);
         onHide();
+    };
+
+    const renderStep = () => {
+        switch (currentStep) {
+            case 1:
+                return <SelezioneTipo />;
+            case 2:
+                return <SelezioneMateriale />;
+            case 3:
+                return (
+                    <SelezioneBambino
+                        childrenList={childrenList}
+                        loading={loadingChildren}
+                        error={childrenError}
+                    />
+                );
+            default:
+                return <SelezioneTipo />;
+        }
     };
 
     return (
         <Formik
             initialValues={initialValues}
-            validationSchema={getValidationSchema(currentStep)}
+            validationSchema={getValidationSchema()}
             onSubmit={handleSubmit}
             validateOnBlur={true}
             validateOnChange={true}
-            validate={getValidationSchema()}
         >
-            {({handleSubmit, validateForm, values, errors, touched, setTouched, resetForm}) => (
-                <Modal show={show} onHide={() => {
-                    resetForm(); // Resetta il form ai valori iniziali
-                    setCurrentStep(1); // Se vuoi tornare anche allo step iniziale
-                    onHide();
-                }}>
-
+            {({
+                  handleSubmit,
+                  validateForm,
+                  touched,
+                  setTouched,
+                  values,
+                  errors,
+                  resetForm
+              }) => (
+                <Modal
+                    show={show}
+                    dialogClassName='custom-modal tall-modal-dialog'
+                    backdropClassName='custom-backdrop'
+                    aria-labelledby='contained-modal-title-vcenter'
+                    centered
+                    onHide={() => {
+                        resetForm();
+                        setCurrentStep(1);
+                        onHide();
+                    }}>
                     <Form noValidate onSubmit={(e) => {
                         e.preventDefault();
                         handleSubmit();
                     }}>
                         <Modal.Header>
-                            <Modal.Title>Avvia Sessione</Modal.Title>
+                            <Modal.Title className="w-100 text-center">Avvia Sessione</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>
-                            {currentStep === 1 && <FormGroup>
-                                <FormLabel>Tipo sessione</FormLabel>
-                                <Form.Check
-                                    type="radio"
-                                    name="tipoSessione"
-                                    label="attività"
-                                    value="attività"
-                                    isInvalid={touched.tipoSessione && !!errors.tipoSessione}
-                                    onChange={handleChange}
+                        <Modal.Body className="tall-modal-body" style={{ height: '350px', overflow: 'hidden' }}>
+                            <TransitionGroup>
+                                <CSSTransition
+                                    key={currentStep}
+                                    classNames={direction === 'forward' ? 'slide-forward' : 'slide-backward'}
+                                    timeout={300}
                                 >
-                                </Form.Check>
-                                <Form.Check
-                                    type="radio"
-                                    name="tipoSessione"
-                                    label="apprendimento"
-                                    value="apprendimento"
-                                    isInvalid={touched.tipoSessione && !!errors.tipoSessione}
-                                    onChange={handleChange} >
-                                </Form.Check>
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.tipoSessione instanceof String ? errors.tipoSessione : ''}
-                                </Form.Control.Feedback>
-                            </FormGroup>}
-                            {currentStep === 2 && <SelezioneMateriale/>}
-                            {currentStep === 3 && <SelezioneBambino/>}
+                                    {renderStep()}
+                                </CSSTransition>
+                            </TransitionGroup>
                         </Modal.Body>
                         <Modal.Footer>
+                            <Button variant="btn-outline-pimary btn-cancella" onClick={() => {
+                                resetForm();
+                                setCurrentStep(1);
+                                onHide();
+                            }}>
+                                Annulla
+                            </Button>
                             {currentStep > 1 && (
-                                <Button variant="secondary" onClick={handleBack}>
+                                <Button variant="btn-outline-secondary btn-annulla" onClick={handleBack}>
                                     Indietro
                                 </Button>
                             )}
                             {currentStep < 3 && (
-                                <Button variant="primary" onClick={() => handleNext(validateForm, touched, setTouched, values, errors)}>
+                                <Button
+                                    variant="btn-outline-primary btn-conferma"
+                                    onClick={() => handleNext(validateForm, touched, setTouched, values, errors)}
+                                >
                                     Avanti
                                 </Button>
                             )}
                             {currentStep === 3 && (
-                                <Button variant="success" type="submit">
+                                <Button variant="btn-outline-pimary btn-conferma" type="submit">
                                     Invia
                                 </Button>
                             )}

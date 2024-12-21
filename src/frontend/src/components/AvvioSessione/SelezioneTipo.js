@@ -1,16 +1,14 @@
+// Step1TipoSessione.jsx
 import React from 'react';
-import { Form, FormGroup, FormLabel } from 'react-bootstrap';
+import { FormGroup, Form, FormLabel } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 
-// Importa il CSS di Bootstrap
-import "bootstrap/dist/css/bootstrap.min.css";
-
-function SelezioneTipo() {
+const SelezioneTipo = () => {
     const { values, errors, touched, handleChange } = useFormikContext();
 
     return (
         <FormGroup>
-            <FormLabel>Tipo sessione</FormLabel>
+            <label>Tipo sessione</label>
             <Form.Check
                 type="radio"
                 name="tipoSessione"
@@ -18,19 +16,22 @@ function SelezioneTipo() {
                 value="attività"
                 isInvalid={touched.tipoSessione && !!errors.tipoSessione}
                 onChange={handleChange}
-            >
-            </Form.Check>
+                checked={values.tipoSessione === 'attività'}
+            />
             <Form.Check
                 type="radio"
                 name="tipoSessione"
                 label="apprendimento"
                 value="apprendimento"
                 isInvalid={touched.tipoSessione && !!errors.tipoSessione}
-                onChange={handleChange} >
-            </Form.Check>
-            <Form.Control.Feedback type="invalid">{errors.tipoSessione}</Form.Control.Feedback>
+                onChange={handleChange}
+                checked={values.tipoSessione === 'apprendimento'}
+            />
+            <Form.Control.Feedback type="invalid">
+                {typeof errors.tipoSessione === 'string' ? errors.tipoSessione : ''}
+            </Form.Control.Feedback>
         </FormGroup>
     );
-}
+};
 
 export default SelezioneTipo;

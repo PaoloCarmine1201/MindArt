@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {Form, Button, Stack} from 'react-bootstrap';
 import "../../style/Login.css"
 import axios from "axios";
+import {useAuth} from "../../auth/AuthProvider";
 
 
 const Login = () => {
+    const { login } = useAuth(); // Access the login function from AuthContext
+    const navigate = useNavigate(); // For navigation
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -35,10 +38,8 @@ const Login = () => {
                 throw Error("invalid username or password");
             }
             console.log('Login successful:', data);
-            localStorage.setItem("jwtToken", data);
-
-            // Redirect or handle login success
-            window.location.href = '/';
+            login(data); // Update authentication state
+            navigate("/"); // Redirect to a protected route
         } catch (err) {
             console.log("Errore nella richiesta di login", err)
             setError(err.message || 'An unexpected error occurred.');

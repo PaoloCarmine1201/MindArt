@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AvviaSessioneButton from "./components/AvvioSessione/AvviaSessioneButton";
+import {AuthProvider} from "./auth/AuthProvider";
 
 function App() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); //id del terapeuta loggato DA MODIFICARE

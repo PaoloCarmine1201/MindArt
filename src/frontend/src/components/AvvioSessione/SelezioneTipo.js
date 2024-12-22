@@ -10,7 +10,7 @@ const SelezioneTipo = () => {
     return (
         <FormGroup>
             <label>Tipo sessione</label>
-            
+
             <Form.Check
                 type="radio"
                 name="tipoSessione"
@@ -32,6 +32,7 @@ const SelezioneTipo = () => {
                 checked={values.tipoSessione === 'COLORE'}
                 className='custom-radio'
             />
+            <hr className='radio-divider'/>
             <Form.Check
                 type="radio"
                 name="tipoSessione"
@@ -42,6 +43,7 @@ const SelezioneTipo = () => {
                 checked={values.tipoSessione === 'APPRENDIMENTO'}
                 className='custom-radio'
             />
+            <hr className='radio-divider'/>
             <Form.Control.Feedback type="invalid">
                 {typeof errors.tipoSessione === 'string' ? errors.tipoSessione : ''}
             </Form.Control.Feedback>

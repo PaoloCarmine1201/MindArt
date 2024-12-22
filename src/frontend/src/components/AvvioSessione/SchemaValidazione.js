@@ -20,3 +20,9 @@ export const stepThreeSchema = yup.object().shape({
         .min(1, 'Devi selezionare almeno un bambino')
         .required('Requisito')
 });
+
+export const stepFourSchema = yup.object().shape({
+    assegnazione: yup
+        .string()
+        .required('L\'assegnazione è obbligatoria')
+});

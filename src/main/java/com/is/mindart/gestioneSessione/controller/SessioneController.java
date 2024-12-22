@@ -16,7 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/api/sessione")
+@RequestMapping("/api/terapeuta/sessione")
 @RequiredArgsConstructor
 public class SessioneController {
 
@@ -35,6 +35,7 @@ public class SessioneController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
 
+        //TODO: mettere nella dto l'id terapeuta
         sessioneService.creaSessione(sessioneDTO, principal.getTerapeuta());
         return ResponseEntity.ok(sessioneDTO);
     }

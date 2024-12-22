@@ -5,7 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
     stepOneSchema,
     stepTwoSchema,
-    stepThreeSchema
+    stepThreeSchema, stepFourSchema
 } from './SchemaValidazione';
 import SelezioneTipo from './SelezioneTipo';
 import SelezioneMateriale from './SelezioneMateriale';
@@ -14,7 +14,9 @@ import SelezioneBambino from './SelezioneBambino';
 import '../../style/Button.css';
 import '../../style/Modal.css';
 import '../../style/Transition.css';
-import axiosInstance from "../../config/axiosInstance"; // Stile per le animazioni
+import axiosInstance from "../../config/axiosInstance";
+import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le animazioni
+
 
 const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -38,6 +40,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                 return stepTwoSchema;
             case 3:
                 return stepThreeSchema;
+            case 4:
+                return stepFourSchema;
             default:
                 return stepOneSchema;
         }
@@ -75,11 +79,18 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
 
         if (currentErrors.length === 0) {
             setDirection('forward');
-            if (currentStep === 1 && values.tipoSessione === 'DISEGNO') {
+
+            if (currentStep === 1 && values.tipoSessione === 'DISEGNO'){
                 setCurrentStep(prev => prev + 2);
             } else {
                 setCurrentStep(prev => prev + 1);
             }
+
+            // if (currentStep === 1 && values.tipoSessione === 'DISEGNO') {
+            //     setCurrentStep(prev => prev + 2);
+            // } else {
+            //     setCurrentStep(prev => prev + 1);
+            // }
             setErrorMessage('');
         } else {
             const errorMessages = Object.keys(errs)
@@ -122,6 +133,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                         error={childrenError}
                     />
                 );
+            case 4:
+                return <InserimentoAssegnazione />;
             default:
                 return <SelezioneTipo />;
         }

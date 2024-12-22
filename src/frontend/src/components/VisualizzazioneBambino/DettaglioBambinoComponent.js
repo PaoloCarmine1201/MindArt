@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
-import NavBar from "../HomePageTerapeuta/NavBar";
 
 /**
  * @autor gabrieleristallo
  * componente utilizzata per visualizzare i dettagli di un bambino
  * grazie ad useParams si ottiene l'id del bambino passato tramite url
  */
-
 function DettaglioBambinoComponent() {
     const { id } = useParams();
     const [bambino, setBambino] = useState(null);
@@ -51,7 +49,7 @@ function DettaglioBambinoComponent() {
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Sesso:</label>
                     <span className="dettaglio-value">
-                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'M' ?
+                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'MASCHIO' ?
                             'Maschio' : 'Femmina'}
                     </span>
                 </div>

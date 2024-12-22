@@ -75,6 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
             String role = jwtUtil.extractClaim(token, "role");
             if (role.contains("TERAPEUTA")) {
+
                 var userDetails = terapeutaUserDetailsService
                         .loadUserByUsername(username);
                 if (jwtUtil.validateToken(token)) {
@@ -87,8 +88,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .buildDetails(request));
                     SecurityContextHolder.getContext()
                             .setAuthentication(authToken);
-                }
-                if (role.contains("BAMBINO")) {
+                } else if (role.contains("BAMBINO")) {
                     userDetails = bambinoUserDetailsService
                             .loadBambinoByCodice(username);
 

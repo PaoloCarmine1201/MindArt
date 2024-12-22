@@ -21,7 +21,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [childrenList, setChildrenList] = useState([]);
     const [loadingChildren, setLoadingChildren] = useState(false);
     const [childrenError, setChildrenError] = useState(null);
-    const [direction, setDirection] = useState('forward'); // 'forward' o 'backward'
+    const [direction, setDirection] = useState('backward'); // 'forward' o 'backward'
 
     const initialValues = {
         tipoSessione: '',

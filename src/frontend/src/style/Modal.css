@@ -27,3 +27,10 @@
 .tall-modal-body {
     overflow-y: auto !important;
 }
+
+.error-label {
+    color: red;
+    margin-bottom: 10px;
+    text-align: center;
+    bottom: 10px;
+}

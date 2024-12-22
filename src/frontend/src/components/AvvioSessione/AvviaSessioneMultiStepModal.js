@@ -22,6 +22,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [loadingChildren, setLoadingChildren] = useState(false);
     const [childrenError, setChildrenError] = useState(null);
     const [direction, setDirection] = useState('backward'); // 'forward' o 'backward'
+    const [errorMessage, setErrorMessage] = useState('');
 
     const initialValues = {
         tipoSessione: '',
@@ -61,8 +62,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
 
     const handleNext = async (validateForm, touched, setTouched, values, errors) => {
 
-        const errs = await validateForm();
-        setDirection('forward');
+        const errs = await validateForm()
+
         setTouched(
             Object.keys(errs).reduce((acc, key) => {
                 acc[key] = true;
@@ -73,11 +74,19 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
         const currentErrors = Object.keys(errs).filter(key => errs[key] !== undefined);
 
         if (currentErrors.length === 0) {
+            setDirection('forward');
             if (currentStep === 1 && values.tipoSessione === 'DISEGNO') {
                 setCurrentStep(prev => prev + 2);
             } else {
                 setCurrentStep(prev => prev + 1);
             }
+            setErrorMessage('');
+        } else {
+            const errorMessages = Object.keys(errs)
+                .map(key => `${errs[key]}`) // Concatena i campi con i messaggi di errore
+                .join(' | '); // Unisci i messaggi con un separatore (es. "|")
+
+            setErrorMessage(errorMessages); // Imposta i messaggi di errore nello stato
         }
     };
 
@@ -144,6 +153,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                     onHide={() => {
                         resetForm();
                         setCurrentStep(1);
+                        setDirection('backward');
                         onHide();
                     }}>
                     <Form noValidate onSubmit={(e) => {
@@ -163,11 +173,19 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                                     {renderStep()}
                                 </CSSTransition>
                             </TransitionGroup>
+                            {/* Label nascosta per errori */}
+                            {errorMessage && (
+                                <div className="error-label">
+                                    {errorMessage}
+                                </div>
+                            )}
                         </Modal.Body>
                         <Modal.Footer>
+
                             <Button variant="btn-outline-pimary btn-cancella" onClick={() => {
                                 resetForm();
                                 setCurrentStep(1);
+                                setDirection('backward');
                                 onHide();
                             }}>
                                 Annulla

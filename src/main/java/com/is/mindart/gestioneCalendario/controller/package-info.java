@@ -6,7 +6,7 @@
  * <ul>
  *     <li>
  *         {@link
- *         com.is.mindart.gestioneCalendario.controller.EventChildController} -
+ *         com.is.mindart.gestioneCalendario.controller.EventoController} -
  *         Controller per la gestione degli eventi associati ai terapeuti.
  *     </li>
  * </ul>

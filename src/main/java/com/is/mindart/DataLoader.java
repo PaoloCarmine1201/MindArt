@@ -3,11 +3,9 @@ package com.is.mindart;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneBambino.model.Sesso;
-import com.is.mindart.gestioneCalendario.model.EventRespository;
+import com.is.mindart.gestioneCalendario.model.EventoRespository;
 import com.is.mindart.gestioneCalendario.model.Evento;
-import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
-import com.is.mindart.gestioneDisegno.model.ValutazioneEmotiva;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneMateriale.model.TipoMateriale;
@@ -24,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.List;
 
 /**
@@ -44,37 +41,37 @@ public class DataLoader implements CommandLineRunner {
      * Repository per la gestione dei dati relativi ai bambini.
      */
     @Autowired
-    public BambinoRepository bambinoRepository;
+    private BambinoRepository bambinoRepository;
 
     /**
      * Repository per la gestione degli eventi del calendario.
      */
     @Autowired
-    public EventRespository eventRepository;
+    private EventoRespository eventRepository;
 
     /**
      * Repository per la gestione delle sessioni.
      */
     @Autowired
-    public SessioneRepository sessioneRepository;
+    private SessioneRepository sessioneRepository;
 
     /**
      * Repository per la gestione dei materiali.
      */
     @Autowired
-    public MaterialeRepository materialeRepository;
+    private MaterialeRepository materialeRepository;
 
     /**
      * Repository per la gestione dei disegni.
      */
     @Autowired
-    public DisegnoRepository disegnoRepository;
+    private DisegnoRepository disegnoRepository;
 
     /**
      * Repository per la gestione dei terapeuti.
      */
     @Autowired
-    public TerapeutaRepository terapeutaRepository;
+    private TerapeutaRepository terapeutaRepository;
 
     /**
      * Template per l'esecuzione di query SQL.

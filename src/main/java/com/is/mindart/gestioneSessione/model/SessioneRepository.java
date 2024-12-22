@@ -27,7 +27,7 @@ public interface SessioneRepository extends JpaRepository<Sessione, Long> {
      * @return numero di record modificati.
      */
     @Modifying
-    @Query("UPDATE Sessione s SET s.terminata = true WHERE s.id = :id")
+    @Query("UPDATE Sessione s SET s.terminata = true WHERE s.id = :id AND s.terminata = false")
     int terminaSessione(@Param("id") Long id);
 
 }

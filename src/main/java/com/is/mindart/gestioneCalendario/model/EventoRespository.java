@@ -9,7 +9,7 @@ import java.util.Optional;
  * Repository per la gestione degli eventi del calendario.
  * Fornisce metodi standard e personalizzati per accedere ai dati.
  */
-public interface EventRespository extends JpaRepository<Evento, Long> {
+public interface EventoRespository extends JpaRepository<Evento, Long> {
 
     /**
      * Trova tutti gli eventi associati a un terapeuta specifico.

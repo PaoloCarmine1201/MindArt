@@ -14,9 +14,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class TerapeutaUserDetailsService implements UserDetailsService {
 
+    /**
+     * Repository del terapeuta.
+     */
     @Autowired
     private TerapeutaRepository terapeutaRepository;
 
+    /**
+     * Carica i dettagli del terapeuta tramite l'email.
+     * @param email l'email del terapeuta
+     * @return un oggetto {@link UserDetails} rappresentante il terapeuta
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Terapeuta terapeuta = terapeutaRepository.findByEmail(email)

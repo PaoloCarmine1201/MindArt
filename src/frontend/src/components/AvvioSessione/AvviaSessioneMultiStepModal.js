@@ -20,11 +20,17 @@ import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le
 
 const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [currentStep, setCurrentStep] = useState(1);
+
     const [childrenList, setChildrenList] = useState([]);
     const [loadingChildren, setLoadingChildren] = useState(false);
+
+    const [materials, setMaterials] = useState(1);
+
     const [childrenError, setChildrenError] = useState(null);
-    const [direction, setDirection] = useState('backward'); // 'forward' o 'backward'
+     // 'forward' o 'backward'
     const [errorMessage, setErrorMessage] = useState('');
+    const [direction, setDirection] = useState("forward");
+
 
     const initialValues = {
         tipoSessione: '',
@@ -111,7 +117,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     };
 
     const handleSubmit = (values, { resetForm }) => {
-        axiosInstance.post('http://localhost:8080/api/sessione/create', values)
+        axiosInstance.post('http://localhost:8080/api/terapeuta/sessione/create', values)
             .then(r => alert('Sessione creata con successo'))
 
         resetForm();
@@ -124,7 +130,10 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
             case 1:
                 return <SelezioneTipo />;
             case 2:
-                return <SelezioneMateriale />;
+                return <SelezioneMateriale
+                        materials={materials}
+                        setMaterials={setMaterials}
+                />;
             case 3:
                 return (
                     <SelezioneBambino
@@ -208,7 +217,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                                     Indietro
                                 </Button>
                             )}
-                            {currentStep < 3 && (
+                            {((currentStep < 3) || (currentStep === 3 && values.tipoSessione === 'DISEGNO')) && (
                                 <Button
                                     variant="btn-outline-primary btn-conferma"
                                     onClick={() => handleNext(validateForm, touched, setTouched, values, errors)}
@@ -216,7 +225,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                                     Avanti
                                 </Button>
                             )}
-                            {currentStep === 3 && (
+                            {((currentStep === 3 && values.tipoSessione !== 'DISEGNO') || (currentStep === 4 && values.tipoSessione === 'DISEGNO')) && (
                                 <Button variant="btn-outline-pimary btn-conferma" type="submit">
                                     Invia
                                 </Button>

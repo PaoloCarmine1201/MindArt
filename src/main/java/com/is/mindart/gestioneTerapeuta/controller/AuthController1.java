@@ -23,9 +23,4 @@ public class AuthController1 {
     @Autowired
     private TerapeutaService terapeutaService;
 
-    /**
-     * @param terapeutaDto - DTO del terapeuta
-     * @return ResponseEntity
-     */
-
 }

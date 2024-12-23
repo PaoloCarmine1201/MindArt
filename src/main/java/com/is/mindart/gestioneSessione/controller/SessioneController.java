@@ -1,6 +1,5 @@
 package com.is.mindart.gestioneSessione.controller;
 
-import com.is.mindart.gestioneBambino.controller.BambinoController;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
 import com.is.mindart.security.model.BambinoDetails;
@@ -10,13 +9,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.logging.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @Controller
@@ -53,14 +53,14 @@ public class SessioneController {
      * @return 200 OK oppure 404 Not Found
      */
     @PatchMapping("/sessioni/{id}/termina")
-    public ResponseEntity<Void> terminaSessione (@PathVariable long id) {
+    public ResponseEntity<Void> terminaSessione(@PathVariable final long id) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             BambinoDetails principal = (BambinoDetails) authentication.getPrincipal();
 
             sessioneService.terminaSessione(id, principal.getBambino());
             return ResponseEntity.ok().build();
-        } catch(EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

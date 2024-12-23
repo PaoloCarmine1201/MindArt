@@ -40,14 +40,16 @@ function GestioneMateriale() {
         <>
             {/* Filtri in cima */}
             <Button
-                variant="outline-primary btn-cancella"
+                variant={filter === "VIDEO" ? "btn-outline-primary btn-annulla-full" : "btn-outline-primary btn-annulla"}
                 onClick={() => handleFilterChange("ALL")}
+                className={"me-2"}
             >
                 ALL
             </Button>
             <Button
-                variant="outline-primary btn-cancella-full"
+                variant={filter === "VIDEO" ? "btn-outline-primary btn-annulla-full" : "btn-outline-primary btn-annulla"}
                 onClick={() => handleFilterChange("PDF")}
+                className={"me-2"}
             >
                 PDF
             </Button>

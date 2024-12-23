@@ -88,8 +88,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .buildDetails(request));
                     SecurityContextHolder.getContext()
                             .setAuthentication(authToken);
-                } else if (role.contains("BAMBINO")) {
-                    userDetails = bambinoUserDetailsService
+                }
+            } else if (role.contains("BAMBINO")) {
+                    var userDetails = bambinoUserDetailsService
                             .loadBambinoByCodice(username);
 
                     if (jwtUtil.validateToken(token)) {
@@ -110,8 +111,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     throw new IllegalStateException("Ruolo non riconosciuto");
                 }
             }
-        }
-
         filterChain.doFilter(request, response);
     }
+
 }

@@ -1,6 +1,5 @@
 package com.is.mindart.gestioneSessione.controller;
 
-import com.is.mindart.gestioneBambino.controller.BambinoController;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
 import com.is.mindart.security.model.BambinoDetails;
@@ -9,28 +8,27 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/api/sessione")
+@RequestMapping("/api/terapeuta")
 @RequiredArgsConstructor
 public class SessioneController {
 
     /**
      * Servizio per la gestione delle sessioni.
      */
-    private SessioneService sessioneService;
+    private final SessioneService sessioneService;
 
     /**
      * Endpoint per la creazione di una sessione.
      * @param sessioneDTO DTO proveniente dal client
      * @return 200 OK
      */
-    @PostMapping("/create")
+    @PostMapping("/sessione/")
     public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();

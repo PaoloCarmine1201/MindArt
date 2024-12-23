@@ -18,7 +18,7 @@ public class BambinoUserDetailsService implements UserDetailsService {
     /**
      * Repository del bambino.
      */
-    private BambinoRepository bambinoRepository;
+    private final BambinoRepository bambinoRepository;
 
 
     /**

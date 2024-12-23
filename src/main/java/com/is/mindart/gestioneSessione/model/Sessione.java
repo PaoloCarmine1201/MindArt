@@ -4,23 +4,20 @@ import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Rappresenta una sessione terapeutica.
  */
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class Sessione {
 
     public Sessione(Long id,
@@ -39,7 +36,6 @@ public class Sessione {
         this.materiale = materiale;
         this.terapeuta = terapeuta;
         this.bambini = bambini;
-        this.terminata = false;
     }
 
     /**

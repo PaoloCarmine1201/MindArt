@@ -6,8 +6,6 @@ import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +46,6 @@ public class SessioneService {
      * aggiorna la lista delle sessioni per ogni Bambino
      * @param sessioneDto - proveniente dall'endpoint di creazione
      */
-    @Transactional
     public void creaSessione(final SessioneDTO sessioneDto, final Terapeuta terapeuta) {
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
         sessione.setTerapeuta(terapeuta);
@@ -64,7 +61,6 @@ public class SessioneService {
      * @param id id sessione
      * @throws EntityNotFoundException se l'id non viene trovato
      */
-    @Transactional
     public void terminaSessione(final long id, final Bambino bambino)
             throws EntityNotFoundException {
         //se la sessione appartiene al bambino può terminarla

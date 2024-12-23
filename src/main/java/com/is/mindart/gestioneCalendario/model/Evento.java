@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -49,6 +50,7 @@ public class Evento {
      * La relazione è gestita con {@link JsonManagedReference} per evitare cicli
      * infiniti nella serializzazione JSON.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "terapeuta_id")
     @JsonManagedReference

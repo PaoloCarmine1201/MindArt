@@ -5,20 +5,20 @@ package com.is.mindart.security.service;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.security.model.TerapeutaDetails;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class TerapeutaUserDetailsService implements UserDetailsService {
 
     /**
      * Repository del terapeuta.
      */
-    @Autowired
-    private TerapeutaRepository terapeutaRepository;
+    private final TerapeutaRepository terapeutaRepository;
 
     /**
      * Carica i dettagli del terapeuta tramite l'email.

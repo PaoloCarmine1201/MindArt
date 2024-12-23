@@ -8,7 +8,6 @@ import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/terapeuta")
-@CrossOrigin(origins = "http://localhost:3000")
 public class BambinoController {
 
     /**
@@ -47,6 +45,7 @@ public class BambinoController {
     public ResponseEntity<List<BambinoDTOSimple>> getAllBambiniByTerapeuta() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Terapeuta terapeuta = ((TerapeutaDetails) authentication.getPrincipal()).getTerapeuta();
+
         List<BambinoDTOSimple> bambini = bambinoService.getBambiniByT(terapeuta.getId());
         return ResponseEntity.ok(bambini);
     }

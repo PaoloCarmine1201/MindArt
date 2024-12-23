@@ -2,7 +2,9 @@
 package com.is.mindart.security.model;
 
 import com.is.mindart.gestioneBambino.model.Bambino;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Data
+@AllArgsConstructor
 public class BambinoDetails implements UserDetails {
 
     /**
@@ -19,21 +23,15 @@ public class BambinoDetails implements UserDetails {
      *
      * @return il bambino
      */
-    @Getter
-    private final Bambino bambino;
+    private Bambino bambino;
     /**
      * -- GETTER --
      *  Metodo per ottenere la password temporanea
      *
      * @return la password temporanea
      */
-    @Getter
     private String tempPassword; // Qui potremmo usare il codice come password fittizia
 
-    public BambinoDetails(Bambino bambino, String codice) {
-        this.bambino = bambino;
-        this.tempPassword = codice; // usiamo il codice come password "fittizia"
-    }
 
 
     /**

@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  *
- * @autor Gabriele Ristallo
+ * @author  Gabriele Ristallo
  * Classe per popolare il db all'avvio dell'app
  *
  * Questa classe viene eseguita solo se il profilo "dev" è attivo,
@@ -266,25 +266,25 @@ public class DataLoader implements CommandLineRunner {
                 new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusHours(2),false,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta1,
                         List.of(bambino2T1, bambino3T1)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(1),false,
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(1), false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta1,
                         List.of(bambino1T1, bambino2T1, bambino3T1)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(1),false,
+                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(1), false,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta2,
                         List.of(bambino1T2, bambino2T2)),
-                new Sessione(null, "Apprendimento motorio",LocalDateTime.now().plusDays(1).plusHours(3),false,
+                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(1).plusHours(3), false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale2, terapeuta2,
                         List.of(bambino3T2)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(2),false,
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(2), false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta2,
                         List.of(bambino1T2, bambino3T2)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(3),false,
+                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(3), false,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta3,
                         List.of(bambino1T3, bambino2T3)),
-                new Sessione(null, "Apprendimento motorio",LocalDateTime.now().plusDays(4),false,
+                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(4), false,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta3,
                         List.of(bambino3T3)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(5),false,
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(5), false,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta3,
                         List.of(bambino2T3))
             ));

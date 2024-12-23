@@ -3,11 +3,10 @@ package com.is.mindart.configuration;
 
 import com.is.mindart.security.jwt.JwtAuthenticationFilter;
 import com.is.mindart.security.jwt.JwtAuthEntryPoint;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,32 +15,31 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
+@AllArgsConstructor
 public class SecurityConfig {
 
     /**
      * Questo componente si occupa di filtrare le richieste
      * e di estrarre il token JWT dall'header Authorization.
      */
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /**
      * Questo componente si occupa di gestire le eccezioni
      * generate da richieste non autorizzate.
      */
-    @Autowired
-    private JwtAuthEntryPoint unauthorizedHandler;
+    private final JwtAuthEntryPoint unauthorizedHandler;
 
     /**
      * Configura l'AuthenticationManager.
-     * @param authenticationConfiguration AuthenticationConfiguration
+     * @param configuration AuthenticationConfiguration
      * @return AuthenticationManager
      * @throws Exception Se si verifica un errore durante la configurazione
      */
     @Bean
-    public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(
+            final AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
     /**
@@ -62,8 +60,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/bambino/**")
                         .hasRole("BAMBINO")
                         .anyRequest().authenticated()
-                );
-
+                )
+                .sessionManagement(session -> session
+                .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)
+        );
         http.addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
 

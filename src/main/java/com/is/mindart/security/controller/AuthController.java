@@ -6,10 +6,15 @@ import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.security.jwt.JwtUtil;
 import com.is.mindart.security.service.BambinoUserDetailsService;
 import com.is.mindart.security.service.TerapeutaUserDetailsService;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,48 +23,39 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     /**
      * L'oggetto AuthenticationManager è fornito da Spring Security e viene utilizzato
      * per autenticare un utente.
      */
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * L'oggetto TerapeutaUserDetailsService è fornito da Spring Security e viene utilizzato
      * per gestire i dettagli dell'utente terapeuta.
      */
-    @Autowired
-    private TerapeutaUserDetailsService terapeutaUserDetailsService;
+    private final TerapeutaUserDetailsService terapeutaUserDetailsService;
 
     /**
      * L'oggetto BambinoUserDetailsService è fornito da Spring Security e viene utilizzato
      * per gestire i dettagli dell'utente bambino.
      */
-    @Autowired
-    private BambinoUserDetailsService bambinoUserDetailsService;
+    private final BambinoUserDetailsService bambinoUserDetailsService;
 
 
     /**
      * Il repository delle sessioni viene utilizzato per verificare se esiste almeno una sessione
      */
-    @Autowired
-    private SessioneRepository sessioneRepository;
+   private final SessioneRepository sessioneRepository;
 
     /**
      * L'oggetto JwtUtil è fornito da Spring Security e viene utilizzato
      * per generare il token JWT.
      */
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-    // DTO per login terapeuta
-    static class TerapeutaLoginRequest {
-        public String email;
-        public String password;
-    }
 
     static class BambinoLoginRequest {
         public String codice;
@@ -71,10 +67,14 @@ public class AuthController {
      * @return Il token JWT
      */
     @PostMapping("/terapeuta/login")
-    public ResponseEntity<String> loginTerapeuta(@RequestBody final TerapeutaLoginRequest request) {
-
-
-        UserDetails userDetails = terapeutaUserDetailsService.loadUserByUsername(request.email);
+    public ResponseEntity<String> loginTerapeuta(@RequestBody final TerapeutaLoginRequest request) throws AuthenticationException {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+        UserDetails userDetails = terapeutaUserDetailsService.loadUserByUsername(request.getEmail());
         return ResponseEntity.ok(jwtUtil.generateToken(userDetails.getUsername(), "ROLE_TERAPEUTA"));
     }
 

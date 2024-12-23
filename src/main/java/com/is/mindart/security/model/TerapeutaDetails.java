@@ -3,6 +3,9 @@ package com.is.mindart.security.model;
 
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,14 +13,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-
+@Data
 @AllArgsConstructor
 public class TerapeutaDetails implements UserDetails {
 
     /**
      * Terapeuta associato ad un token
+     * -- GETTER --
+     *  Restituisce il terapeuta associato al token.
+     *
+     * @return il terapeuta associato al token
+
      */
-    private final Terapeuta terapeuta;
+    private Terapeuta terapeuta;
 
 
     /**
@@ -83,11 +91,4 @@ public class TerapeutaDetails implements UserDetails {
         return true;
     }
 
-    /**
-     * Restituisce il terapeuta associato al token.
-     * @return il terapeuta associato al token
-     */
-    public Terapeuta getTerapeuta() {
-        return terapeuta;
-    }
 }

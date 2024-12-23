@@ -77,6 +77,7 @@ public class Terapeuta{
     @OneToMany(mappedBy = "terapeuta",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonBackReference
     @ToString.Exclude
     private List<Materiale> materiali;
 

@@ -13,6 +13,7 @@ import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -52,6 +53,7 @@ public class Materiale {
      */
     @ManyToOne
     @JoinColumn(name = "terapeuta_id")
+    @ToString.Exclude
     private Terapeuta terapeuta;
 
     /**
@@ -61,5 +63,6 @@ public class Materiale {
     @OneToMany(mappedBy = "materiale",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @ToString.Exclude
     private List<Sessione> sessioni;
 }

@@ -79,6 +79,7 @@ public class SessioneMapper {
         Sessione sessione = modelMapper.map(sessioneDTO, Sessione.class);
         sessione.setData(LocalDateTime.now());
         sessione.setNota("");
+        sessione.setTerminata(false);
         return sessione;
     }
 }

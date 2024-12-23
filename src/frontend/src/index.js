@@ -15,6 +15,7 @@ import ChildLogin from "./pages/ChildLogin";
 import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import {AuthProvider} from "./auth/AuthProvider";
+import GestioneMateriale from "./components/GestioneMateriale/GestioneMateriale";
 
 const router = createBrowserRouter([
     {
@@ -61,6 +62,11 @@ const router = createBrowserRouter([
         path:"/home",
         name: "Home",
         element : <HomePage />
+    },
+    {
+        path:"/gestioneMateriale",
+        name:"GestioneMateriale",
+        element: <GestioneMateriale />
     }
 ])
 

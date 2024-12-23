@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Terapeuta {
+public class Terapeuta{
 
     /**
      * Identificativo univoco del terapeuta.
@@ -67,6 +68,7 @@ public class Terapeuta {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonBackReference
+    @ToString.Exclude
     private List<Evento> eventi;
 
     /**
@@ -75,6 +77,7 @@ public class Terapeuta {
     @OneToMany(mappedBy = "terapeuta",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @ToString.Exclude
     private List<Materiale> materiali;
 
     /**
@@ -84,6 +87,7 @@ public class Terapeuta {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonBackReference
+    @ToString.Exclude
     private List<Sessione> sessioni;
 
     /**
@@ -93,6 +97,7 @@ public class Terapeuta {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonBackReference
+    @ToString.Exclude
     private List<Disegno> disegni;
 
     /**
@@ -102,5 +107,6 @@ public class Terapeuta {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonBackReference
+    @ToString.Exclude
     private List<Bambino> bambini;
 }

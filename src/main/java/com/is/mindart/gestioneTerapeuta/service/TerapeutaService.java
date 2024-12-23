@@ -42,4 +42,6 @@ public class TerapeutaService {
         Terapeuta terapeuta = modelMapper.map(terapeutaDto, Terapeuta.class);
         repository.save(terapeuta);
     }
+
+
 }

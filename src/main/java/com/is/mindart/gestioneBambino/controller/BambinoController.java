@@ -3,16 +3,20 @@ import com.is.mindart.gestioneBambino.service.BambinoDTO;
 import com.is.mindart.gestioneBambino.service.BambinoDTOSimple;
 import com.is.mindart.gestioneBambino.service.BambinoService;
 import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
+import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
+import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bambino")
+@RequestMapping("/api/terapeuta/bambini")
 @CrossOrigin(origins = "http://localhost:3000")
 public class BambinoController {
 
@@ -36,15 +40,17 @@ public class BambinoController {
     /**
      * @author gabrieleristallo
      * Restituisce tutti i bambini relativi a un terapeuta.
-     *
-     * @param terapeuta identificativo del terapeuta
      * @return lista di bambini del terapeuta
      */
     @GetMapping("/getallbyterapeuta")
-    public ResponseEntity<List<BambinoDTOSimple>> getAllBambiniByTerapeuta(
-            @RequestParam final Long terapeuta
-    ) {
-        List<BambinoDTOSimple> bambini = bambinoService.getBambiniByT(terapeuta);
+    public ResponseEntity<List<BambinoDTOSimple>> getAllBambiniByTerapeuta() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        Terapeuta terapeuta =
+                ((TerapeutaDetails) authentication.getPrincipal())
+                        .getTerapeuta();
+        List<BambinoDTOSimple> bambini =
+                bambinoService.getBambiniByT(terapeuta.getId());
         return ResponseEntity.ok(bambini);
     }
 
@@ -56,7 +62,9 @@ public class BambinoController {
      * @return bambino con l'identificativo specificato
      */
     @GetMapping("/get/{id}")
-    public ResponseEntity<BambinoDTOSimple> getBambino(@PathVariable final Long id) {
+    public ResponseEntity<BambinoDTOSimple> getBambino(
+            @PathVariable final Long id
+    ) {
         BambinoDTOSimple bambino = bambinoService.getBambino(id);
         return ResponseEntity.ok(bambino);
     }

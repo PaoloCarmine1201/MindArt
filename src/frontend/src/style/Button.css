@@ -9,12 +9,29 @@
     padding: 8px 16px; /* Margine interno */
     transition: all 0.3s ease; /* Transizione morbida */
 }
-
 .btn-conferma:hover {
     background-color: #28a745; /* Sfondo verde */
     border-color: #28a745; /* Bordo verde */
     color: white; /* Testo bianco */
 }
+
+.btn-conferma-full {
+    color: white; /* Testo bianco */
+    border: 2px solid #28a745; /* Bordo verde */
+    background-color: #28a745; /* Sfondo verde */
+    border-radius: 5px; /* Smusso angoli */
+    padding: 8px 16px; /* Margine interno */
+    transition: all 0.3s ease; /* Transizione morbida */
+}
+.btn-conferma-full:hover {
+    color: white; /* Testo bianco */
+    border: 2px solid #28a745; /* Bordo verde */
+    background-color: #28a745; /* Sfondo verde */
+    border-radius: 5px; /* Smusso angoli */
+    padding: 8px 16px; /* Margine interno */
+    transition: all 0.3s ease; /* Transizione morbida */
+}
+
 
 /* Pulsante Annulla (Grigio con hover)
     Da aggiungere assieme a btn-outline-secondary
@@ -27,12 +44,30 @@
     padding: 8px 16px; /* Margine interno */
     transition: all 0.3s ease; /* Transizione morbida */
 }
-
 .btn-annulla:hover {
     background-color: #6c757d; /* Sfondo grigio */
     border-color: #6c757d; /* Bordo grigio */
     color: white; /* Testo bianco */
 }
+
+.btn-annulla-full {
+    color: white; /* Testo bianco */
+    border: 2px solid #6c757d; /* Bordo grigio */
+    background-color: #6c757d; /* Sfondo grigio */
+    border-radius: 5px; /* Smusso angoli */
+    padding: 8px 16px; /* Margine interno */
+    transition: all 0.3s ease; /* Transizione morbida */
+}
+.btn-annulla-full:hover {
+    color: white; /* Testo bianco */
+    border: 2px solid #6c757d; /* Bordo grigio */
+    background-color: #6c757d; /* Sfondo grigio */
+    border-radius: 5px; /* Smusso angoli */
+    padding: 8px 16px; /* Margine interno */
+    transition: all 0.3s ease; /* Transizione morbida */
+}
+
+
 
 /* Pulsante Annulla (Rosso con hover)
     Da aggiungere assieme a btn-outline-secondary
@@ -51,3 +86,20 @@
     border-color: #dc3545;
     color: white; /* Testo bianco */
 }
+
+.btn-cancella-full {
+    color: white; /* Testo bianco */
+    border: 2px solid #dc3545; /* Bordo roffo */
+    background-color: #dc3545; /* Sfondo roffo */
+    border-radius: 5px; /* Smusso angoli */
+    padding: 8px 16px; /* Margine interno */
+    transition: all 0.3s ease; /* Transizione morbida */
+}
+.btn-cancella-full:hover {
+     color: white; /* Testo bianco */
+     border: 2px solid #dc3545; /* Bordo roffo */
+     background-color: #dc3545; /* Sfondo roffo */
+     border-radius: 5px; /* Smusso angoli */
+     padding: 8px 16px; /* Margine interno */
+     transition: all 0.3s ease; /* Transizione morbida */
+ }

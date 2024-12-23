@@ -1,6 +1,5 @@
 /**
- * Questo pacchetto contiene le classi e le enumerazioni
- * per la gestione dei materiali terapeutici nel sistema.
+ * Questo pacchetto rappresenta il model layer
  * Include:
  * <ul>
  *     <li>{@link com.is.mindart.gestioneMateriale.model.Materiale} -
@@ -9,6 +8,8 @@
  *     <li>{@link com.is.mindart.gestioneMateriale.model.TipoMateriale} -
  *         Enumerazione per identificare i tipi
  *         di materiale disponibili (PDF, immagine, video).</li>
+ *     <li>{@link com.is.mindart.gestioneMateriale.model.MaterialeRepository} -
+ *         Repository del Materiale</li>
  * </ul>
  */
 package com.is.mindart.gestioneMateriale.model;

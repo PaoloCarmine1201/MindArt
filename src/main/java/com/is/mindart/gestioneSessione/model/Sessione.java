@@ -7,7 +7,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +22,25 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class Sessione {
+
+    public Sessione(Long id,
+                    String temaAssegnato,
+                    LocalDateTime data,
+                    String nota,
+                    TipoSessione tipo,
+                    Materiale materiale,
+                    Terapeuta terapeuta,
+                    List<Bambino> bambini) {
+        this.id = id;
+        this.temaAssegnato = temaAssegnato;
+        this.data = data;
+        this.nota = nota;
+        this.tipo = tipo;
+        this.materiale = materiale;
+        this.terapeuta = terapeuta;
+        this.bambini = bambini;
+        this.terminata = false;
+    }
 
     /**
      * Identificativo univoco della sessione.
@@ -35,7 +57,13 @@ public class Sessione {
     /**
      * Data in cui si svolge la sessione.
      */
-    private Date data;
+    private LocalDateTime data;
+
+    /**
+     * Indica se la sessione è terminata
+     */
+    @ColumnDefault("false")
+    private Boolean terminata;
 
     /**
      * Nota aggiuntiva relativa alla sessione.
@@ -50,6 +78,7 @@ public class Sessione {
     /**
      * Materiale utilizzato durante la sessione.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "materiale_id")
     private Materiale materiale;
@@ -57,18 +86,15 @@ public class Sessione {
     /**
      * Terapeuta associato alla sessione.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "terapeuta_id")
     private Terapeuta terapeuta;
 
     /**
-     * Bambino coinvolto nella sessione.
+     * Bambini associati alla sessione
      */
-    @ManyToMany
-    @JoinTable(
-            name = "bambino_sessione",
-            joinColumns = @JoinColumn(name = "sessione_id"),
-            inverseJoinColumns = @JoinColumn(name = "bambino_id"))
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "sessioni")
     private List<Bambino> bambini;
-
 }

@@ -23,6 +23,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -307,7 +308,8 @@ public class DataLoader implements CommandLineRunner {
         } catch (Exception e) {
             System.err.println("Exception Message: " + e.getMessage());
 
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(DataLoader.class.getName());
+            logger.severe("Exception occurred: " + e.getMessage());
         }
     }
 

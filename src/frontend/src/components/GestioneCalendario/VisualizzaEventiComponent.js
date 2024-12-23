@@ -46,8 +46,18 @@ function VisualizzaEventiComponent() {
 
     const today = new Date();
     const todayString = today.toLocaleDateString();
-    const todayEvents = events[todayString] || [];
     const currentTime = today.getTime();
+
+    // Filtrare eventi precedenti a oggi
+    const futureEvents = Object.keys(events).reduce((acc, date) => {
+        const eventDate = new Date(date.split('/').reverse().join('-')).getTime();
+        if (eventDate >= new Date(todayString.split('/').reverse().join('-')).getTime()) {
+            acc[date] = events[date];
+        }
+        return acc;
+    }, {});
+
+    const todayEvents = futureEvents[todayString] || [];
     const remainingEvents = todayEvents.filter(ev => ev.end.getTime() > currentTime);
 
     return (
@@ -70,18 +80,18 @@ function VisualizzaEventiComponent() {
                     ))
                 )}
             </div>
-            {Object.keys(events).map(date => {
+            {Object.keys(futureEvents).map(date => {
                 const dayName = getDayOfWeek(date);
                 const dayNumber = date.split('/')[0];
 
-                if (date !== todayString && Array.isArray(events[date])) {
+                if (date !== todayString && Array.isArray(futureEvents[date])) {
                     return (
                         <div key={date} className="day">
                             <div className="day-header">
                                 <div className="day-number">{dayNumber}</div>
                                 <div className="day-name">{dayName}</div>
                             </div>
-                            {events[date].map(ev => (
+                            {futureEvents[date].map(ev => (
                                 <div key={ev.id} className={`event ${ev.title.replace(/\s+/g, '-').toLowerCase()}`}>
                                     <div className="event-title">{ev.title}</div>
                                     <div className="event-time">

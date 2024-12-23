@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.logging.Logger;
+
+
 @Controller
 @RequestMapping("/api/terapeuta/sessione")
 @RequiredArgsConstructor
@@ -32,11 +35,13 @@ public class SessioneController {
      */
     @PostMapping("/create")
     public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
 
-        //TODO: mettere nella dto l'id terapeuta
-        sessioneService.creaSessione(sessioneDTO, principal.getTerapeuta());
+        sessioneDTO.setIdTerapeuta(principal.getTerapeuta().getId());
+
+        sessioneService.creaSessione(sessioneDTO);
         return ResponseEntity.ok(sessioneDTO);
     }
 

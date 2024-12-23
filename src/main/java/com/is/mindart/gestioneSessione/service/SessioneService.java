@@ -33,6 +33,7 @@ public class SessioneService {
      * @param sessioneMapper
      * @param sessioneRepository
      */
+    @SuppressWarnings("checkstyle:HiddenField")
     @Autowired
     public SessioneService(final SessioneRepository repository,
                            final SessioneMapper sessioneMapper,
@@ -49,9 +50,8 @@ public class SessioneService {
      * @param sessioneDto - proveniente dall'endpoint di creazione
      */
     @Transactional
-    public void creaSessione(final SessioneDTO sessioneDto, final Terapeuta terapeuta) {
+    public void creaSessione(final SessioneDTO sessioneDto) {
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
-        sessione.setTerapeuta(terapeuta);
         if (sessione.getBambini() != null) {
             sessione.getBambini().forEach(
                     bambino -> bambino.getSessioni().add(sessione));

@@ -88,6 +88,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .buildDetails(request));
                     SecurityContextHolder.getContext()
                             .setAuthentication(authToken);
+                    logger.info("SecurityContext Authentication: " + SecurityContextHolder.getContext().getAuthentication());
                 } else if (role.contains("BAMBINO")) {
                     userDetails = bambinoUserDetailsService
                             .loadBambinoByCodice(username);

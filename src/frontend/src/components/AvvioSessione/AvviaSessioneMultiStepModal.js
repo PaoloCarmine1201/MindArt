@@ -91,12 +91,6 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
             } else {
                 setCurrentStep(prev => prev + 1);
             }
-
-            // if (currentStep === 1 && values.tipoSessione === 'DISEGNO') {
-            //     setCurrentStep(prev => prev + 2);
-            // } else {
-            //     setCurrentStep(prev => prev + 1);
-            // }
             setErrorMessage('');
         } else {
             const errorMessages = Object.keys(errs)

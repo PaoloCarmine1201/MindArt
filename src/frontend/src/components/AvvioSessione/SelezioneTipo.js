@@ -9,7 +9,15 @@ const SelezioneTipo = () => {
 
     return (
         <FormGroup>
-            <label>Tipo sessione</label>
+            <label style={{
+                fontSize: '1.3rem', // Larger font size
+                marginBottom: '1rem', // Space below the label
+                display: 'block', // Ensures the label spans the entire width
+                color: '#333' // Neutral text color
+            }}>
+                Seleziona tipo sessione:
+            </label>
+
 
             <Form.Check
                 type="radio"

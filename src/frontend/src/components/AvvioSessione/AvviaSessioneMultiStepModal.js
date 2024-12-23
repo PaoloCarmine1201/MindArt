@@ -21,12 +21,14 @@ import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le
 const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [currentStep, setCurrentStep] = useState(1);
 
+    const [materialList, setMaterialList] = useState([]);
+    const [loadingMaterial, setLoadingMaterial] = useState(false);
+    const [materialError, setMaterialError] = useState(null);
+
     const [childrenList, setChildrenList] = useState([]);
     const [loadingChildren, setLoadingChildren] = useState(false);
-
-    const [materials, setMaterials] = useState(1);
-
     const [childrenError, setChildrenError] = useState(null);
+
      // 'forward' o 'backward'
     const [errorMessage, setErrorMessage] = useState('');
     const [direction, setDirection] = useState("forward");
@@ -55,11 +57,25 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     };
 
     useEffect(() => {
-        if (currentStep === 3) {
+        if(currentStep === 2){
+            setLoadingMaterial(true);
+            setMaterialError(null);
+
+            axiosInstance.get('http://localhost:8080/api/terapeuta/materiale/getallbyterapeuta')
+                .then(response => {
+                    setMaterialList(response.data);
+                    setLoadingMaterial(false);
+                })
+                .catch(error => {
+                    setMaterialError('Errore nel caricamento dei materiali.');
+                    setLoadingMaterial(false);
+                });
+        }
+        else if (currentStep === 3) {
             setLoadingChildren(true);
             setChildrenError(null);
 
-            axiosInstance.get('http://localhost:8080/api/terapeuta/getallbyterapeuta')
+            axiosInstance.get('http://localhost:8080/api/terapeuta/bambini/getallbyterapeuta')
                 .then(response => {
                     setChildrenList(response.data);
                     setLoadingChildren(false);
@@ -127,8 +143,10 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                 return <SelezioneTipo />;
             case 2:
                 return <SelezioneMateriale
-                        materials={materials}
-                        setMaterials={setMaterials}
+                        materialList={materialList}
+                        setMaterialList={setMaterialList}
+                        loading={loadingMaterial}
+                        error={materialError}
                 />;
             case 3:
                 return (
@@ -181,7 +199,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                         <Modal.Header>
                             <Modal.Title className="w-100 text-center">Avvia Sessione</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body className="tall-modal-body" style={{paddingLeft: '40px', height: '350px', overflow: 'hidden',  }}>
+                        <Modal.Body className="tall-modal-body" style={{paddingLeft: '40px', paddingRight: '40px', height: '350px', overflow: 'hidden',  }}>
                             <TransitionGroup>
                                 <CSSTransition
                                     key={currentStep}
@@ -191,12 +209,6 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                                     {renderStep()}
                                 </CSSTransition>
                             </TransitionGroup>
-                            {/* Label nascosta per errori */}
-                            {errorMessage && (
-                                <div className="error-label">
-                                    {errorMessage}
-                                </div>
-                            )}
                         </Modal.Body>
                         <Modal.Footer>
 

@@ -9,7 +9,6 @@ const SelezioneBambino = ({ childrenList, loading, error }) => {
 
     return (
         <FormGroup>
-            <label>Scegli i bambini</label>
             <BambinoLista
                 childrenList={childrenList}
                 loading={loading}

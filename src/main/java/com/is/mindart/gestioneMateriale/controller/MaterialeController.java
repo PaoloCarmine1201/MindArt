@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/materiale")
+@RequestMapping("/api/terapeuta/materiale")
 public class MaterialeController {
 
     /**
@@ -37,7 +37,7 @@ public class MaterialeController {
      * @return 200 e json per successo e 204 se No Content
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @GetMapping()
+    @GetMapping("getallbyterapeuta")
     public ResponseEntity<List<GetMaterialeDTO>> getMateriale() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();

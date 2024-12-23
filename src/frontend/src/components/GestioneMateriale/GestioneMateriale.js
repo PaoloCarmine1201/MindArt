@@ -1,6 +1,6 @@
 import {Button, Card} from "react-bootstrap";
 import {FaFile} from "react-icons/fa";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 import '../../style/Button.css';
 import axiosInstance from "../../config/axiosInstance";
@@ -12,17 +12,19 @@ function GestioneMateriale() {
     const [loadingMaterial, setLoadingMaterial] = useState(false);
     const [materialError, setMaterialError] = useState(null);
 
-
-    axiosInstance.get('http://localhost:8080/api/terapeuta/materiale/getallbyterapeuta')
-        .then(response => {
-            setMaterialList(response.data);
-            setLoadingMaterial(false);
-        })
-        .catch(error => {
-            setMaterialError('Errore nel caricamento dei materiali.');
-            setLoadingMaterial(false);
-        });
-
+    useEffect(() => {
+        setLoadingMaterial(true);
+        axiosInstance
+            .get('http://localhost:8080/api/terapeuta/materiale/getallbyterapeuta')
+            .then(response => {
+                setMaterialList(response.data);
+                setLoadingMaterial(false);
+            })
+            .catch(error => {
+                setMaterialError('Errore nel caricamento dei materiali.');
+                setLoadingMaterial(false);
+            });
+    }, []); // Il secondo parametro [] indica che l'effetto viene eseguito solo al montaggio del componente
 
     // Filtra i materiali in base al filtro selezionato
     const filteredMaterials = materialList.filter((mat) => {
@@ -30,38 +32,39 @@ function GestioneMateriale() {
         return mat.tipoMateriale === filter;
     });
 
+    const handleFilterChange = (filterType) => {
+        setFilter(filterType);
+    };
+
     return (
-        <div>
+        <>
             {/* Filtri in cima */}
-            <div className="d-flex mb-3">
-                <Button
-                    variant={filter === "ALL" ? "btn-outline-primary btn-cancella-full" : "btn-outline-primary btn-cancella"}
-                    onClick={() => setFilter("ALL")}
-                    className="me-2"
-                >
-                    ALL
-                </Button>
-                <Button
-                    variant={filter === "PDF" ? "btn-outline-primary btn-cancella-full" : "btn-outline-primary btn-cancella"}
-                    onClick={() => setFilter("PDF")}
-                    className="me-2"
-                >
-                    PDF
-                </Button>
-                <Button
-                    variant={filter === "VIDEO" ? "btn-outline-primary btn-annulla-full" : "btn-outline-primary btn-annulla"}
-                    onClick={() => setFilter("VIDEO")}
-                    className="me-2"
-                >
-                    Video
-                </Button>
-                <Button
-                    variant={filter === "IMMAGINE" ? "btn-outline-primary btn-conferma-full" : "btn-outline-primary btn-conferma"}
-                    onClick={() => setFilter("IMMAGINE")}
-                >
-                    Immagine
-                </Button>
-            </div>
+            <Button
+                variant="outline-primary btn-cancella"
+                onClick={() => handleFilterChange("ALL")}
+            >
+                ALL
+            </Button>
+            <Button
+                variant="outline-primary btn-cancella-full"
+                onClick={() => handleFilterChange("PDF")}
+            >
+                PDF
+            </Button>
+            <Button
+                variant={filter === "VIDEO" ? "btn-outline-primary btn-annulla-full" : "btn-outline-primary btn-annulla"}
+                onClick={() => handleFilterChange("VIDEO")}
+                className="me-2"
+
+            >
+                Video
+            </Button>
+            <Button
+                variant={filter === "IMMAGINE" ? "btn-outline-primary btn-conferma-full" : "btn-outline-primary btn-conferma"}
+                onClick={() => handleFilterChange("IMMAGINE")}
+            >
+                Immagine
+            </Button>
 
             {/* Schede Materiali */}
             <div className="d-flex flex-wrap">
@@ -88,7 +91,7 @@ function GestioneMateriale() {
                                     textOverflow: "ellipsis",
                                     fontSize: "14px",
                                 }}
-                                title={mat.nome} // Mostra il titolo completo al passaggio del mouse
+                                title={mat.nome}
                             >
                                 {mat.nome}
                             </Card.Text>
@@ -96,7 +99,7 @@ function GestioneMateriale() {
                     </Card>
                 ))}
             </div>
-        </div>
+        </>
     );
 }
 

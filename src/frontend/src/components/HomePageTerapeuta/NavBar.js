@@ -1,6 +1,7 @@
 import React from 'react';
 import '../../style/NavBarStyle.css';
 import { Link } from 'react-router-dom';
+import AvviaSessioneButton from "../AvvioSessione/AvviaSessioneButton";
 
 function NavBar({name}) {
     return (
@@ -11,7 +12,7 @@ function NavBar({name}) {
                 <span className="page-title">{name}</span>
             </div>
             <div className="navbar-right">
-                <button className="start-session-button">Avvia sessione</button>
+                <AvviaSessioneButton />
                 <div className="profile-icon">
                     <img src={require('../../assets/profile_icon.png')} alt="Profile" className="profile-icon"/>
                 </div>

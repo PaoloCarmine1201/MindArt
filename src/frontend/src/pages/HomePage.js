@@ -5,6 +5,7 @@ import NavBar from "../components/HomePageTerapeuta/NavBar";
 import "../style/HomaPageStyle.css";
 import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniListComponent";
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
+import GestioneMateriale from "../components/GestioneMateriale/GestioneMateriale";
 
 function HomePage() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
@@ -44,10 +45,8 @@ function HomePage() {
                         </div>
 
                         <div className="box materiali">
-                            <Link to={"/materiale"} className={"link"}><h2>I tuoi materiali</h2></Link>
-                            <div className={"item-container"}>
-                                {/*Materiali component*/}
-                            </div>
+                            <Link to={"/gestioneMateriale"} className={"link"}><h2>I tuoi materiali</h2></Link>
+                            <GestioneMateriale/>
                         </div>
                     </div>
                 </div>

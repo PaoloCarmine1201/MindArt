@@ -14,11 +14,11 @@ const SelezioneBambino = ({ childrenList, loading, error }) => {
                 childrenList={childrenList}
                 loading={loading}
                 error={error}
-                selectedChildren={values.bambino}
+                selectedChildren={values.bambini}
                 setFieldValue={setFieldValue}
             />
             <Form.Control.Feedback type="invalid">
-                {typeof errors.bambino === 'string'? errors.bambino : ''}
+                {typeof errors.bambini === 'string'? errors.bambini : ''}
             </Form.Control.Feedback>
         </FormGroup>
     );

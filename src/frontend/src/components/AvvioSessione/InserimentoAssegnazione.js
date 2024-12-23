@@ -7,13 +7,13 @@ function InserimentoAssegnazione() {
     return (
         <Form.Group>
             <Form.Control
-                name="assegnazione"
+                name="temaAssegnato"
                 type="text"
                 placeholder="Es. peppino"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.assegnazione}
-                isInvalid={touched.assegnazione && !!errors.assegnazione}
+                value={values.temaAssegnato}
+                isInvalid={touched.temaAssegnato && !!errors.temaAssegnato}
             />
             <Form.Control.Feedback type="invalid" tooltip>
                 {typeof errors.nome === 'string' ? errors.nome : ''}

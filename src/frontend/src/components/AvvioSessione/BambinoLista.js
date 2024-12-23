@@ -5,9 +5,9 @@ import { Form, Spinner } from 'react-bootstrap';
 const SelezioneBambino = ({ childrenList, loading, error, selectedChildren, setFieldValue }) => {
     const handleCheckboxChange = (e, bambinoId) => {
         if (e.target.checked) {
-            setFieldValue('bambino', [...selectedChildren, bambinoId]);
+            setFieldValue('bambini', [...selectedChildren, bambinoId]);
         } else {
-            setFieldValue('bambino', selectedChildren.filter(id => id !== bambinoId));
+            setFieldValue('bambini', selectedChildren.filter(id => id !== bambinoId));
         }
     };
 
@@ -35,7 +35,7 @@ const SelezioneBambino = ({ childrenList, loading, error, selectedChildren, setF
                     key={bambino.id}
                     type="checkbox"
                     label={bambino.nome}
-                    name="bambino"
+                    name="bambini"
                     value={bambino.id}
                     checked={selectedChildren.includes(bambino.id)}
                     onChange={(e) => handleCheckboxChange(e, bambino.id)}

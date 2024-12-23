@@ -15,14 +15,14 @@ export const stepTwoSchema = yup.object().shape({
 });
 
 export const stepThreeSchema = yup.object().shape({
-    bambino: yup
+    bambini: yup
         .array()
         .min(1, 'Devi selezionare almeno un bambino')
         .required('Requisito')
 });
 
 export const stepFourSchema = yup.object().shape({
-    assegnazione: yup
+    temaAssegnato: yup
         .string()
         .required('L\'assegnazione è obbligatoria')
 });

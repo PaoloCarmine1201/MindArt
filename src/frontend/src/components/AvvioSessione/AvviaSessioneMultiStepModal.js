@@ -35,7 +35,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const initialValues = {
         tipoSessione: '',
         materiale: '',
-        bambino: [],
+        bambini: [],
+        temaAssegnato: ''
     };
 
     const getValidationSchema = () => {
@@ -113,6 +114,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const handleSubmit = (values, { resetForm }) => {
         axiosInstance.post('http://localhost:8080/api/terapeuta/sessione/create', values)
             .then(r => alert('Sessione creata con successo'))
+            .catch(r => console.log(r));
 
         resetForm();
         setCurrentStep(1);

@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
+import axiosInstance from "../../config/axiosInstance";
 
 /**
  * @autor gabrieleristallo
  * componente utilizzata per visualizzare i dettagli di un bambino
  * grazie ad useParams si ottiene l'id del bambino passato tramite url
  */
-
 function DettaglioBambinoComponent() {
     const { id } = useParams();
     const [bambino, setBambino] = useState(null);
@@ -33,6 +33,16 @@ function DettaglioBambinoComponent() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        axiosInstance.get("http://localhost:8080/api/terapeuta/bambini/get/" + id)
+            .then(response => {
+                setBambino(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+
 
     if (!bambino) {
         return <p>Caricamento in corso...</p>;
@@ -50,13 +60,15 @@ function DettaglioBambinoComponent() {
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Sesso:</label>
                     <span className="dettaglio-value">
-                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'M' ?
+                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'MASCHIO' ?
                             'Maschio' : 'Femmina'}
                     </span>
                 </div>
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Data di Nascita:</label>
-                    <span className="dettaglio-value">{bambino.dataDiNascita}</span>
+                    <span className="dettaglio-value">
+                        {new Date(bambino.dataDiNascita).toLocaleDateString('it-IT')}
+                    </span>
                 </div>
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Codice Fiscale:</label>

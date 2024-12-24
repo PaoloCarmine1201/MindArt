@@ -1,7 +1,7 @@
 package com.is.mindart.gestioneCalendario.service;
 
 import com.is.mindart.gestioneCalendario.exception.EventNotFoundException;
-import com.is.mindart.gestioneCalendario.model.EventRespository;
+import com.is.mindart.gestioneCalendario.model.EventoRespository;
 import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class EventService {
     /**
      * Repository per la gestione delle operazioni sugli eventi.
      */
-    private final EventRespository eventRepository;
+    private final EventoRespository eventRepository;
 
     /**
      * Repository per la gestione delle operazioni sui terapeuti.
@@ -48,13 +48,12 @@ public class EventService {
 
     /**
      * Recupera un evento specifico tramite il suo ID.
-     *
-     * @param id l'identificativo dell'evento
+     * @param idEvento l'identificativo dell'evento
+     * @param idTerapeuta l'identificativo del terapeuta
      * @return un oggetto {@link EventDto} rappresentante l'evento
-     * @throws EventNotFoundException se l'evento non esiste
      */
-    public EventDto getEventById(Long id) {
-        Evento event = eventRepository.findById(id)
+    public EventDto getEventByIdAndTerapeutaId(Long idEvento, Long idTerapeuta) {
+        Evento event = eventRepository.findByIdAndTerapeutaId(idEvento, idTerapeuta)
                 .orElseThrow(() ->
                         new EventNotFoundException("Event not found"));
         return mapToEventDto(event);
@@ -67,12 +66,11 @@ public class EventService {
      *                 rappresentante i dati dell'evento
      * @return l'evento salvato come {@link EventDto}
      */
-    public EventDto addEvent(EventDto eventDto) {
+    public EventDto addEvent(final EventDto eventDto, final Long terapeutaId) {
         Evento event = mapToEvent(eventDto);
         Evento savedEvent = eventRepository.save(event);
         return mapToEventDto(savedEvent);
     }
-
     /**
      * Aggiorna un evento esistente nel calendario.
      *
@@ -81,7 +79,7 @@ public class EventService {
      * @return l'evento aggiornato come {@link EventDto}
      * @throws EventNotFoundException se l'evento non esiste
      */
-    public EventDto updateEvent(EventDto eventDto) {
+    public EventDto updateEvent(final EventDto eventDto, final Long terapeutaId) {
         Evento existingEvent = eventRepository.findById(eventDto.getId())
                 .orElseThrow(() ->
                         new EventNotFoundException("Event not found"));
@@ -91,6 +89,9 @@ public class EventService {
         existingEvent.setInizio(eventDto.getInizio());
         existingEvent.setFine(eventDto.getFine());
 
+        if (!existingEvent.getTerapeuta().getId().equals(terapeutaId)) {
+            throw new EventNotFoundException("Event not found");
+        }
         Evento updatedEvent = eventRepository.save(existingEvent);
         return mapToEventDto(updatedEvent);
     }
@@ -99,10 +100,11 @@ public class EventService {
      * Elimina un evento dal calendario.
      *
      * @param id l'identificativo dell'evento da eliminare
+     * @param terapeutaId l'identificativo del terapeuta
      * @throws EventNotFoundException se l'evento non esiste
      */
-    public void deleteEvent(Long id) {
-        Evento event = eventRepository.findById(id)
+    public void deleteEvent(final Long id, final Long terapeutaId) {
+        Evento event = eventRepository.findByIdAndTerapeutaId(id, terapeutaId)
                 .orElseThrow(() ->
                         new EventNotFoundException("Event not found"));
         eventRepository.delete(event);
@@ -114,7 +116,7 @@ public class EventService {
      * @param event l'entità da convertire
      * @return il DTO corrispondente
      */
-    private EventDto mapToEventDto(Evento event) {
+    private EventDto mapToEventDto(final Evento event) {
         return modelMapper.map(event, EventDto.class);
     }
 
@@ -124,7 +126,7 @@ public class EventService {
      * @param eventDto il DTO da convertire
      * @return l'entità corrispondente
      */
-    private Evento mapToEvent(EventDto eventDto) {
+    private Evento mapToEvent(final EventDto eventDto) {
         Evento evento = modelMapper.map(eventDto, Evento.class);
         evento.setTerapeuta(
                 terapeutaRepository.getReferenceById(eventDto.getTerapeuta())

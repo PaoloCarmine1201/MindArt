@@ -1,8 +1,4 @@
 .visualizza-bambini-box {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
     max-width: 100%;
     margin: 0;
     height: 100%;
@@ -10,26 +6,7 @@
     position: relative;
 }
 
-.visualizza-bambini-titolo {
-    z-index: 100;
-    position: sticky;
-    top: 0;
-    background-color: white;
-    font-size: 18px;
-    font-weight: bold;
-    color: #000;
-    padding: 10px 0;
-    margin: 0;
-}
-
 .list-box {
-    margin-top: 10px;
+    margin-top: 0px;
 }
-
-
-
-/*.title-container {
-    z-index: 100;
-    background-color: white;
-}*/
 

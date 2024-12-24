@@ -1,0 +1,63 @@
+/* VisualizzaEventiStyle.css */
+.schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+}
+
+.day {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.day-header {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.day-number {
+    background-color: #001447;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.day-name {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.event {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    color: black;
+}
+
+.event-title {
+    font-weight: bold;
+}
+
+.event-time {
+    font-size: 0.9em;
+}
+
+.no-events {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+}
+

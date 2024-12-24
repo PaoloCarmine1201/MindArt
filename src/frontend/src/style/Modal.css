@@ -12,9 +12,25 @@
 .custom-modal .modal-title {
     font-weight: 700; /* Grassetto */
     font-size: 1.5rem;
+
 }
 
 .custom-backdrop {
     backdrop-filter: blur(10px); /* Applica l'effetto blur */
     background-color: rgba(0, 0, 0, 0.5); /* Colore semi-trasparente */
+}
+
+.tall-modal-dialog {
+    height: 90vh !important;
+}
+
+.tall-modal-body {
+    overflow-y: auto !important;
+}
+
+.error-label {
+    color: red;
+    margin-bottom: 10px;
+    text-align: center;
+    bottom: 10px;
 }

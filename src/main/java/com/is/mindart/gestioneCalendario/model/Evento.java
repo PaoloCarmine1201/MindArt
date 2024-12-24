@@ -22,7 +22,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 public class Evento {
-
     /**
      * Identificativo univoco dell'evento.
      */

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/api/terapeuta")
+@RequestMapping("/api/")
 @RequiredArgsConstructor
 public class SessioneController {
 
@@ -26,7 +26,7 @@ public class SessioneController {
      * @param sessioneDTO DTO proveniente dal client
      * @return 200 OK
      */
-    @PostMapping("/sessione/")
+    @PostMapping("/terapeuta/sessione/")
     public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String principal = (String) authentication.getPrincipal();
@@ -40,14 +40,14 @@ public class SessioneController {
      * @param id id sessione
      * @return 200 OK oppure 404 Not Found
      */
-    @PatchMapping("/sessione/{id}/termina")
+    @DeleteMapping("/bambino/sessione/{id}/termina")
     public ResponseEntity<Void> terminaSessione (@PathVariable long id) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String principal = (String) authentication.getPrincipal();
-            sessioneService.terminaSessione(id,principal);
+            sessioneService.terminaSessione(id, principal);
             return ResponseEntity.ok().build();
-        } catch(EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

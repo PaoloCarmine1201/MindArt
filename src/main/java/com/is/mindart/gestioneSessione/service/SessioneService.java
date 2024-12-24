@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -64,6 +65,7 @@ public class SessioneService {
      * @param id id sessione
      * @throws EntityNotFoundException se l'id non viene trovato
      */
+    @Transactional
     public void terminaSessione(final long id, final String codice)
             throws EntityNotFoundException {
         Bambino bambino = bambinoRepository.findByCodice(codice)
@@ -74,9 +76,6 @@ public class SessioneService {
             throw new EntityNotFoundException(
                     "Sessione con id " + id + " non trovato");
         }
-        if (sessioneRepository.terminaSessione(id) == 0) {
-            throw new EntityNotFoundException(
-                    "Sessione con id " + id + " non trovato");
-        }
+        sessioneRepository.terminaSessione(id);
     }
 }

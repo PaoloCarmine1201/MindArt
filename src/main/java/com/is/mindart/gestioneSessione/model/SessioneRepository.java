@@ -16,9 +16,9 @@ import java.util.List;
 public interface SessioneRepository extends JpaRepository<Sessione, Long> {
 // il teraputa non npuò avviare una sessione se ne ha già una in corso
     /**
-     * Restituisce tutte le sessioni non terminate di un bambino.
-     * @param codiceBambino il codice del bambino
-     * @return Lista delle sessioni
+     * Restituisce le sessioni non terminate
+     * di un bambino ordinate per data.
+     * @param codiceBambino codice del bambino
      */
      List<Sessione> findByTerminataFalseAndBambini_CodiceOrderByDataAsc(String codiceBambino);
     /**
@@ -29,5 +29,4 @@ public interface SessioneRepository extends JpaRepository<Sessione, Long> {
     @Modifying
     @Query("UPDATE Sessione s SET s.terminata = true WHERE s.id = :id AND s.terminata = false")
     int terminaSessione(@Param("id") Long id);
-
 }

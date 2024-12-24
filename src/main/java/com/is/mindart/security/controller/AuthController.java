@@ -114,7 +114,7 @@ public class AuthController {
         return ResponseEntity.ok(jwtUtil.generateToken(userDetails.getUsername(), "ROLE_BAMBINO"));
     }
 
-    @PostMapping("/register")
+    @PostMapping("/terapeuta/register")
     public ResponseEntity<TerapeutaDTO> registerTerapeuta(
             @Valid @RequestBody final TerapeutaDTO terapeutaDto) {
         terapeutaService.registerTerapeuta(terapeutaDto);

@@ -4,8 +4,8 @@ import com.is.mindart.gestioneMateriale.service.MaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
 import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.servlet.ServletContext;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 @RequestMapping("/api/terapeuta/materiale")
 public class MaterialeController {
 
-    private static final String MATERIALI_PATH = "../src/materiali/";
+    private static final String BASE_DIRECTORY = "src/materiali/";
 
     /**
      * Service relativa al materiale.
@@ -41,6 +41,24 @@ public class MaterialeController {
         this.materialeService = materialeService;
     }
 
+    @PreAuthorize("hasRole('TERAPEUTA')")
+    @PostMapping("/remove")
+    public ResponseEntity<String> removeMaterial(MaterialeDTO materialeDTO) {
+        try {
+            materialeService.removeMaterial(materialeDTO);
+            return ResponseEntity.ok("Material removed");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error removing material: " + e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('TERAPEUTA')")
+    @PostMapping("/update")
+    public ResponseEntity<String> updateMaterial(MaterialeDTO materialeDTO) {
+        return null;
+    }
+
     /**
      * Endpoint per l'ottenimento dei materiali caricati da un terapeuta.
      * @return 200 e json per successo e 204 se No Content
@@ -54,18 +72,46 @@ public class MaterialeController {
         List<MaterialeDTO> materiali = materialeService.getClientMateriale(principal.getTerapeuta().getId());
 
         if (materiali.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Restituisce 204 No Content
+            return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(materiali);
     }
 
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @PostMapping("/save")
-    public ResponseEntity<String> addMaterial(@Valid @RequestBody MaterialeDTO materialeDTO) {
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> addMaterial(
+            @RequestParam("terapeutaId") Long terapeutaId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("nome") String nome) {
 
+        try {
+            String fileType = file.getContentType();
+            if (!(fileType != null && ("application/pdf".equals(fileType) || "video/mp4".equals(fileType)))) {
+                return ResponseEntity.badRequest().body("File type not supported. Only PDF and MP4 allowed.");
+            }
 
-        return ResponseEntity.ok("Material added");
+            Path directoryPath = Paths.get(BASE_DIRECTORY, String.valueOf(terapeutaId));
+            if (!Files.exists(directoryPath)) {
+                Files.createDirectories(directoryPath);
+            }
+
+            String fileName = nome + getFileExtension(file.getOriginalFilename());
+            Path filePath = directoryPath.resolve(fileName);
+
+            Files.write(filePath, file.getBytes());
+
+            return ResponseEntity.ok("Material added to: " + filePath.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error saving material: " + e.getMessage());
+        }
+    }
+
+    private String getFileExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : fileName.substring(dotIndex);
     }
 
 }

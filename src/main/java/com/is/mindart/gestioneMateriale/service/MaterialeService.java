@@ -48,4 +48,9 @@ public class MaterialeService {
     public void addMateriale() {
 
     }
+
+    public void removeMaterial(MaterialeDTO materialeDTO) {
+        materialeRepository.deleteById(materialeDTO.getId());
+    }
+
 }

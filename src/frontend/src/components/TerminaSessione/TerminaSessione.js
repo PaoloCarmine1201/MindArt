@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TerminateModal from "../modal/TerminateModal";
@@ -7,12 +7,17 @@ const TerminaSessione = () => {
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
-    const [idSessione] = useState("");
+    const [idSessione, setIdSessione] = useState("");
+
+    useEffect(() => {
+        // Imposta idSessione una volta
+        setIdSessione(1); // Sostituisci con l'ID corretto se dinamico
+    }, []);
 
     const handleLogout = async () => {
         setLoading(true);
         try {
-            const response = await axios.patch(`/api/sessione/${idSessione}/termina`); // Chiamata all'API
+            const response = await axios.patch(`/api/terapeuta/sessione/${idSessione}/termina`); // Chiamata all'API
             if (response.status === 200) {
                 setMessage("Sessione terminata con successo.");
             }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
+import axiosInstance from "../../config/axiosInstance";
 
 /**
  * @autor gabrieleristallo
@@ -30,6 +31,16 @@ function DettaglioBambinoComponent() {
         };
 
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        axiosInstance.get("http://localhost:8080/api/terapeuta/bambini/get/" + id)
+            .then(response => {
+                setBambino(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }, []);
 
 

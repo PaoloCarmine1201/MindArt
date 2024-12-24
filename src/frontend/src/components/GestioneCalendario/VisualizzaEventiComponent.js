@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import '../../style/VisualizzaEventiStyle.css';
+import axiosInstance from "../../config/axiosInstance";
 
 function VisualizzaEventiComponent() {
-    const [idTerapeuta, setIdTerapeuta] = useState(1);
     const [events, setEvents] = useState({});
+    const [eventError, setEventError] = useState(null);
 
+
+    /*
     useEffect(() => {
-        fetch('http://localhost:8080/api/terapeuta/1/events')
-            .then(res => res.json())
-            .then(data => {
+        axiosInstance.get(`http://localhost:8080/api/terapeuta/events`)
+            .then(res => {
+                const data = res.data;
                 const converted = data.map(ev => ({
                     id: ev.id,
                     title: ev.nome,
@@ -32,6 +35,28 @@ function VisualizzaEventiComponent() {
             })
             .catch(err => console.error(err));
     }, [idTerapeuta]);
+*/
+
+    useEffect(() => {
+        axiosInstance.get("http://localhost:8080/api/terapeuta/events")
+            .then(response => {
+                const event = response.data;
+                const sortedEvents = event.sort((a, b) => a.start - b.start);
+                const groupedEvents = sortedEvents.reduce((acc, event) => {
+                    const eventDate = event.start.toLocaleDateString();
+                    if (!acc[eventDate]) {
+                        acc[eventDate] = [];
+                    }
+                    acc[eventDate].push(event);
+                    return acc;
+                }, {});
+                setEvents(groupedEvents);
+            })
+            .catch(error => {
+                console.error(error);
+                setEventError('Errore nel caricamento degli eventi');
+            });
+    }, []);
 
     function getDayOfWeek(dateString) {
         const [day, month, year] = dateString.split('/');

@@ -5,22 +5,21 @@ import NavBar from "../components/HomePageTerapeuta/NavBar";
 import "../style/HomaPageStyle.css";
 import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniListComponent";
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
+import axiosInstance from "../config/axiosInstance";
 
 function HomePage() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
     localStorage.setItem("idTerapeuta", idTerapeuta);
     const [bambini, setBambini] = useState([]);
+    const [bambiniError, setBambiniError] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await fetch(
-                'http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + idTerapeuta
-            );
-            const data = await result.json();
-            setBambini(data);
-        };
-        fetchData();
-    }, [idTerapeuta]);
+    axiosInstance.get('http://localhost:8080/api/terapeuta/bambini/getallbyterapeuta')
+        .then(response => {
+            setBambini(response.data);
+        })
+        .catch(error => {
+            setBambiniError('Errore nel caricamento dei bambini.');
+        });
 
     return (
         <>

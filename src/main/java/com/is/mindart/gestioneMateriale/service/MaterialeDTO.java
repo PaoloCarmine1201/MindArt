@@ -20,4 +20,10 @@ public class MaterialeDTO {
 
     @NotNull
     private Long terapeutaId;
+
+//    @NotNull
+//    private byte[] fileContent;
+//
+//    @NotNull
+//    private String mimeType;
 }

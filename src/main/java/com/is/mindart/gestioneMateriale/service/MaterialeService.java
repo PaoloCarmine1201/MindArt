@@ -34,14 +34,18 @@ public class MaterialeService {
 
     /**
      * Trova tutti i materiali associati al terapeutae li converte in
-     * {@link GetMaterialeDTO} per la visualizzazione sul client.
+     * {@link MaterialeDTO} per la visualizzazione sul client.
      * @param terapeutaId - id del terapeuta loggato
      * @return listaDTO
      */
-    public List<GetMaterialeDTO> getClientMateriale(final long terapeutaId) {
+    public List<MaterialeDTO> getClientMateriale(final long terapeutaId) {
         return materialeRepository.findByTerapeutaId(terapeutaId)
                 .stream()
                 .map(materialeMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public void addMateriale() {
+
     }
 }

@@ -92,6 +92,7 @@ public class MaterialeController {
             }
 
             Path directoryPath = Paths.get(BASE_DIRECTORY, String.valueOf(terapeutaId));
+
             if (!Files.exists(directoryPath)) {
                 Files.createDirectories(directoryPath);
             }

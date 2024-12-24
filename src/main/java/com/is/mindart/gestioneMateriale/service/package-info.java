@@ -3,7 +3,7 @@
  * e scelta del materiale.
  * Include:
  * <ul>
- *     <li>{@link com.is.mindart.gestioneMateriale.service.GetMaterialeDTO} -
+ *     <li>{@link com.is.mindart.gestioneMateriale.service.MaterialeDTO} -
  *         Classe che rappresenta il materiale mostrabile al client.</li>
  * </ul>
  */

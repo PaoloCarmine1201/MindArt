@@ -2,34 +2,81 @@ package com.is.mindart.gestioneBambino.service;
 
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
+import com.is.mindart.gestioneSessione.model.Sessione;
+import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
+import com.is.mindart.security.jwt.JwtUtil;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class BambinoService {
 
     /**
      *  Provvede ad accedere al database per l'entità Bambino.
      */
-    @Autowired
-    private BambinoRepository repository;
+    private final BambinoRepository bambinoRepository;
 
     /**
      *  Provvede ad accedere al database per l'entità Terapeuta.
      */
-    @Autowired
-    private TerapeutaRepository terapeutaRepository;
+    private final TerapeutaRepository terapeutaRepository;
 
     /**
      *  Provvede a mappare l'entità Bambino con BambinoDTO e RegisterBambinoDTO.
      */
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    /**
+     *  Provvede a generare il token JWT.
+     */
+    private final JwtUtil jwtUtil;
+
+    /**
+     *  Provvede ad accedere al database per l'entità Sessione.
+     */
+    private final SessioneRepository sessioneRepository;
+
+
+
+
+    /**
+     * Questo metodo gestisce la richiesta di login per un bambino.
+     * @param codice Il codice del bambino
+     * @return Il token JWT
+     */
+    public String loginBambino(final String codice) {
+        Optional<Bambino> bambino = bambinoRepository.findByCodice(codice);
+        if (bambino.isPresent()) {
+            // Verifica se esiste almeno una sessione programmata per oggi
+            Sessione session = sessioneRepository.findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice).stream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (session == null) {
+                return null;
+            }
+
+            // Verifica se la sessione è già iniziata
+            if (session.getData().isAfter(LocalDateTime.now())) {
+                return null;
+            }
+
+            return jwtUtil.generateToken(bambino.get().getCodice(), "BAMBINO");
+        }
+        return null;
+    }
+
 
     /**
      * @author gabrieleristallo
@@ -38,7 +85,7 @@ public class BambinoService {
      * @return lista di bambini presenti nel database.
      */
     public List<BambinoDTO> getAllBambini() {
-        List<Bambino> bambini = repository.findAll();
+        List<Bambino> bambini = bambinoRepository.findAll();
         return bambini.stream()
                 .map(bambino -> modelMapper.map(bambino, BambinoDTO.class))
                 .collect(Collectors.toList());
@@ -52,7 +99,7 @@ public class BambinoService {
      * @return bambino con l'identificativo specificato.
      */
     public BambinoDTOSimple getBambino(final Long id) {
-        Bambino bambino = repository.findById(id).orElseThrow(() ->
+        Bambino bambino = bambinoRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Bambino non trovato"));
         return modelMapper.map(bambino, BambinoDTOSimple.class);
     }
@@ -61,11 +108,21 @@ public class BambinoService {
      * @author gabrieleristallo
      * Restituisce tutti i bambini associati ad un terapeuta.
      *
-     * @param terapeuta identificativo del terapeuta.
+     * @param email l'email del terapeuta.
      * @return List<BambinoDTO> lista di bambini del terapeuta.
      */
-    public List<BambinoDTOSimple> getBambiniByT(final Long terapeuta) {
-        return repository.findAllByTerapeutaId(terapeuta).stream()
+    public List<BambinoDTOSimple> getBambiniByT(final String email) {
+        return bambinoRepository
+                .findAllByTerapeutaId(
+                        terapeutaRepository
+                                .findByEmail(email)
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                        "Terapeuta non trovato"
+                                        )
+                                )
+                                .getId()
+                )
+                .stream()
                 .map(this::mapToBambinoDto)
                 .collect(Collectors.toList());
     }
@@ -88,7 +145,7 @@ public class BambinoService {
                                 )
                         )
         );
-        repository.save(bambino);
+        bambinoRepository.save(bambino);
     }
 
     private BambinoDTOSimple mapToBambinoDto(Bambino bambino) {

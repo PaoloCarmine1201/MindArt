@@ -27,10 +27,5 @@ public class AuthController1 {
      * @param terapeutaDto - DTO del terapeuta
      * @return ResponseEntity
      */
-    @PostMapping("/register")
-    public ResponseEntity<TerapeutaDTO> registerTerapeuta(
-            @Valid @RequestBody final TerapeutaDTO terapeutaDto) {
-        terapeutaService.registerTerapeuta(terapeutaDto);
-        return ResponseEntity.ok(terapeutaDto);
-    }
+
 }

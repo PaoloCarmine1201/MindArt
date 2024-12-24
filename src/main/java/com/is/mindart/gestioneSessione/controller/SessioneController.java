@@ -2,8 +2,6 @@ package com.is.mindart.gestioneSessione.controller;
 
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
-import com.is.mindart.security.model.BambinoDetails;
-import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +29,9 @@ public class SessioneController {
     @PostMapping("/sessione/")
     public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+        String principal = (String) authentication.getPrincipal();
 
-        sessioneService.creaSessione(sessioneDTO, principal.getTerapeuta());
+        sessioneService.creaSessione(sessioneDTO, principal);
         return ResponseEntity.ok(sessioneDTO);
     }
 
@@ -42,13 +40,12 @@ public class SessioneController {
      * @param id id sessione
      * @return 200 OK oppure 404 Not Found
      */
-    @PatchMapping("/sessioni/{id}/termina")
+    @PatchMapping("/sessione/{id}/termina")
     public ResponseEntity<Void> terminaSessione (@PathVariable long id) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            BambinoDetails principal = (BambinoDetails) authentication.getPrincipal();
-
-            sessioneService.terminaSessione(id, principal.getBambino());
+            String principal = (String) authentication.getPrincipal();
+            sessioneService.terminaSessione(id,principal);
             return ResponseEntity.ok().build();
         } catch(EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

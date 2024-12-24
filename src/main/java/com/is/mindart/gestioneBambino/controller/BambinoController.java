@@ -4,7 +4,6 @@ import com.is.mindart.gestioneBambino.service.BambinoDTOSimple;
 import com.is.mindart.gestioneBambino.service.BambinoService;
 import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +43,9 @@ public class BambinoController {
     @GetMapping("/getallbyterapeuta")
     public ResponseEntity<List<BambinoDTOSimple>> getAllBambiniByTerapeuta() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Terapeuta terapeuta = ((TerapeutaDetails) authentication.getPrincipal()).getTerapeuta();
 
-        List<BambinoDTOSimple> bambini = bambinoService.getBambiniByT(terapeuta.getId());
+
+        List<BambinoDTOSimple> bambini = bambinoService.getBambiniByT( (String) authentication.getPrincipal());
         return ResponseEntity.ok(bambini);
     }
 

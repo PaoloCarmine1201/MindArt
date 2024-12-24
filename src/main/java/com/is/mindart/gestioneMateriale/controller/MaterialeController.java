@@ -2,7 +2,6 @@ package com.is.mindart.gestioneMateriale.controller;
 
 import com.is.mindart.gestioneMateriale.service.GetMaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
-import com.is.mindart.security.model.TerapeutaDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,9 +37,9 @@ public class MaterialeController {
     @GetMapping("/materiale/")
     public ResponseEntity<List<GetMaterialeDTO>> getMateriale() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
+        String principal = (String) authentication.getPrincipal();
 
-        List<GetMaterialeDTO> materiali = materialeService.getClientMateriale(principal.getTerapeuta().getId());
+        List<GetMaterialeDTO> materiali = materialeService.getClientMateriale(principal);
 
         if (materiali.isEmpty()) {
             return ResponseEntity.noContent().build(); // Restituisce 204 No Content

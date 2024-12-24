@@ -2,12 +2,13 @@
 package com.is.mindart.configuration;
 
 import com.is.mindart.security.jwt.JwtAuthenticationFilter;
-import com.is.mindart.security.jwt.JwtAuthEntryPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @AllArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig {
 
     /**
@@ -24,11 +26,6 @@ public class SecurityConfig {
      */
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    /**
-     * Questo componente si occupa di gestire le eccezioni
-     * generate da richieste non autorizzate.
-     */
-    private final JwtAuthEntryPoint unauthorizedHandler;
 
     /**
      * Configura l'AuthenticationManager.
@@ -51,8 +48,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/terapeuta/**")

@@ -1,21 +1,18 @@
 package com.is.mindart.security.jwt;
 
-import com.is.mindart.security.service.BambinoUserDetailsService;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 @AllArgsConstructor
@@ -28,19 +25,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private JwtUtil jwtUtil;
 
-    /**
-     * Questo filtro si occupa di estrarre
-     * il token JWT dall'header Authorization,
-     * validarlo e autenticare l'utente.
-     */
-    private UserDetailsService terapeutaUserDetailsService;
-
-    /**
-     * Questo filtro si occupa di estrarre
-     * il token JWT dall'header Authorization,
-     * validarlo e autenticare l'utente.
-     */
-    private BambinoUserDetailsService bambinoUserDetailsService;
 
     /**
      * Questo metodo si occupa di estrarre il token JWT
@@ -59,59 +43,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
-        String token = null;
-        String username = null;
 
         if (header != null && header.startsWith("Bearer ")) {
-            token = header.substring(7);
-            try {
-                username = jwtUtil.getUsernameFromToken(token);
-            } catch (Exception e) {
-                logger.error(
-                        "Errore nell'estrazione dell'username dal token", e);
+
+            String token = header.substring(7);
+
+            if (jwtUtil.validateToken(token)) {
+                String subject = jwtUtil.getUsernameFromToken(token);
+                String role = jwtUtil.extractClaim(token, "role");
+                if (role.contains("TERAPEUTA") || role.contains("BAMBINO")) {
+
+                    SimpleGrantedAuthority authority =
+                            new SimpleGrantedAuthority("ROLE_" + role);
+
+                    // Creiamo l’oggetto Authentication
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    subject,
+                                    null, // no password
+                                    Collections.singleton(authority)
+                            );
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authentication);
+                }
             }
         }
-        if (username != null
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
-            String role = jwtUtil.extractClaim(token, "role");
-            if (role.contains("TERAPEUTA")) {
-
-                var userDetails = terapeutaUserDetailsService
-                        .loadUserByUsername(username);
-                if (jwtUtil.validateToken(token)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null,
-                                    userDetails.getAuthorities()
-                            );
-                    authToken.setDetails(new WebAuthenticationDetailsSource()
-                            .buildDetails(request));
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authToken);
-                }
-            } else if (role.contains("BAMBINO")) {
-                    var userDetails = bambinoUserDetailsService
-                            .loadBambinoByCodice(username);
-
-                    if (jwtUtil.validateToken(token)) {
-                        UsernamePasswordAuthenticationToken authToken =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails, null,
-                                        userDetails.getAuthorities()
-                                );
-
-                        authToken.setDetails(
-                                new WebAuthenticationDetailsSource()
-                                .buildDetails(request));
-                        SecurityContextHolder.getContext()
-                                .setAuthentication(authToken);
-                    }
-
-                } else {
-                    throw new IllegalStateException("Ruolo non riconosciuto");
-                }
-            }
         filterChain.doFilter(request, response);
     }
-
 }

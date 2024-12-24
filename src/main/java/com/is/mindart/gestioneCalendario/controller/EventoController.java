@@ -2,8 +2,6 @@ package com.is.mindart.gestioneCalendario.controller;
 
 import com.is.mindart.gestioneCalendario.service.EventDto;
 import com.is.mindart.gestioneCalendario.service.EventService;
-import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -42,18 +40,12 @@ public class EventoController {
      *
      * @return una lista di {@link EventDto} associati al terapeuta
      */
-    @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/events")
     public ResponseEntity<List<EventDto>> getAllEvents() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal =
-                (TerapeutaDetails) authentication.getPrincipal();
 
-        // Ora hai accesso al terapeuta completo
-        Terapeuta terapeuta = principal.getTerapeuta();
-        Long terapeutaId = terapeuta.getId();
-        List<EventDto> events = eventService.getAllEvents(terapeutaId);
+        List<EventDto> events = eventService.getAllEvents((String) authentication.getPrincipal());
         return ResponseEntity.ok(events);
     }
 
@@ -67,15 +59,10 @@ public class EventoController {
     public ResponseEntity<EventDto> getEventById(@PathVariable final Long id) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal =
-                (TerapeutaDetails) authentication.getPrincipal();
 
-        // Ora hai accesso al terapeuta completo
-        Terapeuta terapeuta = principal.getTerapeuta();
-        Long terapeutaId = terapeuta.getId();
 
         EventDto event = eventService
-                .getEventByIdAndTerapeutaId(id, terapeutaId);
+                .getEventByIdAndTerapeutaEmail(id, (String) authentication.getPrincipal());
         return ResponseEntity.ok(event);
     }
 
@@ -91,11 +78,9 @@ public class EventoController {
             @Valid @RequestBody final EventDto eventDto) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal =
-                (TerapeutaDetails) authentication.getPrincipal();
 
         EventDto updatedEvent = eventService.updateEvent(
-                eventDto, principal.getTerapeuta().getId());
+                eventDto, (String) authentication.getPrincipal());
         return ResponseEntity.ok(updatedEvent);
     }
 
@@ -112,10 +97,9 @@ public class EventoController {
             @PathVariable final Long id) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal =
-                (TerapeutaDetails) authentication.getPrincipal();
 
-        eventService.deleteEvent(id, principal.getTerapeuta().getId());
+
+        eventService.deleteEvent(id, (String) authentication.getPrincipal());
         return ResponseEntity.ok().build();
     }
 
@@ -131,11 +115,10 @@ public class EventoController {
             @RequestBody final EventDto eventDto) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        TerapeutaDetails principal =
-                (TerapeutaDetails) authentication.getPrincipal();
+
 
         EventDto event = eventService
-                .addEvent(eventDto, principal.getTerapeuta().getId());
+                .addEvent(eventDto, (String) authentication.getPrincipal());
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
 }

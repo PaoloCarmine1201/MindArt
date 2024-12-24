@@ -23,17 +23,18 @@ public class JwtUtil {
      *  la sessione del terapeuta
      */
     @Value("${jwt.expiration}")
-    private long expirationTerapeuta;
+    private Long expiration;
 
-    public String generateToken(String username,String role) {
+    public String generateToken(final String username, final String role) {
         Date now = new Date();
 
         return Jwts.builder()
                 .claim("role", role)
                 .setSubject(username)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + expirationTerapeuta))
-                .signWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
+                .setExpiration(new Date(now.getTime() + expiration))
+                .signWith(io.jsonwebtoken.security.Keys.
+                        hmacShaKeyFor(secret.getBytes()))
                 .compact();
     }
 
@@ -70,6 +71,12 @@ public class JwtUtil {
         }
     }
 
+    /**
+     * Metodo per estrarre tutti i claim
+     * dal token
+     * @param token Il token
+     * @return I claim
+     */
     public Claims extractAllClaims(final String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
@@ -78,9 +85,17 @@ public class JwtUtil {
                 .getBody();
     }
 
+    /**
+     * Metodo per estrarre un claim specifico
+     * dal token
+     * @param token Il token
+     * @param claimKey La chiave del claim
+     * @return Il claim
+     */
     public String extractClaim(final String token, final String claimKey) {
         Claims claims = extractAllClaims(token);
-        return claims.get(claimKey, String.class); // Ritorna il valore del claim specifico
+        // Ritorna il valore del claim specifico
+        return claims.get(claimKey, String.class);
     }
 
 }

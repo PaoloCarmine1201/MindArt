@@ -25,11 +25,6 @@ public interface BambinoRepository extends JpaRepository<Bambino, Long> {
      * @return il bambino con il codice specificato
      */
     Optional<Bambino> findByCodice(String codice);
-    /**
-     * Restituisce il bambino con il codice fiscale specificato.
-     * @param codiceFiscale il codice fiscale del bambino
-     * @return il bambino con il codice fiscale specificato
-     */
-    Optional<Bambino> findByCodiceFiscale(String codiceFiscale);
+
 
 }

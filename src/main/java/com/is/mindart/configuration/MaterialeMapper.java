@@ -1,7 +1,7 @@
 package com.is.mindart.configuration;
 
 import com.is.mindart.gestioneMateriale.model.Materiale;
-import com.is.mindart.gestioneMateriale.service.GetMaterialeDTO;
+import com.is.mindart.gestioneMateriale.service.MaterialeDTO;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,24 +35,24 @@ public class MaterialeMapper {
      * Imposta i mapping custom.
      * Mapping presenti:
      * <ul>
-     *     <li>{@link Materiale} -> {@link GetMaterialeDTO}</li>
+     *     <li>{@link Materiale} -> {@link MaterialeDTO}</li>
      * </ul>
      */
     public void configureMappings() {
-        modelMapper.createTypeMap(Materiale.class, GetMaterialeDTO.class)
+        modelMapper.createTypeMap(Materiale.class, MaterialeDTO.class)
                 .addMappings(mapper -> {
-                    mapper.map(Materiale::getId, GetMaterialeDTO::setId);
-                    mapper.map(Materiale::getNome, GetMaterialeDTO::setNome);
-                    mapper.map(Materiale::getTipo, GetMaterialeDTO::setTipoMateriale);
+                    mapper.map(Materiale::getId, MaterialeDTO::setId);
+                    mapper.map(Materiale::getNome, MaterialeDTO::setNome);
+                    mapper.map(Materiale::getTipo, MaterialeDTO::setTipoMateriale);
                 });
     }
 
     /**
-     * Richiama il mapper {@link Materiale} -> {@link GetMaterialeDTO}.
+     * Richiama il mapper {@link Materiale} -> {@link MaterialeDTO}.
      * @param materiale {@link Materiale}
-     * @return {@link GetMaterialeDTO}
+     * @return {@link MaterialeDTO}
      */
-    public GetMaterialeDTO toDTO(final Materiale materiale) {
-        return modelMapper.map(materiale, GetMaterialeDTO.class);
+    public MaterialeDTO toDTO(final Materiale materiale) {
+        return modelMapper.map(materiale, MaterialeDTO.class);
     }
 }

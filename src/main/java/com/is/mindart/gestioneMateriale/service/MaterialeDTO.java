@@ -7,24 +7,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class GetMaterialeDTO {
-    /**
-     * Id del materiale.
-     * */
-    @NotNull
+@NoArgsConstructor
+public class MaterialeDTO {
     private Long id;
 
-    /**
-     * Nome del materiale.
-     */
     @NotNull
     private String nome;
 
-    /**
-     * Tipo di file del materiale.
-     */
     @NotNull
     private TipoMateriale tipoMateriale;
+
+    @NotNull
+    private Long terapeutaId;
 }

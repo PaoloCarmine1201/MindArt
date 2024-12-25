@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import '../../style/Login.css';
 import '../../style/Registration.css';
 import {Link} from "react-router-dom";
-import {Button, FloatingLabel, Form, Stack} from "react-bootstrap";
-import axios from 'axios';
+import {Button, Form, Stack} from "react-bootstrap";
+import {toast} from "react-toastify";
+import axiosInstance from "../../config/axiosInstance";
 
 const Registration = () => {
     const [nome, setNome] = useState('');
@@ -69,32 +70,44 @@ const Registration = () => {
 
     const performRegistration = async () => {
         try {
-            /*
-            const response = await fetch('http://172.19.183.142:8080/api/terapeuta/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, cognome, dataDiNascita, email, password }),
-                mode: 'no-cors',
+            // Prepare the payload
+            const payload = { nome, cognome, dataDiNascita, email, password };
+
+            // Make a POST request to /auth/terapeuta/register
+            const response = await axiosInstance.post('/auth/terapeuta/register', payload);
+
+            // Handle successful registration
+            console.log('Registration successful:', response.data);
+            toast.success('Registrazione effettuata con successo!', {
+                position: 'bottom-right'
             });
 
-             */
-            axios.defaults.baseURL = 'http://192.168.47.191:8080';
-            axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
-            axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-
-            axios.post('/api/terapeuta/register', JSON.stringify({ nome, cognome, dataDiNascita, email, password }))
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
+            // Optionally, reset form fields
+            setNome('');
+            setCognome('');
+            setEmail('');
+            setPassword('');
+            setTerms(false);
+            setFieldErrors({});
+            setError('');
         } catch (err) {
-            setError(err.message || 'An unexpected error occurred.');
+            console.error('Registration error:', err);
+
+            // Handle validation errors from the server
+            if (err.response && err.response.data && err.response.data.errors) {
+                const serverErrors = {};
+                err.response.data.errors.forEach(errorItem => {
+                    serverErrors[errorItem.field] = errorItem.message;
+                });
+                setFieldErrors(serverErrors);
+            } else {
+                // Handle general errors
+                setError('Si è verificato un errore durante la registrazione. Riprova più tardi.');
+                toast.error('Si è verificato un errore durante la registrazione. Riprova più tardi.', {
+                    position: 'bottom-right'
+                });
+            }
         }
-
-
     };
 
     const handleRegistration = async (e) => {

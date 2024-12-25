@@ -38,18 +38,31 @@ function VisualizzaEventiComponent() {
 */
 
     useEffect(() => {
-        axiosInstance.get("http://localhost:8080/api/terapeuta/events")
+        axiosInstance.get("/api/terapeuta/events") // Use relative URL
             .then(response => {
-                const event = response.data;
-                const sortedEvents = event.sort((a, b) => a.start - b.start);
+                const data = response.data;
+                // Convert 'inizio' and 'fine' to Date objects
+                const convertedEvents = data.map(ev => ({
+                    id: ev.id,
+                    title: ev.nome,
+                    start: new Date(ev.inizio),
+                    end: new Date(ev.fine),
+                    terapeuta: ev.terapeuta
+                }));
+
+                // Sort events by start date
+                const sortedEvents = convertedEvents.sort((a, b) => a.start - b.start);
+
+                // Group events by date
                 const groupedEvents = sortedEvents.reduce((acc, event) => {
-                    const eventDate = event.start.toLocaleDateString();
+                    const eventDate = event.start.toLocaleDateString('it-IT'); // Specify locale
                     if (!acc[eventDate]) {
                         acc[eventDate] = [];
                     }
                     acc[eventDate].push(event);
                     return acc;
                 }, {});
+
                 setEvents(groupedEvents);
             })
             .catch(error => {

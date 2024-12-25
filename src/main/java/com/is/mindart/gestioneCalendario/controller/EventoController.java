@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +44,8 @@ public class EventoController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        List<EventDto> events = eventService.getAllEvents((String) authentication.getPrincipal());
+        List<EventDto> events = eventService
+                .getAllEvents((String) authentication.getPrincipal());
         return ResponseEntity.ok(events);
     }
 
@@ -62,7 +62,8 @@ public class EventoController {
 
 
         EventDto event = eventService
-                .getEventByIdAndTerapeutaEmail(id, (String) authentication.getPrincipal());
+                .getEventByIdAndTerapeutaEmail(id,
+                        (String) authentication.getPrincipal());
         return ResponseEntity.ok(event);
     }
 
@@ -90,7 +91,6 @@ public class EventoController {
      * @param id l'identificativo dell'evento da eliminare
      * @return una risposta HTTP senza corpo
      */
-    @PreAuthorize("hasRole('TERAPEUTA')")
     @DeleteMapping("/event/{id}")
     public ResponseEntity<Void> deleteEvent(
             @NotNull(message = "Il campo id deve essere valorizzato")
@@ -109,7 +109,6 @@ public class EventoController {
      * @param eventDto un oggetto {@link EventDto} contenente i dati dell'evento
      * @return l'evento salvato come {@link EventDto}
      */
-    @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping("/event")
     public ResponseEntity<EventDto> addEvent(
             @RequestBody final EventDto eventDto) {

@@ -5,6 +5,8 @@ import * as Yup from 'yup';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../assets/logo_vertical_1024x1024.png';
 import background from '../assets/ChildLoginBackground.jpg';
+import {toast} from "react-toastify";
+import axiosInstance from "../config/axiosInstance";
 
 // Component definition for the child login form
 function ChildLogin() {
@@ -16,9 +18,40 @@ function ChildLogin() {
     });
 
     // Submit handler for the form
-    const handleSubmit = (values, { setSubmitting }) => {
-        console.log("Logging in with code: ", values.code); // Log the entered code
-        setSubmitting(false); // Simulate the completion of the submit process
+    const handleSubmit = async (values, { setSubmitting }) => {
+        try {
+            // Prepare the payload
+            const payload = { codice: values.code };
+
+            // Make a POST request to /api/bambino/login using axiosInstance
+            const response = await axiosInstance.post('/auth/bambino/login', payload);
+
+            // Handle successful login
+            console.log("Login successful:", response.data);
+            toast.success('Login effettuato con successo!', {
+                position: 'bottom-right',
+            });
+
+            localStorage.setItem('jwtToken', response.data.token);
+            // window.location.href = '/dashboard';
+
+        } catch (error) {
+            console.error("Errore durante il login:", error);
+
+            // Check if the error is from the server and contains a message
+            if (error.response && error.response.data && error.response.data.message) {
+                toast.error(error.response.data.message, {
+                    position: 'bottom-right',
+                });
+            } else {
+                // Generic error message
+                toast.error('Si è verificato un errore durante il login. Riprova più tardi.', {
+                    position: 'bottom-right',
+                });
+            }
+        } finally {
+            setSubmitting(false); // Indicate that the submission has completed
+        }
     };
 
     return (

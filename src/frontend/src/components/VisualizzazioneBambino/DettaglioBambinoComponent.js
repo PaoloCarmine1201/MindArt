@@ -16,7 +16,7 @@ function DettaglioBambinoComponent() {
         const fetchData = async () => {
             try {
                 console.log(id);
-                const result = await fetch('http://localhost:8080/api/bambino/get/' + id);
+                const result = await fetch('http://localhost:8080/api/terapeuta/bambino/get/' + id);
 
                 if (!result.ok) {
                     throw new Error('Errore nella risposta del server: ' + result.status);
@@ -34,7 +34,7 @@ function DettaglioBambinoComponent() {
     }, []);
 
     useEffect(() => {
-        axiosInstance.get("http://localhost:8080/api/terapeuta/bambini/get/" + id)
+        axiosInstance.get("api/terapeuta/bambino/get/" + id)
             .then(response => {
                 setBambino(response.data);
             })

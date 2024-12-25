@@ -5,7 +5,6 @@ import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.security.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class TerapeutaService {
     /**
      *  Provvede ad accedere al database per l'entità Terapeuta.
      */
-    private final TerapeutaRepository repository;
+    private final TerapeutaRepository terapeutaRepository;
 
     /**
      *  Provvede a mappare l'entità Terapeuta con TerapeutaDTO.
@@ -44,7 +43,7 @@ public class TerapeutaService {
         terapeutaDto.setPassword(hashedPassword);
 
         Terapeuta terapeuta = modelMapper.map(terapeutaDto, Terapeuta.class);
-        repository.save(terapeuta);
+        terapeutaRepository.save(terapeuta);
     }
 
     /**
@@ -53,7 +52,8 @@ public class TerapeutaService {
      * @return true se il terapeuta esiste, false altrimenti
      */
     public String loginTerapeuta(final String email, final String rawPassword) {
-        Terapeuta terapeuta = repository.findByEmail(email).orElse(null);
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElse(null);
         if (terapeuta != null) {
             if (passwordEncoder.matches(rawPassword, terapeuta.getPassword())) {
                 return jwtUtil.generateToken(terapeuta.getEmail(), "TERAPEUTA");
@@ -61,6 +61,7 @@ public class TerapeutaService {
         }
         return null;
     }
+
 
 
 }

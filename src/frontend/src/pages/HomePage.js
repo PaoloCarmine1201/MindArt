@@ -10,17 +10,28 @@ import TerminaSessione from "../components/TerminaSessione/TerminaSessione";
 
 function HomePage() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
-    localStorage.setItem("idTerapeuta", idTerapeuta);
     const [bambini, setBambini] = useState([]);
     const [bambiniError, setBambiniError] = useState(null);
 
-    axiosInstance.get('http://localhost:8080/api/terapeuta/bambini/getallbyterapeuta')
-        .then(response => {
-            setBambini(response.data);
-        })
-        .catch(error => {
-            setBambiniError('Errore nel caricamento dei bambini.');
-        });
+    // Store idTerapeuta in localStorage when it changes
+    useEffect(() => {
+        localStorage.setItem("idTerapeuta", idTerapeuta);
+    }, [idTerapeuta]);
+
+    // Fetch bambini data when the component mounts
+    useEffect(() => {
+        const fetchBambini = async () => {
+            try {
+                const response = await axiosInstance.get('/api/terapeuta/bambino/getallbyterapeuta');
+                setBambini(response.data);
+            } catch (error) {
+                setBambiniError('Errore nel caricamento dei bambini.');
+                console.error("Error fetching bambini:", error);
+            }
+        };
+
+        fetchBambini();
+    }, []);
 
     return (
         <>

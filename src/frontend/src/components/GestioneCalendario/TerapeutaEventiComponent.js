@@ -146,8 +146,8 @@ function MyCalendar() {
     };
 
     return (
-        <div className={`app-container ${showModal ? 'blur' : ''}`}>
-            <div style={{ height: '60vh' }}>
+        <div className={` ${showModal ? 'blur' : ''}`}>
+            <div style={{ height: '80vh' }}>
                 <Calendar
                     localizer={localizer}
                     culture='it'

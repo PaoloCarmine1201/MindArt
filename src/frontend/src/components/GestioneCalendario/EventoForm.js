@@ -52,7 +52,12 @@ function EventoForm({ event, onSave, onDelete, onClose}) {
 
     return (
         <>
-            <Modal show onHide={onClose} centered className={`app-container ${showConfirmModal ? 'blur' : ''}`}>
+            <Modal show onHide={onClose}
+                   backdropClassName="custom-backdrop"
+                   keyboard={false}
+                   aria-labelledby="contained-modal-title-vcenter"
+                   centered
+                   dialogClassName="custom-modal">
                 <Formik
                     initialValues={initialValues}
                     validationSchema={EventoSchema(event.id)}
@@ -111,12 +116,12 @@ function EventoForm({ event, onSave, onDelete, onClose}) {
                                 {event.id && (
                                     <Button
                                         onClick={() => setShowConfirmModal(true)}
-                                        className="btn-cancella btn-outline-primary"
+                                        className="btn-outline-secondary btn-cancella"
                                     >
                                         Elimina
                                     </Button>
                                 )}
-                                <Button variant="secondary" onClick={onClose} className="btn-annulla btn-outline-primary">
+                                <Button variant="secondary" onClick={onClose} className="btn-outline-primary btn-annulla">
                                     Annulla
                                 </Button>
                                 <Button

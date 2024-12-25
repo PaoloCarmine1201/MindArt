@@ -30,12 +30,16 @@ function RegisterBambino(){
 
     // Function to handle form submission
     const handleSubmit = async (values) => {
+        // Retrieve the id of the logged-in terapeuta from localStorage
+        const terapeutaId = parseInt(localStorage.getItem("idTerapeuta"), 10);
+
         // Generate a unique codice for the bambino
         const codice = generateCodice();
 
         // Prepare the payload with form values, terapeutaId, and codice
         const payload = {
             ...values,
+            terapeutaId, // Add the id of the terapeuta
             codice // Add the generated codice
         };
 
@@ -55,6 +59,7 @@ function RegisterBambino(){
                     }
                 );
                 handleClose(); // Close the modal upon success
+                // Optionally, you can reset the form or perform additional actions here
             } else {
                 console.log('Errore richiesta:', response);
                 toast.error(

@@ -3,7 +3,6 @@ import com.is.mindart.gestioneBambino.service.BambinoDTO;
 import com.is.mindart.gestioneBambino.service.BambinoDTOSimple;
 import com.is.mindart.gestioneBambino.service.BambinoService;
 import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
-import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/terapeuta")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BambinoController {
 
     /**
@@ -57,7 +57,9 @@ public class BambinoController {
      * @return bambino con l'identificativo specificato
      */
     @GetMapping("/get/{id}")
-    public ResponseEntity<BambinoDTOSimple> getBambino(@PathVariable final Long id) {
+    public ResponseEntity<BambinoDTOSimple> getBambino(
+            @PathVariable final Long id
+    ) {
         BambinoDTOSimple bambino = bambinoService.getBambino(id);
         return ResponseEntity.ok(bambino);
     }

@@ -49,6 +49,7 @@ public class SessioneService {
      * aggiorna la lista delle sessioni per ogni Bambino
      * @param sessioneDto - proveniente dall'endpoint di creazione
      */
+    @Transactional
     public void creaSessione(final SessioneDTO sessioneDto, final String terapeuta) {
         Optional<Terapeuta> t = terapeutaRepository.findByEmail(terapeuta);
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
@@ -72,7 +73,7 @@ public class SessioneService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bambino con codice " + codice + " non trovato"));
         //se la sessione appartiene al bambino può terminarla
-        if(bambino.getSessioni().stream().noneMatch(sessione -> sessione.getId() == id)) {
+        if (bambino.getSessioni().stream().noneMatch(sessione -> sessione.getId() == id)) {
             throw new EntityNotFoundException(
                     "Sessione con id " + id + " non trovato");
         }

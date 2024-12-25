@@ -1,0 +1,71 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    margin-right: 10px;
+}
+
+.vertical-bar {
+    width: 1px;
+    height: 30px;
+    background-color: #c0c0c0;
+    margin-right: 10px;
+}
+
+.page-title {
+    margin-left: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.start-session-button {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 15px;
+    border: none;
+    border-radius: 5px;
+    font-family: Inter, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 100px;
+}
+
+.start-session-button:hover {
+    background-color: #218838;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    margin-right: 20px;
+}

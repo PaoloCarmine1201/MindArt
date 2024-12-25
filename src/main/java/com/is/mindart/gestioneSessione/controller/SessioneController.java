@@ -9,10 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @Controller
-@RequestMapping("/api/")
+@RequestMapping("/api/terapeuta/sessione")
 @RequiredArgsConstructor
 public class SessioneController {
 
@@ -26,7 +31,7 @@ public class SessioneController {
      * @param sessioneDTO DTO proveniente dal client
      * @return 200 OK
      */
-    @PostMapping("/terapeuta/sessione/")
+    @PostMapping("/create")
     public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String principal = (String) authentication.getPrincipal();
@@ -40,7 +45,7 @@ public class SessioneController {
      * @param id id sessione
      * @return 200 OK oppure 404 Not Found
      */
-    @DeleteMapping("/bambino/sessione/{id}/termina")
+    @PatchMapping("/{id}/termina")
     public ResponseEntity<Void> terminaSessione (@PathVariable long id) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

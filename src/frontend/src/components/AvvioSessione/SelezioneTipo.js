@@ -9,8 +9,16 @@ const SelezioneTipo = () => {
 
     return (
         <FormGroup>
-            <label>Tipo sessione</label>
-            
+            <label style={{
+                fontSize: '1.3rem', // Larger font size
+                marginBottom: '1rem', // Space below the label
+                display: 'block', // Ensures the label spans the entire width
+                color: '#333' // Neutral text color
+            }}>
+                Seleziona tipo sessione:
+            </label>
+
+
             <Form.Check
                 type="radio"
                 name="tipoSessione"
@@ -32,6 +40,7 @@ const SelezioneTipo = () => {
                 checked={values.tipoSessione === 'COLORE'}
                 className='custom-radio'
             />
+            <hr className='radio-divider'/>
             <Form.Check
                 type="radio"
                 name="tipoSessione"
@@ -42,6 +51,7 @@ const SelezioneTipo = () => {
                 checked={values.tipoSessione === 'APPRENDIMENTO'}
                 className='custom-radio'
             />
+            <hr className='radio-divider'/>
             <Form.Control.Feedback type="invalid">
                 {typeof errors.tipoSessione === 'string' ? errors.tipoSessione : ''}
             </Form.Control.Feedback>

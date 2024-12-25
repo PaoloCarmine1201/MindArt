@@ -1,13 +1,14 @@
-// SelezioneBambino.jsx
 import React from 'react';
-import { Form, Spinner } from 'react-bootstrap';
+import { Card, ListGroup, Spinner, Form } from 'react-bootstrap';
+
+import '../../style/CheckBox.css';
 
 const SelezioneBambino = ({ childrenList, loading, error, selectedChildren, setFieldValue }) => {
     const handleCheckboxChange = (e, bambinoId) => {
         if (e.target.checked) {
-            setFieldValue('bambino', [...selectedChildren, bambinoId]);
+            setFieldValue('bambini', [...selectedChildren, bambinoId]);
         } else {
-            setFieldValue('bambino', selectedChildren.filter(id => id !== bambinoId));
+            setFieldValue('bambini', selectedChildren.filter(id => id !== bambinoId));
         }
     };
 
@@ -29,19 +30,28 @@ const SelezioneBambino = ({ childrenList, loading, error, selectedChildren, setF
     }
 
     return (
-        <>
-            {childrenList.map(bambino => (
-                <Form.Check
-                    key={bambino.id}
-                    type="checkbox"
-                    label={bambino.nome}
-                    name="bambino"
-                    value={bambino.id}
-                    checked={selectedChildren.includes(bambino.id)}
-                    onChange={(e) => handleCheckboxChange(e, bambino.id)}
-                />
-            ))}
-        </>
+        <Card className="shadow-sm">
+            <Card.Header style={{ backgroundColor: '#f8f9fa', color: '#000', fontSize: '1.3rem' }}>Seleziona partecipanti</Card.Header>
+            <ListGroup variant="flush">
+                {childrenList.map(bambino => (
+                    <ListGroup.Item key={bambino.id} className="d-flex align-items-center">
+                        <Form.Check
+                            type="checkbox"
+                            label={bambino.nome + ' ' + bambino.cognome}
+                            name="bambini"
+                            value={bambino.id}
+                            checked={selectedChildren.includes(bambino.id)}
+                            onChange={(e) => handleCheckboxChange(e, bambino.id)}
+                            className="me-3"
+                        />
+                        <div className="ms-auto">
+                            {/* Opzionale: Aggiungi ulteriori informazioni del bambino */}
+                            <small className="text-muted">ID: {bambino.id}</small>
+                        </div>
+                    </ListGroup.Item>
+                ))}
+            </ListGroup>
+        </Card>
     );
 };
 

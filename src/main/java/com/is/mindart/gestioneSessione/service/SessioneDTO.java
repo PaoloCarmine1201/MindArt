@@ -33,7 +33,6 @@ public class SessioneDTO {
     /**
      * Id del terapeuta loggato quando viene creata la sessione.
      */
-    @NotNull(message = "Campo id terapeuta vuoto")
     private Long idTerapeuta;
 
     /**

@@ -9,16 +9,15 @@ const SelezioneBambino = ({ childrenList, loading, error }) => {
 
     return (
         <FormGroup>
-            <label>Scegli i bambini</label>
             <BambinoLista
                 childrenList={childrenList}
                 loading={loading}
                 error={error}
-                selectedChildren={values.bambino}
+                selectedChildren={values.bambini}
                 setFieldValue={setFieldValue}
             />
             <Form.Control.Feedback type="invalid">
-                {typeof errors.bambino === 'string'? errors.bambino : ''}
+                {typeof errors.bambini === 'string'? errors.bambini : ''}
             </Form.Control.Feedback>
         </FormGroup>
     );

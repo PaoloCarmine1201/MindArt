@@ -128,7 +128,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     };
 
     const handleSubmit = (values, { resetForm }) => {
-        axiosInstance.post('http://localhost:8080/api/terapeuta/sessione/create', values)
+        axiosInstance.post('/api/terapeuta/sessione/create', values)
             .then(r => alert('Sessione creata con successo'))
             .catch(r => console.log(r));
 

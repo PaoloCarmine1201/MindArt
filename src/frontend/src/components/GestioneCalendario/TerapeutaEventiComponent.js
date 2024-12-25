@@ -1,10 +1,14 @@
+// src/components/MyCalendar/MyCalendar.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/it';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import EventoForm from "./EventoForm";
+import axiosInstance from "../../config/axiosInstance"; // Ensure correct import path
 
+// Initialize moment with Italian locale
 moment.locale('it');
 const localizer = momentLocalizer(moment);
 
@@ -12,67 +16,84 @@ function MyCalendar() {
     const [events, setEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
+    // Fetch events when the component mounts
     useEffect(() => {
-        fetch('http://localhost:8080/api/terapeuta/1/events')
-            .then(res => res.json())
-            .then(data => {
-                const converted = data.map(ev => ({
+        const fetchEvents = async () => {
+            setLoading(true);
+            try {
+                const response = await axiosInstance.get('/api/terapeuta/events');
+                const convertedEvents = response.data.map(ev => ({
                     id: ev.id,
                     title: ev.nome,
                     start: new Date(ev.inizio),
                     end: new Date(ev.fine),
                     terapeuta: ev.terapeuta
                 }));
-                setEvents(converted);
-            })
-            .catch(err => console.error(err));
+                setEvents(convertedEvents);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching events:', err);
+                setError('Errore nel caricamento degli eventi.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEvents();
     }, []);
 
+    // Handle slot selection for creating a new event
     const handleSelectSlot = (slotInfo) => {
         setSelectedEvent({
             start: slotInfo.start,
             end: slotInfo.end,
             title: '',
-            terapeuta: 1
+            terapeuta: parseInt(localStorage.getItem("idTerapeuta"), 10)
         });
         setShowModal(true);
     };
 
+    // Handle event selection for viewing/editing
     const handleSelectEvent = (event) => {
         setSelectedEvent(event);
         setShowModal(true);
     };
 
-    const handleCreateEvent = (eventData) => {
+    // Handle creating a new event
+    const handleCreateEvent = async (eventData) => {
         const payload = {
             nome: eventData.title,
             inizio: eventData.start.toISOString(),
             fine: eventData.end.toISOString(),
-            terapeuta: eventData.terapeuta || 1
+            terapeuta: eventData.terapeuta
         };
 
-        fetch('http://localhost:8080/api/terapeuta/event', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-            .then(res => res.json())
-            .then(newEvent => {
-                const mappedEvent = {
-                    id: newEvent.id,
-                    title: newEvent.nome,
-                    start: new Date(newEvent.inizio),
-                    end: new Date(newEvent.fine),
-                    terapeuta: newEvent.terapeuta
-                };
-                setEvents(prev => [...prev, mappedEvent]);
-                setShowModal(false);
-            })
-            .catch(err => console.error(err));
+        try {
+            console.log('Dati inviati:', payload);
+            const response = await axiosInstance.post('/api/terapeuta/event', payload);
+
+            // Assuming the backend returns the created event
+            const newEvent = {
+                id: response.data.id,
+                title: response.data.nome,
+                start: new Date(response.data.inizio),
+                end: new Date(response.data.fine),
+                terapeuta: response.data.terapeuta
+            };
+            setEvents(prev => [...prev, newEvent]);
+            setShowModal(false);
+            setSelectedEvent(null);
+        } catch (err) {
+            console.error('Error creating event:', err);
+            setError('Si è verificato un errore durante la creazione dell\'evento.');
+        }
     };
 
-    const handleUpdateEvent = (eventData) => {
+    // Handle updating an existing event
+    const handleUpdateEvent = async (eventData) => {
         const payload = {
             id: eventData.id,
             nome: eventData.title,
@@ -81,36 +102,41 @@ function MyCalendar() {
             terapeuta: eventData.terapeuta || 1
         };
 
-        fetch('http://localhost:8080/api/terapeuta/event', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-            .then(res => res.json())
-            .then(updatedEvent => {
-                const mappedEvent = {
-                    id: updatedEvent.id,
-                    title: updatedEvent.nome,
-                    start: new Date(updatedEvent.inizio),
-                    end: new Date(updatedEvent.fine),
-                    terapeuta: updatedEvent.terapeuta
-                };
+        try {
+            console.log('Dati aggiornati inviati:', payload);
+            const response = await axiosInstance.put('/api/terapeuta/event', payload);
 
-                setEvents(prev => prev.map(ev => ev.id === mappedEvent.id ? mappedEvent : ev));
-                setShowModal(false);
-            })
-            .catch(err => console.error(err));
+            // Assuming the backend returns the updated event
+            const updatedEvent = {
+                id: response.data.id,
+                title: response.data.nome,
+                start: new Date(response.data.inizio),
+                end: new Date(response.data.fine),
+                terapeuta: response.data.terapeuta
+            };
+            setEvents(prev => prev.map(ev => ev.id === updatedEvent.id ? updatedEvent : ev));
+            setShowModal(false);
+            setSelectedEvent(null);
+        } catch (err) {
+            console.error('Error updating event:', err);
+            setError('Si è verificato un errore durante l\'aggiornamento dell\'evento.');
+        }
     };
 
-    const handleDeleteEvent = (id) => {
-        fetch(`http://localhost:8080/api/terapeuta/event/${id}`, { method: 'DELETE' })
-            .then(() => {
-                setEvents(prev => prev.filter(ev => ev.id !== id));
-                setShowModal(false);
-            })
-            .catch(err => console.error(err));
+    // Handle deleting an event
+    const handleDeleteEvent = async (id) => {
+        try {
+            await axiosInstance.delete(`/api/terapeuta/event/${id}`);
+            setEvents(prev => prev.filter(ev => ev.id !== id));
+            setShowModal(false);
+            setSelectedEvent(null);
+        } catch (err) {
+            console.error('Error deleting event:', err);
+            setError('Si è verificato un errore durante la cancellazione dell\'evento.');
+        }
     };
 
+    // Decide whether to create or update based on eventData
     const handleSaveOrUpdate = (eventData) => {
         if (eventData.id) {
             handleUpdateEvent(eventData);
@@ -137,18 +163,29 @@ function MyCalendar() {
                         month: 'Mese',
                         week: 'Settimana',
                         day: 'Giorno',
+                        agenda: 'Agenda',
+                        date: 'Data',
+                        time: 'Orario',
+                        event: 'Evento',
+                        showMore: (total) => `+${total} di più`,
                     }}
                     selectable
                     onSelectSlot={handleSelectSlot}
                     onSelectEvent={handleSelectEvent}
                 />
+                {loading && <p>Caricamento eventi...</p>}
+                {error && <p className="error-message">{error}</p>}
             </div>
             {showModal && (
                 <EventoForm
                     event={selectedEvent}
                     onSave={handleSaveOrUpdate}
                     onDelete={handleDeleteEvent}
-                    onClose={() => setShowModal(false)}
+                    onClose={() => {
+                        setShowModal(false);
+                        setSelectedEvent(null);
+                        setError(null);
+                    }}
                 />
             )}
         </div>

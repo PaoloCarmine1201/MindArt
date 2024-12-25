@@ -9,7 +9,7 @@ function GestioneBambiniComponent() {
     const [bambini, setBambini] = useState([]);
 
     useEffect(() => {
-        axiosInstance.get("http://localhost:8080/api/terapeuta/bambini/getallbyterapeuta")
+        axiosInstance.get("http://localhost:8080/api/terapeuta/bambino/getallbyterapeuta")
             .then(response => {
                 setBambini(response.data);
             })

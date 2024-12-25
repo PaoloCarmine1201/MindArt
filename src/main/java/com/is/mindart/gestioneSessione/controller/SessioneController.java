@@ -32,8 +32,10 @@ public class SessioneController {
      * @return 200 OK
      */
     @PostMapping("/create")
-    public ResponseEntity<SessioneDTO> create(@Valid @RequestBody SessioneDTO sessioneDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<SessioneDTO> create(
+            @Valid @RequestBody final SessioneDTO sessioneDTO) {
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
         String principal = (String) authentication.getPrincipal();
 
         sessioneService.creaSessione(sessioneDTO, principal);
@@ -46,9 +48,10 @@ public class SessioneController {
      * @return 200 OK oppure 404 Not Found
      */
     @PatchMapping("/{id}/termina")
-    public ResponseEntity<Void> terminaSessione (@PathVariable long id) {
+    public ResponseEntity<Void> terminaSessione(@PathVariable final long id) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Authentication authentication = SecurityContextHolder
+                    .getContext().getAuthentication();
             String principal = (String) authentication.getPrincipal();
             sessioneService.terminaSessione(id, principal);
             return ResponseEntity.ok().build();

@@ -44,28 +44,29 @@ class GestioneMaterialeBase extends Component {
         return (
             <>
                 <Button
-                    variant={filter === "ALL" ? "btn-outline-primary btn-annulla-full" : "btn-outline-primary btn-annulla"}
+                    variant="btn-all"
+                    className={`me-2 ${filter === "ALL" ? "btn-all btn-all-full" : "btn-all"}`}
                     onClick={() => this.handleFilterChange("ALL")}
-                    className={"me-2"}
                 >
                     ALL
                 </Button>
                 <Button
-                    variant={filter === "PDF" ? "btn-outline-primary btn-annulla-full" : "btn-outline-primary btn-annulla"}
+                    variant="btn-pdf"
+                    className={`me-2 ${filter === "PDF" ? "btn-pdf btn-pdf-full" : "btn-pdf"}`}
                     onClick={() => this.handleFilterChange("PDF")}
-                    className={"me-2"}
                 >
                     PDF
                 </Button>
                 <Button
-                    variant={filter === "VIDEO" ? "btn-outline-primary btn-annulla-full" : "btn-outline-primary btn-annulla"}
+                    variant="btn-video"
+                    className={`me-2 ${filter === "VIDEO" ? "btn-video btn-video-full" : "btn-video"}`}
                     onClick={() => this.handleFilterChange("VIDEO")}
-                    className="me-2"
                 >
                     Video
                 </Button>
                 <Button
-                    variant={filter === "IMMAGINE" ? "btn-outline-primary btn-conferma-full" : "btn-outline-primary btn-conferma"}
+                    variant="btn-immagine"
+                    className={`${filter === "IMMAGINE" ? "btn-immagine btn-immagine-full" : "btn-immagine"}`}
                     onClick={() => this.handleFilterChange("IMMAGINE")}
                 >
                     Immagine

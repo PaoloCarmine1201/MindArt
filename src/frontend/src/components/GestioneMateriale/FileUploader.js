@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axiosInstance from "../../config/axiosInstance";
+import '../../style/Button.css';
 
 function FileUploader({ onUpload }) {
     const [uploading, setUploading] = useState(false);
@@ -21,7 +22,7 @@ function FileUploader({ onUpload }) {
                         "Content-Type": "multipart/form-data",
                     },
                 }
-            )
+            );
 
             if (response.status === 200) {
                 onUpload(response.data);
@@ -35,15 +36,20 @@ function FileUploader({ onUpload }) {
     };
 
     return (
-        <div>
-            <h3>Carica Materiale</h3>
+        <div className="file-uploader">
+            <label
+                htmlFor="fileInput"
+                className="custom-upload-button"
+            >
+                {uploading ? "Caricamento in corso..." : "Carica File"}
+            </label>
             <input
+                id="fileInput"
                 type="file"
                 onChange={handleFileChange}
-                style={{ marginBottom: "10px" }}
-                disabled={uploading} // Disabilita il pulsante durante il caricamento
+                style={{ display: "none" }}
+                disabled={uploading}
             />
-            {uploading && <p>Caricamento in corso...</p>}
         </div>
     );
 }

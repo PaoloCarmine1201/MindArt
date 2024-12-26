@@ -62,7 +62,7 @@ const router = createBrowserRouter([
     {
         path: "child/draw",
         name: "Child Drawing",
-        element:<ProtectedRouteChild><DisegnaBambino/></ProtectedRouteChild>
+        element:<DisegnaBambino/>
     },
     {
         path:"/home",

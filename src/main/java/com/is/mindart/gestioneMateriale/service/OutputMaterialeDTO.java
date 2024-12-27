@@ -5,12 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MaterialeDTO {
+public class OutputMaterialeDTO {
     private Long id;
 
     @NotNull
@@ -19,12 +18,4 @@ public class MaterialeDTO {
     @NotNull
     private TipoMateriale tipoMateriale;
 
-    @NotNull
-    private Long terapeutaId;
-
-//    @NotNull
-//    private byte[] fileContent;
-//
-//    @NotNull
-//    private String mimeType;
 }

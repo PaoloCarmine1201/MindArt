@@ -4,6 +4,7 @@ import com.is.mindart.gestioneMateriale.service.MaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
 import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.servlet.ServletContext;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,6 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/api/terapeuta/materiale")
 public class MaterialeController {
-
-    private static final String BASE_DIRECTORY = "src/materiali/";
-
     /**
      * Service relativa al materiale.
      */
@@ -42,21 +40,35 @@ public class MaterialeController {
     }
 
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @PostMapping("/remove")
-    public ResponseEntity<String> removeMaterial(MaterialeDTO materialeDTO) {
-        try {
-            materialeService.removeMaterial(materialeDTO);
-            return ResponseEntity.ok("Material removed");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error removing material: " + e.getMessage());
-        }
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> removeMaterial(
+            @Valid InputMaterialeDTO inputMaterialeDTO
+    ) {
+        materialeService.removeMaterial(inputMaterialeDTO);
+        return ResponseEntity.ok("Materiale rimosso con successo.");
     }
 
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @PostMapping("/update")
-    public ResponseEntity<String> updateMaterial(MaterialeDTO materialeDTO) {
-        return null;
+    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateMaterial(@Valid InputMaterialeDTO inputMaterialeDTO) {
+        String fileType = inputMaterialeDTO.getFile().getContentType();
+        if (!(("application/pdf".equals(fileType) || "video/mp4".equals(fileType)))) {
+            return ResponseEntity
+                    .badRequest()
+                    .header("Error", "Il tipo di file non è supportato. Sono supportati solo file PDF e video MP4.")
+                    .body(null);
+        }
+
+        if(inputMaterialeDTO.getFile().isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .header("Error", "Il file da salvare è nullo.")
+                    .body(null);
+        }
+
+        materialeService.updateMaterial(inputMaterialeDTO);
+
+        return ResponseEntity.ok("Materiale aggiornato con successo.");
     }
 
     /**
@@ -65,11 +77,11 @@ public class MaterialeController {
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/")
-    public ResponseEntity<List<MaterialeDTO>> getMateriale() {
+    public ResponseEntity<List<OutputMaterialeDTO>> getMateriali() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         TerapeutaDetails principal = (TerapeutaDetails) authentication.getPrincipal();
 
-        List<MaterialeDTO> materiali = materialeService.getClientMateriale(principal.getTerapeuta().getId());
+        List<OutputMaterialeDTO> materiali = materialeService.getClientMateriali(principal.getTerapeuta().getId());
 
         if (materiali.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -79,40 +91,38 @@ public class MaterialeController {
     }
 
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> addMaterial(
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<OutputMaterialeDTO> addMaterial(
             @RequestParam("terapeutaId") Long terapeutaId,
             @RequestParam("file") MultipartFile file,
-            @RequestParam("nome") String nome) {
+            @RequestParam("nome") String nome,
+            @RequestParam("tipoMateriale") TipoMateriale tipoMateriale) {
 
-        try {
-            String fileType = file.getContentType();
-            if (!(fileType != null && ("application/pdf".equals(fileType) || "video/mp4".equals(fileType)))) {
-                return ResponseEntity.badRequest().body("File type not supported. Only PDF and MP4 allowed.");
-            }
-
-            Path directoryPath = Paths.get(BASE_DIRECTORY, String.valueOf(terapeutaId));
-
-            if (!Files.exists(directoryPath)) {
-                Files.createDirectories(directoryPath);
-            }
-
-            String fileName = nome + getFileExtension(file.getOriginalFilename());
-            Path filePath = directoryPath.resolve(fileName);
-
-            Files.write(filePath, file.getBytes());
-
-            return ResponseEntity.ok("Material added to: " + filePath.toString());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error saving material: " + e.getMessage());
+        String fileType = file.getContentType();
+        if (!(("application/pdf".equals(fileType) || "video/mp4".equals(fileType)))) {
+            return ResponseEntity
+                    .badRequest()
+                    .header("Error", "Il tipo di file non è supportato. Sono supportati solo file PDF e video MP4.")
+                    .body(null);
         }
-    }
 
-    private String getFileExtension(String fileName) {
-        int dotIndex = fileName.lastIndexOf('.');
-        return (dotIndex == -1) ? "" : fileName.substring(dotIndex);
-    }
+        if(file.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .header("Error", "Il file da salvare è nullo.")
+                    .body(null);
+        }
 
+        InputMaterialeDTO inputMaterialeDTO = new InputMaterialeDTO(nome, tipoMateriale, terapeutaId, file);
+        if(materialeService.existsMateriale(inputMaterialeDTO)) {
+            return ResponseEntity
+                    .badRequest()
+                    .header("Error", "Esiste già un file chiamato \"" + nome + "\" per questo terapeuta.")
+                    .body(null);
+        }
+
+        OutputMaterialeDTO outputMaterialeDTO = materialeService.addMateriale(inputMaterialeDTO);
+
+        return ResponseEntity.ok(outputMaterialeDTO);
+    }
 }

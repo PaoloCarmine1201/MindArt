@@ -18,120 +18,239 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Service per la gestione delle operazioni relative ai materiali.
+ * Offre metodi per aggiungere, rimuovere, aggiornare o recuperare
+ * i materiali associati ai terapeuti.
+ */
 @Service
 public class MaterialeService {
 
     /**
      * Repository relativa al materiale.
      */
-    private final MaterialeRepository materialeRepository;
-    /**
-     * Repository relativa al terapeuta
-     */
-    private final TerapeutaRepository terapeutaRepository;
-    /**
-     * Custom mapper per il materiale.
-     */
-    private final MaterialeMapper materialeMapper;
+    private final MaterialeRepository materialeRepositoryInjected;
 
+    /**
+     * Repository relativa al terapeuta.
+     */
+    private final TerapeutaRepository terapeutaRepositoryInjected;
+
+    /**
+     * Mapper personalizzato per convertire tra entità e DTO.
+     */
+    private final MaterialeMapper materialeMapperInjected;
+
+    /**
+     * Directory di base dove salvare i file.
+     */
     private static final String BASE_DIRECTORY = "src/materiali/";
 
-    private final Logger logger = Logger.getLogger(MaterialeService.class.getName());
+    /**
+     * Logger per tracciare eventi e possibili errori.
+     */
+    private final Logger logger = Logger.getLogger(
+            MaterialeService.class.getName()
+    );
 
     /**
-     * Costruttore.
-     * @param materialeRepository {@link MaterialeRepository}
-     * @param materialeMapper {@link MaterialeMapper}
+     * Costruttore principale per l'iniezione delle dipendenze.
+     *
+     * @param paramMaterialeRepository  Repository per gestire
+     *                                  l'entità Materiale
+     * @param paramMaterialeMapper      Mapper per convertire tra
+     *                                  entità e DTO
+     * @param paramTerapeutaRepository  Repository per gestire
+     *                                  l'entità Terapeuta
      */
     @Autowired
-    public MaterialeService(final MaterialeRepository materialeRepository,
-                            final MaterialeMapper materialeMapper, TerapeutaRepository terapeutaRepository) {
-        this.materialeRepository = materialeRepository;
-        this.materialeMapper = materialeMapper;
-        this.terapeutaRepository = terapeutaRepository;
+    public MaterialeService(
+            final MaterialeRepository paramMaterialeRepository,
+            final MaterialeMapper paramMaterialeMapper,
+            final TerapeutaRepository paramTerapeutaRepository
+    ) {
+        // Assegniamo alle variabili di istanza per evitare campi nascosti
+        this.materialeRepositoryInjected = paramMaterialeRepository;
+        this.materialeMapperInjected = paramMaterialeMapper;
+        this.terapeutaRepositoryInjected = paramTerapeutaRepository;
     }
 
     /**
-     * Trova tutti i materiali associati al terapeutae li converte in
-     * {@link InputMaterialeDTO} per la visualizzazione sul client.
-     * @param terapeutaId - id del terapeuta loggato
-     * @return listaDTO
+     * Trova tutti i materiali associati al terapeuta e li converte in
+     * {@link OutputMaterialeDTO} per la visualizzazione sul client.
+     *
+     * @param terapeutaId ID del terapeuta loggato
+     * @return Lista di {@link OutputMaterialeDTO}
      */
-    public List<OutputMaterialeDTO> getClientMateriali(final long terapeutaId) {
-        return materialeRepository.findByTerapeutaId(terapeutaId)
+    public List<OutputMaterialeDTO> getClientMateriali(
+            final long terapeutaId
+    ) {
+        return this.materialeRepositoryInjected
+                .findByTerapeutaId(terapeutaId)
                 .stream()
-                .map(materialeMapper::toDTO)
+                .map(this.materialeMapperInjected::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public boolean existsMateriale(InputMaterialeDTO inputMaterialeDTO) {
-        return materialeRepository.existsByNomeAndTipoAndTerapeuta(
+    /**
+     * Verifica se esiste già un materiale con lo stesso nome e tipo
+     * per uno specifico terapeuta.
+     *
+     * @param inputMaterialeDTO DTO contenente i dati del materiale
+     * @return true se il materiale esiste già, false altrimenti
+     */
+    public boolean existsMateriale(
+            final InputMaterialeDTO inputMaterialeDTO
+    ) {
+        return this.materialeRepositoryInjected.existsByNomeAndTipoAndTerapeuta(
                 inputMaterialeDTO.getNome(),
                 inputMaterialeDTO.getTipoMateriale(),
-                terapeutaRepository.findById(inputMaterialeDTO.getTerapeutaId()).orElseThrow(() ->
-                        new EntityNotFoundException("Terapeuta non trovato"))
+                this.terapeutaRepositoryInjected.findById(
+                        inputMaterialeDTO.getTerapeutaId()
+                ).orElseThrow(
+                        () -> new EntityNotFoundException(
+                                "Terapeuta non trovato"
+                        )
+                )
         );
     }
 
-    public OutputMaterialeDTO addMateriale(InputMaterialeDTO materialeDTO) {
-        Path directoryPath = Paths.get(BASE_DIRECTORY, String.valueOf(materialeDTO.getTerapeutaId()));
+    /**
+     * Aggiunge un nuovo materiale salvando il file nella directory
+     * dedicata e persistendo i dati nel database.
+     *
+     * @param materialeDTO DTO contenente i dati del materiale
+     * @return {@link OutputMaterialeDTO} del materiale salvato
+     */
+    public OutputMaterialeDTO addMateriale(
+            final InputMaterialeDTO materialeDTO
+    ) {
+        // Percorso della cartella basato sul terapeutaId
+        Path directoryPath = Paths.get(
+                BASE_DIRECTORY,
+                String.valueOf(materialeDTO.getTerapeutaId())
+        );
 
+        // Crea la directory se non esiste
         if (!Files.exists(directoryPath)) {
             try {
                 Files.createDirectories(directoryPath);
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "Errore nella creazione della directory: {0}", e.getMessage());
+                this.logger.log(
+                        Level.SEVERE,
+                        "Errore nella creazione della directory: {0}",
+                        e.getMessage()
+                );
             }
         }
 
+        // Risolve il percorso completo del file
         String fileName = materialeDTO.getNome();
         Path filePath = directoryPath.resolve(fileName);
         try {
+            // Scrive i byte del file sul filesystem
             Files.write(filePath, materialeDTO.getFile().getBytes());
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Errore durante la scrittura del file : {0}", e.getMessage());
+            this.logger.log(
+                    Level.SEVERE,
+                    "Errore durante la scrittura del file : {0}",
+                    e.getMessage()
+            );
         }
 
-        Materiale materiale = materialeRepository.save(materialeMapper.toEntity(materialeDTO, filePath.toString()));
+        // Converte il DTO in entità e salva nel database
+        Materiale materiale = this.materialeRepositoryInjected.save(
+                this.materialeMapperInjected.toEntity(
+                        materialeDTO,
+                        filePath.toString()
+                )
+        );
 
-        return materialeMapper.toDTO(materiale);
+        // Ritorna il DTO del materiale appena creato
+        return this.materialeMapperInjected.toDTO(materiale);
     }
 
-    public void removeMaterial(InputMaterialeDTO materialeDTO) {
-        Path directoryPath = Paths.get(BASE_DIRECTORY, String.valueOf(materialeDTO.getTerapeutaId()));
+    /**
+     * Rimuove un materiale cancellando il file dal filesystem
+     * e eliminando i dati nel database.
+     *
+     * @param materialeDTO DTO contenente i dati del materiale
+     *                     da rimuovere
+     */
+    public void removeMaterial(final InputMaterialeDTO materialeDTO) {
+        // Percorso della cartella basato sul terapeutaId
+        Path directoryPath = Paths.get(
+                BASE_DIRECTORY,
+                String.valueOf(materialeDTO.getTerapeutaId())
+        );
         try {
+            // Recupera il nome del file da cancellare
             String fileName = materialeDTO.getNome();
-            logger.log(Level.INFO, "Cancellazione del file {0}", directoryPath + fileName);
+            this.logger.log(
+                    Level.INFO,
+                    "Cancellazione del file {0}",
+                    directoryPath + fileName
+            );
             Files.delete(directoryPath.resolve(fileName));
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Errore durante la cancellazione del file : {0}", e.getMessage());
+            this.logger.log(
+                    Level.SEVERE,
+                    "Errore durante la cancellazione del file : {0}",
+                    e.getMessage()
+            );
         }
 
-        materialeRepository.deleteById(materialeDTO.getId());
-
+        // Elimina il record dal database
+        this.materialeRepositoryInjected.deleteById(materialeDTO.getId());
     }
 
-    public void updateMaterial(InputMaterialeDTO materialeDTO) {
-        Path directoryPath = Paths.get(BASE_DIRECTORY, String.valueOf(materialeDTO.getTerapeutaId()));
+    /**
+     * Aggiorna un materiale rimuovendo il vecchio file
+     * e sostituendolo con il nuovo, poi salva le modifiche
+     * nel database.
+     *
+     * @param materialeDTO DTO contenente i dati del materiale
+     *                     aggiornato
+     */
+    public void updateMaterial(final InputMaterialeDTO materialeDTO) {
+        // Percorso della cartella basato sul terapeutaId
+        Path directoryPath = Paths.get(
+                BASE_DIRECTORY,
+                String.valueOf(materialeDTO.getTerapeutaId())
+        );
         MultipartFile file = materialeDTO.getFile();
-        materialeRepository.findById(materialeDTO.getId()).ifPresent(materiale -> {
-            try {
-                Path existingFilePath = Paths.get(materiale.getPath());
-                if (Files.exists(existingFilePath)) {
-                    Files.delete(existingFilePath);
-                }
 
-                Path newFilePath = directoryPath.resolve(materialeDTO.getNome());
-                Files.write(newFilePath, file.getBytes());
+        // Recupera il materiale dal database e, se presente, aggiorna il file
+        this.materialeRepositoryInjected.findById(materialeDTO.getId())
+                .ifPresent(materiale -> {
+                    try {
+                        // Cancella il vecchio file se esiste
+                        Path existingFilePath = Paths.get(materiale.getPath());
+                        if (Files.exists(existingFilePath)) {
+                            Files.delete(existingFilePath);
+                        }
 
-                materiale.setNome(materialeDTO.getNome());
-                materiale.setTipo(materialeDTO.getTipoMateriale());
-                materiale.setPath(newFilePath.toString());
-                materialeRepository.save(materiale);
+                        // Scrive il nuovo file
+                        Path newFilePath = directoryPath.resolve(
+                                materialeDTO.getNome()
+                        );
+                        Files.write(newFilePath, file.getBytes());
 
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, "Errore durante l'aggiornamento del file: {0}", e.getMessage());
-            }
-        });
+                        // Aggiorna i campi dell'entità
+                        materiale.setNome(materialeDTO.getNome());
+                        materiale.setTipo(materialeDTO.getTipoMateriale());
+                        materiale.setPath(newFilePath.toString());
+
+                        // Salva le modifiche nel database
+                        this.materialeRepositoryInjected.save(materiale);
+
+                    } catch (IOException e) {
+                        this.logger.log(
+                                Level.SEVERE,
+                                "Errore durante l'aggiornamento del file: {0}",
+                                e.getMessage()
+                        );
+                    }
+                });
     }
 }

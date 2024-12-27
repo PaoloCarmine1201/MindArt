@@ -10,17 +10,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /**
- * Rappresenta un materiale utilizzato durante le sessioni terapeutiche.
+ * Rappresenta un materiale utilizzato durante le
+ * sessioni terapeutiche.
  */
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Materiale {
@@ -38,7 +37,7 @@ public class Materiale {
     private String nome;
 
     /**
-     * Tipo del materiale (PDF, immagine, video).
+     * Tipo del materiale (es. PDF, immagine, video).
      */
     private TipoMateriale tipo;
 
@@ -55,11 +54,40 @@ public class Materiale {
     private Terapeuta terapeuta;
 
     /**
-     * Elenco delle sessioni terapeutiche
-     * che utilizzano questo materiale.
+     * Elenco delle sessioni terapeutiche che utilizzano
+     * questo materiale.
      */
-    @OneToMany(mappedBy = "materiale",
+    @OneToMany(
+            mappedBy = "materiale",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true
+    )
     private List<Sessione> sessioni;
+
+    /**
+     * Costruttore personalizzato per inizializzare i campi
+     * principali evitando l'errore di HiddenField.
+     *
+     * @param paramId        ID del materiale
+     * @param paramNome      Nome del materiale
+     * @param paramTipo      Tipo del materiale (PDF, immagine, video)
+     * @param paramPath      Percorso del file associato
+     * @param paramTerapeuta Terapeuta associato
+     * @param paramSessioni  Lista delle sessioni correlate
+     */
+    public Materiale(
+            final Long paramId,
+            final String paramNome,
+            final TipoMateriale paramTipo,
+            final String paramPath,
+            final Terapeuta paramTerapeuta,
+            final List<Sessione> paramSessioni
+    ) {
+        this.id = paramId;
+        this.nome = paramNome;
+        this.tipo = paramTipo;
+        this.path = paramPath;
+        this.terapeuta = paramTerapeuta;
+        this.sessioni = paramSessioni;
+    }
 }

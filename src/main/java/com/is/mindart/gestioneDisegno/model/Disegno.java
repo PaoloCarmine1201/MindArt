@@ -1,6 +1,5 @@
 package com.is.mindart.gestioneDisegno.model;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.is.mindart.gestioneBambino.model.Bambino;
@@ -13,11 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.NonNull;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,8 +45,8 @@ public class Disegno {
     /**
      * Dati vettoriali del disegno in formato JSON.
      */
+    @Embedded
     @Column(name = "disegno", columnDefinition = "JSON", nullable = false)
-    @Convert(converter = DisegnoMessageConverter.class)
     private DrawingData disegno;
 
     /**
@@ -97,25 +93,25 @@ public class Disegno {
      * Convertitore per serializzare/deserializzare il campo disegno.
      */
     @Converter(autoApply = true)
-    public static class DisegnoMessageConverter implements AttributeConverter<DisegnoMessage, String> {
+    public static class DrawingDataConverter implements AttributeConverter<DrawingData, String> {
 
         private final ObjectMapper objectMapper = new ObjectMapper();
 
         @Override
-        public String convertToDatabaseColumn(final DisegnoMessage drawingData) {
+        public String convertToDatabaseColumn(DrawingData drawingData) {
             try {
                 return objectMapper.writeValueAsString(drawingData);
             } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException("Errore nella serializzazione del disegno", e);
+                throw new IllegalArgumentException("Errore nella serializzazione di DrawingData", e);
             }
         }
 
         @Override
-        public DisegnoMessage convertToEntityAttribute(final String json) {
+        public DrawingData convertToEntityAttribute(String json) {
             try {
-                return objectMapper.readValue(json, DisegnoMessage.class);
+                return objectMapper.readValue(json, DrawingData.class);
             } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException("Errore nella deserializzazione del disegno", e);
+                throw new IllegalArgumentException("Errore nella deserializzazione di DrawingData", e);
             }
         }
     }

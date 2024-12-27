@@ -1,28 +1,25 @@
 
 package com.is.mindart.gestioneDisegno.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneDisegno.model.DrawingData;
-import com.is.mindart.gestioneDisegno.model.StrokeData;
+import com.is.mindart.gestioneDisegno.model.PointData;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class DisegnoService {
@@ -76,7 +73,7 @@ public class DisegnoService {
         disegnoDTO.setId(savedDisegno.getId());
         return disegnoDTO;
     }
-    
+
 
     /**
      * Aggiorna il campo 'disegno' di un record Disegno esistente per una sessione.
@@ -84,31 +81,42 @@ public class DisegnoService {
      *
      * @param drawingMessage I dati del disegno da aggiungere.
      * @return DisegnoResponseDTO del disegno aggiornato.
-     * @throws Exception In caso di errori durante l'aggiornamento.
      */
     @Transactional
-    public DisegnoResponseDTO updateDisegnoViaSocket(DisegnoMessage drawingMessage) throws Exception {
+    public DisegnoResponseDTO updateDisegnoViaSocket( final DisegnoMessage drawingMessage) {
         try {
 
+            System.out.println("Aggiornamento disegno via socket con messaggio: " + drawingMessage);
 
-            // Trova il Disegno esistente per la sessione
             Disegno disegno = disegnoRepository.findBySessioneId(drawingMessage.getSessionId())
                     .orElseThrow(() -> new NoSuchElementException("Disegno non trovato per la sessione con ID: " + drawingMessage.getSessionId()));
 
-            // Crea un nuovo StrokeDataDTO
-            StrokeData newStroke = new StrokeData(
-                    drawingMessage.getPoints(),
-                    drawingMessage.getColor()
-            );
+            // Gestione dei punti
+            List<Integer> points = drawingMessage.getPoints();
+            if (points != null && !points.isEmpty()) {
+                if (points.size() % 2 != 0) {
+                    throw new IllegalArgumentException("La lista dei punti deve contenere un numero pari di elementi.");
+                }
 
-            // Aggiungi il nuovo tratto alla lista dei tratti esistenti
-            disegno.getDisegno().getStrokes().add(newStroke);
+                for (int i = 0; i < points.size(); i += 2) {
+                    int x = points.get(i);
+                    int y = points.get(i + 1);
 
-            // Salva il Disegno aggiornato nel database
+                    PointData newPoint = new PointData();
+                    newPoint.setPoints(Arrays.asList(x, y));
+                    newPoint.setColor(drawingMessage.getColor());
+
+                    System.out.println("Aggiungo nuovo punto: " + newPoint);
+                    disegno.getDisegno().getStrokes().add(newPoint);
+                }
+            } else {
+                System.out.println("Nessun punto da aggiungere.");
+            }
+
             Disegno savedDisegno = disegnoRepository.save(disegno);
-
-            // Mappa l'entità salvata al DTO di risposta
             DisegnoResponseDTO responseDTO = mapToResponseDTO(savedDisegno);
+
+            System.out.println("Disegno salvato e mappato al DTO: " + responseDTO);
             return responseDTO;
         } catch (ObjectOptimisticLockingFailureException e) {
             // Gestione dell'eccezione di ottimistic locking
@@ -138,7 +146,7 @@ public class DisegnoService {
     private DrawingDataDTO mapDrawingDataToDTO(DrawingData drawingData) {
         DrawingDataDTO dto = new DrawingDataDTO();
         drawingData.getStrokes().forEach(stroke -> {
-            StrokeDataDTO strokeDTO = new StrokeDataDTO();
+            PointDataDTO strokeDTO = new PointDataDTO();
             strokeDTO.setPoints(stroke.getPoints());
             strokeDTO.setColor(stroke.getColor());
             dto.getStrokes().add(strokeDTO);
@@ -154,7 +162,7 @@ public class DisegnoService {
      * @throws Exception In caso di disegno non trovato o altri errori.
      */
     @Transactional
-    public DisegnoResponseDTO getDisegnoBySessioneId(Long sessioneId) throws Exception {
+    public DisegnoResponseDTO getDisegnoBySessioneId(Long sessioneId)  {
         Disegno disegno = disegnoRepository.findBySessioneId(sessioneId)
                 .orElseThrow(() -> new NoSuchElementException("Disegno non trovato per la sessione con ID: " + sessioneId));
 

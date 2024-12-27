@@ -1,5 +1,6 @@
-package com.is.mindart.gestioneDisegno.service;
+package com.is.mindart.gestioneDisegno.model;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StrokeDataDTO {
-    private List<Integer> points; // Array di coordinate [x1, y1, x2, y2, ...]
+@Embeddable
+public class PointData {
+    private List<Integer> points;
     private String color;        // Colore in formato esadecimale, es. "#FF0000"
-    private int thickness;       // Spessore della linea
 }

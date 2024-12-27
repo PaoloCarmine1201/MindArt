@@ -16,7 +16,6 @@ import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import {AuthProvider} from "./auth/AuthProvider";
 import DisegnaBambino from "./pages/DisegnaBambino";
-import ProtectedRouteChild from "./auth/ProtectedRouteChild";
 
 const router = createBrowserRouter([
     {

@@ -6,10 +6,7 @@ function DisegnaBambino() {
     return (
         <>
             <NavBar name="Dashboard"/>
-            <DrawingBoard
-                sessionId={1}
-                childId={1}
-            />
+            <DrawingBoard sessionId={1} bambinoId={1}/>
         </>
     )
 }

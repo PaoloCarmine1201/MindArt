@@ -24,7 +24,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.6",
     "react-transition-group": "^4.4.5",
-    "react-konva": "17.0.0-0",
+    "react-konva": "18.2.10",
     "redux": "^5.0.1",
     "socket.io-client": "4.8.1",
     "sockjs-client": "^1.6.1",

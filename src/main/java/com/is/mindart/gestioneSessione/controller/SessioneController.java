@@ -31,7 +31,7 @@ public class SessioneController {
      * @param sessioneDTO DTO proveniente dal client
      * @return 200 OK
      */
-    @PostMapping("/create")
+    @PostMapping("terapeuta/sessione/create")
     public ResponseEntity<SessioneDTO> create(
             @Valid @RequestBody final SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder
@@ -47,7 +47,7 @@ public class SessioneController {
      * @param id id sessione
      * @return 200 OK oppure 404 Not Found
      */
-    @PatchMapping("/{id}/termina")
+    @PatchMapping("terapeuta/sessione/{id}/termina")
     public ResponseEntity<Void> terminaSessione(@PathVariable final long id) {
         try {
             Authentication authentication = SecurityContextHolder

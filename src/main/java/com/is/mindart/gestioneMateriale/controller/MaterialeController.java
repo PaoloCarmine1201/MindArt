@@ -1,7 +1,9 @@
 package com.is.mindart.gestioneMateriale.controller;
 
-import com.is.mindart.gestioneMateriale.service.MaterialeDTO;
+import com.is.mindart.gestioneMateriale.model.TipoMateriale;
+import com.is.mindart.gestioneMateriale.service.InputMaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
+import com.is.mindart.gestioneMateriale.service.OutputMaterialeDTO;
 import com.is.mindart.security.model.TerapeutaDetails;
 import jakarta.servlet.ServletContext;
 import jakarta.validation.Valid;
@@ -14,13 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/terapeuta/materiale")
@@ -90,6 +86,14 @@ public class MaterialeController {
         return ResponseEntity.ok(materiali);
     }
 
+    /**
+     *
+     * @param terapeutaId id del terapeuta
+     * @param file file da salvare
+     * @param nome nome del file da salvare compresa l'estensione
+     * @param tipoMateriale tipo del materiale da salvare (PDF, IMMAGINE, VIDEO)
+     * @return OutputMaterialeDTO
+     */
     @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<OutputMaterialeDTO> addMaterial(

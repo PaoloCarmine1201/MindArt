@@ -1,6 +1,7 @@
 package com.is.mindart.gestioneMateriale.service;
 
 import com.is.mindart.configuration.MaterialeMapper;
+import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +25,10 @@ public class MaterialeService {
      * Repository relativa al materiale.
      */
     private final MaterialeRepository materialeRepository;
+    /**
+     * Repository relativa al terapeuta
+     */
+    private final TerapeutaRepository terapeutaRepository;
     /**
      * Custom mapper per il materiale.
      */

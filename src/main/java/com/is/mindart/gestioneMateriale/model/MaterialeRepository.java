@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneMateriale.model;
 
+import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public interface MaterialeRepository extends JpaRepository<Materiale, Long> {
      * @return lista di materiali associati
      */
     List<Materiale> findByTerapeutaId(Long terapeutaId);
+    boolean existsByNomeAndTipoAndTerapeuta(String nome, TipoMateriale tipo, Terapeuta terapeuta);
 }

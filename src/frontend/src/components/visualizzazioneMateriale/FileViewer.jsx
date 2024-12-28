@@ -1,7 +1,8 @@
 // FileViewer.jsx
 import React, { useState } from 'react';
 import MiniVideoPlayer from './MiniVideoPlayer';
-import MiniPdfViewer from './MiniPdfViewer';
+import PDFViewer from './PDFViewer';
+import PPTXViewer from "./PPTXViewer";
 
 // Esempio con lo switch case
 const FileViewer = ({ fileUrl, fileType }) => {
@@ -10,12 +11,14 @@ const FileViewer = ({ fileUrl, fileType }) => {
     // Per i video
     const [showVideoPlayer, setShowVideoPlayer] = useState(true);
 
+    const [showPPTXPlayer, setShowPPTXPlayer] = useState(true);
+
     switch (fileType) {
         case 'pdf':
             return showPdfViewer ? (
-                <MiniPdfViewer
-                    pdfUrl={fileUrl}
-                    onClose={() => setShowPdfViewer(false)}
+                <PDFViewer
+                    file={fileUrl}
+                    //onClose={() => setShowPdfViewer(false)}
                 />
             ) : (
                 <p>PDF chiuso</p>
@@ -32,17 +35,10 @@ const FileViewer = ({ fileUrl, fileType }) => {
             );
 
         case 'pptx':
-            const pptxViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-                fileUrl
-            )}`;
-
             return (
-                <iframe
-                    src={pptxViewerUrl}
-                    width="100%"
-                    height="600px"
-                    style={{ border: 'none' }}
-                    title="PPTX Viewer"
+                <PPTXViewer
+                    pptxUrl={fileType}
+                    //onClose={setShowPPTXPlayer(false)}
                 />
             );
 

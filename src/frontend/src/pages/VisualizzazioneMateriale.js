@@ -12,23 +12,26 @@ const App = () => {
 
                 {/* Esempio PDF*/}
                 <FileViewer
-                    fileUrl="https://www.orimi.com/pdf-test.pdf"
+                    fileUrl="/materiali/samplepptx.pptx" //"/materiali/aiayn.pdf"
                     fileType="pdf"
                 />
 
 
-                {/* Esempio Video MP4 */}
+
+                {/* Esempio Video MP4
                 <FileViewer
                     fileUrl="https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
                     fileType="video"
                 />
+                */}
 
                 {/* Esempio PPTX
                 <FileViewer
-                    fileUrl="https://example.com/presentazione.pptx"
+                    fileUrl= "https://scholar.harvard.edu/files/torman_personal/files/samplepptx.pptx"// "/materiali/samplepptx.pptx"
                     fileType="pptx"
                 />
                 */}
+
             </div>
         </>
     );

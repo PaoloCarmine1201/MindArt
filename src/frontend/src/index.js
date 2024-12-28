@@ -16,6 +16,8 @@ import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import {AuthProvider} from "./auth/AuthProvider";
 import DisegnaBambino from "./pages/DisegnaBambino";
+import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
+import ProtectedRouteChild from "./auth/ProtectedRouteChild";
 
 const router = createBrowserRouter([
     {
@@ -61,7 +63,12 @@ const router = createBrowserRouter([
     {
         path: "child/draw",
         name: "Child Drawing",
-        element:<DisegnaBambino/>
+        element:<ProtectedRouteChild><DisegnaBambino/></ProtectedRouteChild>
+    },
+    {
+        path: "terapeuta/draw",
+        name: "Terapeuta Drawing",
+        element:<ProtectedRoute><DisegnoInCorso/></ProtectedRoute>
     },
     {
         path:"/home",

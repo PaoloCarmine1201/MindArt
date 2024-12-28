@@ -1,12 +1,11 @@
 import NavBar from "../components/HomePageTerapeuta/NavBar";
 import React from "react";
-import BoardDisegno from "../components/BoardDisegno";
+import BoardDisegno from "../components/Disegno/BoardDisegno";
 
 function DisegnaBambino() {
     return (
         <>
-            <NavBar name="Dashboard"/>
-            <BoardDisegno sessionId={1} bambinoId={1}/>
+            <BoardDisegno/>
         </>
     )
 }

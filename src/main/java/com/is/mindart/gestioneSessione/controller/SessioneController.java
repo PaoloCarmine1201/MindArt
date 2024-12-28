@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/terapeuta/sessione")
 @RequiredArgsConstructor
 public class SessioneController {
-
     /**
      * Servizio per la gestione delle sessioni.
      */

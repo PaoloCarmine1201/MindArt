@@ -2,13 +2,14 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Line, Rect, Circle } from 'react-konva';
-import { connectWebSocket, subscribeToDraw } from "../utils/websocket";
-import axiosInstance from "../config/axiosInstance";
+import { connectWebSocket, subscribeToDraw } from "../../utils/websocket";
+import axiosInstance from "../../config/axiosInstance";
 import { FaEraser } from "react-icons/fa"; // Import dell'icona della gomma
-import "../style/Lavagna.css"; // Import del file CSS
+import "../../style/Lavagna.css"; // Import del file CSS
 
-const DrawingBoard = ({ disegnoId = 1 }) => {
+const DrawingBoard = () => {
     const [strokes, setStrokes] = useState([]);
+    const [disegnoId, setDisegnoId] = useState(); // ID del disegno
     const [color, setColor] = useState('#000000'); // Colore di default
     const stageRef = useRef(null);
     const [currentStroke, setCurrentStroke] = useState(null);
@@ -38,7 +39,8 @@ const DrawingBoard = ({ disegnoId = 1 }) => {
         // 1. Carica i dati iniziali via REST
         const loadStrokes = async () => {
             try {
-                const disegno = await axiosInstance.get(`/api/bambino/sessione/${disegnoId}`);
+                const disegno = await axiosInstance.get(`/api/bambino/sessione/disegno/`);
+                setDisegnoId(disegno.data.id);
                 setStrokes(disegno.data.strokes);
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
@@ -47,6 +49,7 @@ const DrawingBoard = ({ disegnoId = 1 }) => {
         };
 
         loadStrokes();
+        console.log(disegnoId);
 
         // 2. Connessione WebSocket
         const client = connectWebSocket();
@@ -182,10 +185,6 @@ const DrawingBoard = ({ disegnoId = 1 }) => {
 
     return (
         <div>
-            <div style={{marginBottom: '10px'}}>
-                <label>Seleziona Colore: </label>
-                <input type="color" value={color} onChange={handleColorChange}/>
-            </div>
             <Stage
                 width={dimensions.width}
                 height={dimensions.height}

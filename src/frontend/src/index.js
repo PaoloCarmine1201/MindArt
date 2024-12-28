@@ -18,6 +18,7 @@ import {AuthProvider} from "./auth/AuthProvider";
 import ProtectedRouteChild from "./auth/ProtectedRouteChild";
 import DisegnaBambino from "./pages/DisegnaBambino";
 import GestioneMaterialeFull from "./components/GestioneMateriale/GestioneMaterialeFull";
+import VisualizzazioneMateriale from "./pages/VisualizzazioneMateriale";
 
 const router = createBrowserRouter([
     {
@@ -69,6 +70,11 @@ const router = createBrowserRouter([
         path:"/home",
         name: "Home",
         element : <ProtectedRoute><HomePage /></ProtectedRoute>
+    },
+    {
+        path:"/visualizzazioneMateriale",
+        name: "Visualizzazione Materiale",
+        element : <ProtectedRoute><VisualizzazioneMateriale /></ProtectedRoute>
     },
     {
         path:"/gestioneMateriale",

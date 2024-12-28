@@ -13,7 +13,8 @@ function App() {
               <li><Link to="/home">Home Page</Link></li>
               <li><Link to="/calendarioEventi">Eventi terapeuta</Link></li>
               <li><Link to="/gestioneBambini">Gestione bambini</Link></li>
-                <li><Link to="/gestioneMateriale">Gestione materiale</Link></li>
+              <li><Link to="/gestioneMateriale">Gestione materiale</Link></li>
+              <li><Link to="/visualizzazioneMateriale">Visualizzazione Materiale</Link></li>
           </ul>
       </div>
   );

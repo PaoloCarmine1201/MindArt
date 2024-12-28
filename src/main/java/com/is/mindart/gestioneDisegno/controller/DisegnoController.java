@@ -1,6 +1,6 @@
 package com.is.mindart.gestioneDisegno.controller;
 
-import com.is.mindart.gestioneDisegno.service.DisegnoResponseDTO;
+import com.is.mindart.gestioneDisegno.service.DisegnoDTO;
 import com.is.mindart.gestioneDisegno.service.DisegnoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +27,8 @@ public class DisegnoController {
      * @return 200 OK
      */
     @GetMapping("/bambino/sessione/{sessioneId}")
-    public ResponseEntity<DisegnoResponseDTO> getDisegnoBySessioneId(@PathVariable Long sessioneId) {
-        DisegnoResponseDTO disegnoResponseDTO = disegnoService.getDisegnoBySessioneId(sessioneId);
+    public ResponseEntity<DisegnoDTO> getDisegnoBySessioneId(@PathVariable Long sessioneId) {
+        DisegnoDTO disegnoResponseDTO = disegnoService.getDisegnoBySessioneId(sessioneId);
         return ResponseEntity.ok(disegnoResponseDTO);
     }
 }

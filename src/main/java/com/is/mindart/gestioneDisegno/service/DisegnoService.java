@@ -1,6 +1,8 @@
 
 package com.is.mindart.gestioneDisegno.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
@@ -13,161 +15,90 @@ import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@AllArgsConstructor
 public class DisegnoService {
+    private final DisegnoRepository disegnoRepository;
+    private final ObjectMapper objectMapper; // Per convertire da/verso JSON
 
-    @Autowired
-    private DisegnoRepository disegnoRepository;
 
-    @Autowired
-    private TerapeutaRepository terapeutaRepository;
 
-    @Autowired
-    private SessioneRepository sessioneRepository;
+    // Aggiunge lo stroke alla lista di stroke su Disegno
+    public void addStrokeToDisegno(Long disegnoId, StrokeDTO newStroke) {
+        Disegno disegno = disegnoRepository.findById(disegnoId)
+                .orElseThrow(() -> new RuntimeException("Disegno non trovato con id " + disegnoId));
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+        // Leggo la stringa JSON e la converto in lista esistente di strokes
+        List<StrokeDTO> strokes = deserializeStrokes(disegno.getStrokesJson());
 
-    @Autowired
-    private BambinoRepository bambinoRepository;
+        // Aggiungo il nuovo stroke
+        strokes.add(newStroke);
 
-    public DisegnoDTO createDisegno(final Long terapeutaId, final DisegnoDTO disegnoDTO) {
-        // Recupera Terapeuta
-        Terapeuta terapeuta = terapeutaRepository.findById(terapeutaId)
-                .orElseThrow(() -> new NoSuchElementException(
-                        "Terapeuta non trovato con ID: "
-                        + terapeutaId));
+        // Converto nuovamente in JSON
+        String updatedJson = serializeStrokes(strokes);
 
-        // Recupera Sessione
-        Sessione sessione = sessioneRepository.findById(
-                disegnoDTO.getSessioneId())
-                .orElseThrow(() ->
-                        new NoSuchElementException(
-                                "Sessione non trovata con ID: "
-                                        + disegnoDTO.getSessioneId())
-                );
+        // Aggiorno il campo in Disegno
+        disegno.setStrokesJson(updatedJson);
 
-        // Recupera Bambini
-        List<Bambino> bambini = bambinoRepository
-                .findAllById(disegnoDTO.getBambinoIds());
-        if (bambini.size() != disegnoDTO.getBambinoIds().size()) {
-            throw new NoSuchElementException("Alcuni Bambino IDs non sono validi");
-        }
-
-        // Crea Disegno
-        Disegno disegno = new Disegno();
-        disegno.setTerapeuta(terapeuta);
-        disegno.setSessione(sessione);
-        disegno.setBambini(bambini);
-
-        // Salva nel database
-        Disegno savedDisegno = disegnoRepository.save(disegno);
-
-        disegnoDTO.setId(savedDisegno.getId());
-        return disegnoDTO;
+        // Salvo su DB
+        disegnoRepository.save(disegno);
     }
 
 
-    /**
-     * Aggiorna il campo 'disegno' di un record Disegno esistente per una sessione.
-     * Questo metodo è destinato esclusivamente alle operazioni WebSocket.
-     *
-     * @param drawingMessage I dati del disegno da aggiungere.
-     * @return DisegnoResponseDTO del disegno aggiornato.
-     */
-    @Transactional
-    public DisegnoResponseDTO updateDisegnoViaSocket( final DisegnoMessage drawingMessage) {
+    // Converte List<StrokeDTO> -> JSON
+    private String serializeStrokes(List<StrokeDTO> strokes) {
         try {
-
-            System.out.println("Aggiornamento disegno via socket con messaggio: " + drawingMessage);
-
-            Disegno disegno = disegnoRepository.findBySessioneId(drawingMessage.getSessionId())
-                    .orElseThrow(() -> new NoSuchElementException("Disegno non trovato per la sessione con ID: " + drawingMessage.getSessionId()));
-
-            // Gestione dei punti
-            List<Integer> points = drawingMessage.getPoints();
-            if (points != null && !points.isEmpty()) {
-                if (points.size() % 2 != 0) {
-                    throw new IllegalArgumentException("La lista dei punti deve contenere un numero pari di elementi.");
-                }
-
-                for (int i = 0; i < points.size(); i += 2) {
-                    int x = points.get(i);
-                    int y = points.get(i + 1);
-
-                    PointData newPoint = new PointData();
-                    newPoint.setPoints(Arrays.asList(x, y));
-                    newPoint.setColor(drawingMessage.getColor());
-
-                    System.out.println("Aggiungo nuovo punto: " + newPoint);
-                    disegno.getDisegno().getStrokes().add(newPoint);
-                }
-            } else {
-                System.out.println("Nessun punto da aggiungere.");
-            }
-
-            Disegno savedDisegno = disegnoRepository.save(disegno);
-            DisegnoResponseDTO responseDTO = mapToResponseDTO(savedDisegno);
-
-            System.out.println("Disegno salvato e mappato al DTO: " + responseDTO);
-            return responseDTO;
-        } catch (ObjectOptimisticLockingFailureException e) {
-            // Gestione dell'eccezione di ottimistic locking
-            throw new RuntimeException("Conflitto durante l'aggiornamento del Disegno. Riprova.", e);
+            return objectMapper.writeValueAsString(strokes);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Errore durante la scrittura del JSON dei strokes", e);
         }
     }
 
-    /**
-     * Mappa un'entità Disegno a DisegnoResponseDTO.
-     *
-     * @param disegno L'entità Disegno.
-     * @return DisegnoResponseDTO.
-     */
-    private DisegnoResponseDTO mapToResponseDTO(Disegno disegno) {
-        DisegnoResponseDTO dto = new DisegnoResponseDTO();
-        dto.setId(disegno.getId());
-        dto.setDisegno(mapDrawingDataToDTO(disegno.getDisegno()));
-        return dto;
-    }
 
-    /**
-     * Mappa un'entità DrawingData a DrawingDataDTO.
-     *
-     * @param drawingData L'entità DrawingData.
-     * @return DrawingDataDTO.
-     */
-    private DrawingDataDTO mapDrawingDataToDTO(DrawingData drawingData) {
-        DrawingDataDTO dto = new DrawingDataDTO();
-        drawingData.getStrokes().forEach(stroke -> {
-            PointDataDTO strokeDTO = new PointDataDTO();
-            strokeDTO.setPoints(stroke.getPoints());
-            strokeDTO.setColor(stroke.getColor());
-            dto.getStrokes().add(strokeDTO);
-        });
-        return dto;
-    }
+    public DisegnoDTO getDisegnoById(Long disegnoId) {
+        Disegno disegno = disegnoRepository.findById(disegnoId)
+                .orElseThrow(() -> new NoSuchElementException("Disegno non trovato con id " + disegnoId));
 
-    /**
-     * Recupera il disegno associato a una sessione.
-     *
-     * @param sessioneId L'ID della sessione.
-     * @return DisegnoResponseDTO del disegno.
-     * @throws Exception In caso di disegno non trovato o altri errori.
-     */
-    @Transactional
-    public DisegnoResponseDTO getDisegnoBySessioneId(Long sessioneId)  {
+        List<StrokeDTO> strokes = deserializeStrokes(disegno.getStrokesJson());
+
+        return new DisegnoDTO(disegno.getId(), strokes);
+    }
+    public DisegnoDTO getDisegnoBySessioneId(Long sessioneId) {
         Disegno disegno = disegnoRepository.findBySessioneId(sessioneId)
-                .orElseThrow(() -> new NoSuchElementException("Disegno non trovato per la sessione con ID: " + sessioneId));
+                .orElseThrow(() -> new NoSuchElementException("Disegno non trovato per la sessione con id " + sessioneId));
 
-        DisegnoResponseDTO responseDTO = mapToResponseDTO(disegno);
-        return responseDTO;
+        List<StrokeDTO> strokes = deserializeStrokes(disegno.getStrokesJson());
+
+        return new DisegnoDTO(disegno.getId(), strokes);
+    }
+
+    /**
+     * Converte la stringa JSON dei tratti in una lista di StrokeDTO.
+     *
+     * @param strokesJson JSON dei tratti
+     * @return Lista di StrokeDTO
+     */
+    private List<StrokeDTO> deserializeStrokes(String strokesJson) {
+        if (strokesJson == null || strokesJson.isBlank()) {
+            return new ArrayList<>();
+        }
+        try {
+            JavaType type = objectMapper.getTypeFactory().constructCollectionType(List.class, StrokeDTO.class);
+            return objectMapper.readValue(strokesJson, type);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore durante la deserializzazione dei tratti", e);
+        }
     }
 
 

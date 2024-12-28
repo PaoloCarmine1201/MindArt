@@ -22,10 +22,8 @@ public class DisegnoDTO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Il campo sessione_id è obbligatorio")
-    private Long sessioneId;
+    @NotNull
+    List<StrokeDTO> strokes;
 
-    @NotEmpty(message = "Almeno un bambino deve essere associato al disegno")
-    private List<Long> bambinoIds;
 }
 

@@ -43,11 +43,12 @@ public class Disegno {
     private int voto;
 
     /**
-     * Dati vettoriali del disegno in formato JSON.
+     * Campo che conterrà l'insieme dei tratti di disegno
+     * in formato JSON (es. un array di stroke).
      */
-    @Embedded
-    @Column(name = "disegno", columnDefinition = "JSON", nullable = false)
-    private DrawingData disegno;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String strokesJson;
 
     /**
      * Data in cui il disegno è stato creato.
@@ -89,32 +90,6 @@ public class Disegno {
     private List<Bambino> bambini;
 
 
-    /**
-     * Convertitore per serializzare/deserializzare il campo disegno.
-     */
-    @Converter(autoApply = true)
-    public static class DrawingDataConverter implements AttributeConverter<DrawingData, String> {
-
-        private final ObjectMapper objectMapper = new ObjectMapper();
-
-        @Override
-        public String convertToDatabaseColumn(DrawingData drawingData) {
-            try {
-                return objectMapper.writeValueAsString(drawingData);
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException("Errore nella serializzazione di DrawingData", e);
-            }
-        }
-
-        @Override
-        public DrawingData convertToEntityAttribute(String json) {
-            try {
-                return objectMapper.readValue(json, DrawingData.class);
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException("Errore nella deserializzazione di DrawingData", e);
-            }
-        }
-    }
 
 
 }

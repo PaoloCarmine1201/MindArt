@@ -1,243 +1,167 @@
-// src/components/DrawingBoard.js
+// src/components/DrawingBoard.jsx
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Stage, Layer, Line, Text } from 'react-konva';
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
-import { debounce } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
+import { Stage, Layer, Line } from 'react-konva';
+import {connectWebSocket, subscribeToDraw} from "../utils/websocket";
 import axiosInstance from "../config/axiosInstance";
 
 
-const POINTS_BATCH_SIZE = 10; // Numero di punti da accumulare prima di inviare
-
-const DrawingBoard = ({ sessionId, bambinoId }) => {
-    const [color, setColor] = useState('#FF0000'); // Colore predefinito
-    const [lines, setLines] = useState([]); // Lista di tratti
-    const [currentLine, setCurrentLine] = useState(null); // Tratto in corso di disegno
-    const [loading, setLoading] = useState(true); // Stato di caricamento
-    const [error, setError] = useState(null); // Stato di errore
+const DrawingBoard = ({ disegnoId = 1 }) => {
+    const [strokes, setStrokes] = useState([]);
+    const [color, setColor] = useState('#000000'); // Colore di default
+    const stageRef = useRef(null);
+    const [currentStroke, setCurrentStroke] = useState(null);
     const stompClientRef = useRef(null);
-    const pointsBufferRef = useRef([]); // Buffer per accumulare i punti
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/ws-drawing'); // Cambia l'URL secondo le tue necessità
-        const client = Stomp.over(socket);
-
-        // Opzionale: Disabilita il logging di STOMP per evitare rumore nei log
-        client.debug = () => {};
-
-        client.connect(
-            {}, // Le intestazioni di autenticazione sono gestite tramite l'interceptor di Axios
-            () => {
-                console.log('Connesso a STOMP');
-
-                // Sottoscrivi al topic della sessione
-                client.subscribe(`/topic/draw/${sessionId}`, (message) => {
-                    const disegno = JSON.parse(message.body);
-                    console.log('Disegno ricevuto dal server:', disegno); // Log per verificare i dati ricevuti
-                    if (disegno && disegno.disegno && disegno.disegno.strokes) {
-                        setLines(disegno.disegno.strokes);
-                        console.log('Linee aggiornate:', disegno.disegno.strokes);
-                    } else {
-                        console.warn('La risposta dal server non contiene linee valide.');
-                    }
-                });
-
-                // Invio messaggio di join
-                client.send('/app/join', {}, JSON.stringify({ sessionId, bambinoId }));
-            },
-            (error) => {
-                console.error('Errore di connessione WebSocket:', error);
-                alert('Errore di connessione WebSocket. Controlla le credenziali e riprova.');
+        // 1. Carica i dati iniziali via REST
+        const loadStrokes = async () => {
+            try {
+                const disegno =  await axiosInstance.get(`/api/bambino/sessione/${disegnoId}`);
+                setStrokes(disegno.data.strokes);
+            } catch (error) {
+                console.error('Errore nel caricamento del disegno:', error);
+                // Puoi mostrare un messaggio all'utente o gestire l'errore come preferisci
             }
-        );
+        };
+
+        loadStrokes();
+
+        // 2. Connessione WebSocket
+        const client = connectWebSocket();
+
+        client.onConnect = () => {
+            console.log('Connesso al WebSocket');
+            subscribeToDraw(client, disegnoId, (newStroke) => {
+                setStrokes((prevStrokes) => [...prevStrokes, newStroke]);
+            });
+        };
+
+        client.onStompError = (frame) => {
+            console.error('Errore STOMP:', frame.headers['message']);
+            // Puoi gestire errori STOMP qui, ad esempio mostrando un messaggio all'utente
+        };
 
         stompClientRef.current = client;
 
-        // Recupera lo storico dei disegni quando il componente si monta
-        const fetchHistoricalDrawings = async () => {
-            try {
-                const response = await axiosInstance.get(`/api/bambino/sessione/${sessionId}`);
-                console.log('Risposta storico disegni:', response.data); // Log per verificare i dati ricevuti
-                const data = response.data;
-                if (data && data.disegno && data.disegno.strokes) {
-                    setLines(data.disegno.strokes);
-                    console.log('Linee impostate:', data.disegno.strokes);
-                } else {
-                    console.warn('La risposta non contiene dati validi per le linee.');
-                    setError('Nessun dato di disegno trovato.');
-                }
-            } catch (error) {
-                console.error('Errore nel recupero dello storico dei disegni:', error);
-                setError('Errore nel recupero dei dati di disegno.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchHistoricalDrawings();
-
+        // Cleanup alla disconnessione
         return () => {
-            if (client && client.connected) {
-                client.disconnect(() => {
-                    console.log('Disconnesso da STOMP');
-                });
+            if (client) {
+                client.deactivate();
             }
         };
-    }, [sessionId, bambinoId]);
+    }, [disegnoId]);
 
-    // Funzione di debounced per inviare i tratti
-    const sendDrawingMessage = useRef(
-        debounce((message) => {
-            console.log('Invio messaggio di disegno:', message); // Log per verificare i dati inviati
-            if (stompClientRef.current && stompClientRef.current.connected) {
-                stompClientRef.current.send('/app/draw', {}, JSON.stringify(message));
-            }
-        }, 2000) // Puoi regolare il debounce secondo le tue necessità
-    ).current;
-
+    // Gestione degli eventi di disegno
     const handleMouseDown = (e) => {
         const pos = e.target.getStage().getPointerPosition();
-        setCurrentLine({ points: [pos.x, pos.y], color, thickness: 2 });
-        console.log('Tratto iniziato con punti:', [pos.x, pos.y]);
+        const newStroke = {
+            color: color,
+            points: [pos.x, pos.y],
+        };
+        setCurrentStroke(newStroke);
+        setStrokes((prevStrokes) => [...prevStrokes, newStroke]);
     };
 
     const handleMouseMove = (e) => {
-        if (!currentLine) return;
-        const pos = e.target.getStage().getPointerPosition();
-        const newPoints = currentLine.points.concat([pos.x, pos.y]);
-        setCurrentLine({ ...currentLine, points: newPoints });
+        if (!currentStroke) return;
 
-        // Aggiungi il punto al buffer
-        pointsBufferRef.current.push(pos.x, pos.y);
-        console.log('Buffer attuale:', pointsBufferRef.current); // Log per monitorare il buffer
+        const stage = e.target.getStage();
+        const point = stage.getPointerPosition();
+        const updatedStroke = {
+            ...currentStroke,
+            points: [...currentStroke.points, point.x, point.y],
+        };
 
-        // Controlla se il buffer ha raggiunto la dimensione desiderata
-        if (pointsBufferRef.current.length >= POINTS_BATCH_SIZE * 2) {
-            const pointsToSend = [...pointsBufferRef.current];
-            pointsBufferRef.current = []; // Resetta il buffer
+        // Aggiorna l'ultimo stroke
+        setStrokes((prevStrokes) => {
+            const newStrokes = [...prevStrokes];
+            newStrokes[newStrokes.length - 1] = updatedStroke;
+            return newStrokes;
+        });
 
-            // Verifica che i punti siano in coppie
-            if (pointsToSend.length % 2 !== 0) {
-                console.error('Numero di punti dispari. I punti devono essere in coppie (x, y).');
-                return;
-            }
-
-            // Invia i punti accumulati al backend
-            sendDrawingMessage({
-                sessionId,
-                userId: bambinoId,
-                points: pointsToSend,
-                color: currentLine.color,
-                thickness: 2,
-            });
-        }
+        setCurrentStroke(updatedStroke);
     };
 
     const handleMouseUp = () => {
-        if (currentLine) {
-            setLines([...lines, {
-                points: currentLine.points,
-                color: currentLine.color,
-                thickness: currentLine.thickness,
-            }]);
-            console.log('Tratto aggiunto allo stato:', currentLine);
-
-            // Invia eventuali punti rimanenti nel buffer
-            if (pointsBufferRef.current.length > 0) {
-                // Verifica che i punti siano in coppie
-                if (pointsBufferRef.current.length % 2 !== 0) {
-                    console.error('Numero di punti dispari. I punti devono essere in coppie (x, y).');
-                } else {
-                    sendDrawingMessage({
-                        sessionId,
-                        userId: bambinoId,
-                        points: [...pointsBufferRef.current],
-                        color: currentLine.color,
-                        thickness: 2,
-                    });
-                    console.log('Messaggio di punti finali inviato:', {
-                        sessionId,
-                        userId: bambinoId,
-                        points: [...pointsBufferRef.current],
-                        color: currentLine.color,
-                        thickness: 2,
-                    });
-                }
-                pointsBufferRef.current = []; // Resetta il buffer
+        if (currentStroke) {
+            // Invio dello stroke via WebSocket
+            if (stompClientRef.current && stompClientRef.current.connected) {
+                stompClientRef.current.publish({
+                    destination: `/app/draw/${disegnoId}`,
+                    body: JSON.stringify({
+                        color: currentStroke.color,
+                        points: [
+                            // Trasforma i punti in array di coppie [x, y]
+                            ...currentStroke.points.reduce((acc, value, index) => {
+                                if (index % 2 === 0) acc.push([value, currentStroke.points[index + 1]]);
+                                return acc;
+                            }, []),
+                        ],
+                    }),
+                });
             }
 
-            // Invia un messaggio finale per segnalare la fine del tratto
-            sendDrawingMessage({
-                sessionId,
-                userId: bambinoId,
-                color: currentLine.color,
-                thickness: 2,
-            });
-            console.log('Messaggio finale per la fine del tratto inviato.');
-
-            setCurrentLine(null);
+            setCurrentStroke(null);
         }
     };
 
-    if (loading) return <div>Caricamento disegni...</div>;
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    // Gestione del cambio colore
+    const handleColorChange = (e) => {
+        setColor(e.target.value);
+    };
+
+    // Gestione della dimensione del canvas
+    const [dimensions, setDimensions] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight - 50,
+    });
+
+    useEffect(() => {
+        const handleResize = () => {
+            setDimensions({
+                width: window.innerWidth,
+                height: window.innerHeight - 50,
+            });
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     return (
         <div>
-            {/* Palette di Colori */}
-            <div className="palette" style={{ marginBottom: '10px' }}>
-                {['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#000000'].map((c) => (
-                    <button
-                        key={c}
-                        style={{
-                            backgroundColor: c,
-                            width: '30px',
-                            height: '30px',
-                            border: color === c ? '3px solid #000' : '1px solid #ccc',
-                            marginRight: '5px',
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => setColor(c)}
-                    />
-                ))}
+            <div style={{ marginBottom: '10px' }}>
+                <label>Seleziona Colore: </label>
+                <input type="color" value={color} onChange={handleColorChange} />
             </div>
-
-            {/* Area di Disegno */}
             <Stage
-                width={window.innerWidth}
-                height={window.innerHeight - 50} // Adatta l'altezza se necessario
+                width={dimensions.width}
+                height={dimensions.height}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
-                style={{ border: '1px solid #ddd' }}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseUp}
+                ref={stageRef}
+                style={{ border: '1px solid grey' }}
             >
                 <Layer>
-                    {lines.length > 0 ? (
-                        lines.map((line, i) => (
-                            <Line
-                                key={i}
-                                points={line.points}
-                                stroke={line.color}
-                                strokeWidth={line.thickness}
-                                tension={0.5}
-                                lineCap="round"
-                                globalCompositeOperation="source-over"
-                            />
-                        ))
-                    ) : (
-                        <Text text="Nessun disegno disponibile." />
-                    )}
-                    {currentLine && (
+                    {strokes.map((stroke, index) => (
                         <Line
-                            points={currentLine.points}
-                            stroke={currentLine.color}
-                            strokeWidth={currentLine.thickness}
-                            tension={0.5}
+                            key={index}
+                            points={Array.isArray(stroke.points[0]) ? stroke.points.flat() : stroke.points} // Appiattimento
+                            stroke={stroke.color}
+                            strokeWidth={3} // Spessore costante
                             lineCap="round"
-                            globalCompositeOperation="source-over"
+                            lineJoin="round"
+                            tension={0.5}
+                            globalCompositeOperation={'source-over'} /* per gestione eventuale della gomma */
                         />
-                    )}
+                    ))}
                 </Layer>
             </Stage>
         </div>

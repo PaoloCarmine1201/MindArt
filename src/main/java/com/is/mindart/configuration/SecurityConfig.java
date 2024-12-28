@@ -54,7 +54,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws-drawing/**").permitAll()
+                        .requestMatchers("/disegni/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/app/**").permitAll()
                         .requestMatchers("/topic/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()

@@ -15,7 +15,7 @@ function FileUploader({ onUpload }) {
         try {
             setUploading(true); // Indica che il caricamento è in corso
             const response = await axiosInstance.post(
-                "http://localhost:8080/api/terapeuta/materiale",
+                "http://localhost:8080/api/terapeuta/materiale/",
                 formData,
                 {
                     headers: {

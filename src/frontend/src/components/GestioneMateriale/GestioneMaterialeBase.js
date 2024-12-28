@@ -20,7 +20,7 @@ class GestioneMaterialeBase extends Component {
     loadMaterials = () => {
         this.setState({ loadingMaterial: true });
         axiosInstance
-            .get("http://localhost:8080/api/terapeuta/materiale/getallbyterapeuta")
+            .get("http://localhost:8080/api/terapeuta/materiale/")
             .then((response) => {
                 this.setState({ materialList: response.data, loadingMaterial: false });
             })

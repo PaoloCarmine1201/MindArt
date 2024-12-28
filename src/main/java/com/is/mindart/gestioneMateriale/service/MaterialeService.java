@@ -172,26 +172,26 @@ public class MaterialeService {
 
     /**
      * Rimuove un materiale cancellando il file dal filesystem
-     * e eliminando i dati nel database.
+     * ed eliminando i dati nel database.
      *
-     * @param materialeDTO DTO contenente i dati del materiale
-     *                     da rimuovere
+     * @param id id del materiale da rimuovere
      */
-    public void removeMaterial(final InputMaterialeDTO materialeDTO) {
+    public void removeMaterial(final long id) {
         // Percorso della cartella basato sul terapeutaId
-        Path directoryPath = Paths.get(
-                BASE_DIRECTORY,
-                String.valueOf(materialeDTO.getTerapeutaId())
-        );
+
+        Materiale materiale = materialeRepositoryInjected.findById(id)
+                .orElseThrow();
+
+        Path filePath = Path.of(materiale.getPath());
         try {
             // Recupera il nome del file da cancellare
-            String fileName = materialeDTO.getNome();
+            String fileName = materiale.getNome();
             this.logger.log(
                     Level.INFO,
                     "Cancellazione del file {0}",
-                    directoryPath + fileName
+                    filePath
             );
-            Files.delete(directoryPath.resolve(fileName));
+            Files.delete(filePath);
         } catch (IOException e) {
             this.logger.log(
                     Level.SEVERE,
@@ -201,7 +201,7 @@ public class MaterialeService {
         }
 
         // Elimina il record dal database
-        this.materialeRepositoryInjected.deleteById(materialeDTO.getId());
+        this.materialeRepositoryInjected.deleteById(materiale.getId());
     }
 
     /**

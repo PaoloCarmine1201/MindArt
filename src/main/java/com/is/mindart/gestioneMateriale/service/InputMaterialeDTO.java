@@ -50,7 +50,7 @@ public class InputMaterialeDTO {
      *
      * @param paramId           Identificatore del materiale
      * @param paramNome         Nome del materiale
-     * @param paramTipoMateriale Tipo del materiale
+     * @param paramTipoMateriale Tipo del materiale (PDF, IMMAGINE, VIDEO)
      * @param paramTerapeutaId  ID del terapeuta associato
      */
     public InputMaterialeDTO(
@@ -69,7 +69,6 @@ public class InputMaterialeDTO {
     /**
      * Costruttore che permette di specificare i campi
      * principali del materiale, incluso il file.
-     *
      * @param paramNome          Nome del materiale
      * @param paramTipoMateriale Tipo del materiale (PDF, IMMAGINE, VIDEO)
      * @param paramTerapeutaId   ID del terapeuta associato

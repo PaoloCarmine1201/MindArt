@@ -61,7 +61,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
             setLoadingMaterial(true);
             setMaterialError(null);
 
-            axiosInstance.get('http://localhost:8080/api/terapeuta/materiale/getallbyterapeuta')
+            axiosInstance.get('http://localhost:8080/api/terapeuta/materiale/')
                 .then(response => {
                     setMaterialList(response.data);
                     setLoadingMaterial(false);

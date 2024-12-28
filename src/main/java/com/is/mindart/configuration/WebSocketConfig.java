@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
-     *
+     * Configura il broker dei messaggi
      * @param registry
      */
     @Override
@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     /**
-     *
+     * registra il percorso per la connessione websocket
      * @param registry
      */
     @Override

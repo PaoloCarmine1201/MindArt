@@ -64,16 +64,42 @@ public class SessioneService {
     /**
      * Terminazione della sessione.
      * @param id id sessione
+     * @param email email del terapeuta
      * @throws EntityNotFoundException se l'id non viene trovato
      */
     @Transactional
-    public void terminaSessione(final long id, final String codice)
+    public void terminaSessione(final long id, final String email)
+            throws EntityNotFoundException {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Terapeuta con email " + email + " non trovato"));
+        //se la sessione appartiene al bambino può terminarla
+        if (terapeuta
+                .getSessioni()
+                .stream()
+                .noneMatch(sessione -> sessione.getId() == id)) {
+            throw new EntityNotFoundException(
+                    "Sessione con id " + id + " non trovato");
+        }
+        sessioneRepository.terminaSessione(id);
+    }
+    /**
+     * Terminazione della sessione.
+     * @param id id sessione
+     * @param codice codice del bambino
+     * @throws EntityNotFoundException se l'id non viene trovato
+     */
+    @Transactional
+    public void consegnaDisegno(final long id, final String codice)
             throws EntityNotFoundException {
         Bambino bambino = bambinoRepository.findByCodice(codice)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Bambino con codice " + codice + " non trovato"));
+                        "Terapeuta con email " + codice + " non trovato"));
         //se la sessione appartiene al bambino può terminarla
-        if (bambino.getSessioni().stream().noneMatch(sessione -> sessione.getId() == id)) {
+        if (bambino
+                .getSessioni()
+                .stream()
+                .noneMatch(sessione -> sessione.getId() == id)) {
             throw new EntityNotFoundException(
                     "Sessione con id " + id + " non trovato");
         }

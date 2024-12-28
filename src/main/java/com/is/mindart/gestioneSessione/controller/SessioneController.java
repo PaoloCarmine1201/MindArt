@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @Controller
-@RequestMapping("/api/terapeuta/sessione")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class SessioneController {
 
@@ -31,7 +31,7 @@ public class SessioneController {
      * @param sessioneDTO DTO proveniente dal client
      * @return 200 OK
      */
-    @PostMapping("/create")
+    @PostMapping("/terapeuta/sessione/create")
     public ResponseEntity<SessioneDTO> create(
             @Valid @RequestBody final SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder
@@ -47,13 +47,30 @@ public class SessioneController {
      * @param id id sessione
      * @return 200 OK oppure 404 Not Found
      */
-    @PatchMapping("/{id}/termina")
+    @PatchMapping("/terapeuta/sessione/{id}/termina")
     public ResponseEntity<Void> terminaSessione(@PathVariable final long id) {
         try {
             Authentication authentication = SecurityContextHolder
                     .getContext().getAuthentication();
             String principal = (String) authentication.getPrincipal();
             sessioneService.terminaSessione(id, principal);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    /**
+     * Endpoint per la consegna di un disegno.
+     * @param id id sessione
+     * @return 200 OK oppure 404 Not Found
+     */
+    @PatchMapping("/bambino/sessione/{id}/consegna")
+    public ResponseEntity<Void> consegnaDisegno(@PathVariable final long id) {
+        try {
+            Authentication authentication = SecurityContextHolder
+                    .getContext().getAuthentication();
+            String principal = (String) authentication.getPrincipal();
+            sessioneService.consegnaDisegno(id, principal);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TerminateModal from "../modal/TerminateModal";
+import axiosInstance from "../../config/axiosInstance";
 
 const TerminaSessione = () => {
     const [showModal, setShowModal] = useState(false);

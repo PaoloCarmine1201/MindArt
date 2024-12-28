@@ -75,7 +75,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
             setLoadingChildren(true);
             setChildrenError(null);
 
-            axiosInstance.get('http://localhost:8080/api/terapeuta/bambini/getallbyterapeuta')
+            axiosInstance.get('http://localhost:8080/api/terapeuta/bambino/getallbyterapeuta')
                 .then(response => {
                     setChildrenList(response.data);
                     setLoadingChildren(false);

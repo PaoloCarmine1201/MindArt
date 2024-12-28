@@ -1,0 +1,52 @@
+.mini-video-player {
+    position: relative;
+    width: 500px;
+    max-width: 80%;
+    margin: 0 auto;
+    background: #000; /* Sfondo scuro */
+    border: 2px solid #444;
+    border-radius: 8px;
+}
+
+.player-header {
+    display: flex;
+    justify-content: flex-end;
+    background: #222;
+    padding: 4px;
+}
+
+.close-btn {
+    color: #fff;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    outline: none;
+}
+
+.player-video {
+    width: 100%;
+    display: block;
+}
+
+.player-controls {
+    display: flex;
+    justify-content: center;
+    background: #222;
+    padding: 8px;
+}
+
+.play-pause-btn {
+    color: #fff;
+    background: #444;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    padding: 8px 16px;
+    cursor: pointer;
+    outline: none;
+}
+
+.play-pause-btn:hover {
+    background: #666;
+}

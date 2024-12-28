@@ -1,0 +1,90 @@
+/* MiniPdfViewer.css */
+
+.mini-pdf-viewer {
+    width: 600px;
+    max-width: 90%;
+    margin: 0 auto;
+    background: #ffddee; /* Rosa tenue di sfondo */
+    border: 4px solid #ff66aa;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header con bottone di chiusura */
+.pdf-viewer-header {
+    background: #ff66aa;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px;
+}
+
+.close-btn {
+    background: #ffdde6;
+    color: #333;
+    border: 2px solid #ff66aa;
+    border-radius: 50%;
+    font-size: 22px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: #ffe8ee;
+}
+
+/* Contenitore del PDF vero e proprio */
+.pdf-document-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    padding: 10px;
+}
+
+/* Barre di navigazione per cambiare pagina */
+.pdf-navigation {
+    background: #ff66aa;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-btn {
+    font-size: 18px;
+    padding: 12px 16px;
+    border: 2px solid #ffdde6;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.nav-btn:disabled {
+    background: #ccc;
+    border-color: #aaa;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: #ffe8ee;
+    transform: scale(1.05);
+}
+
+.page-info {
+    font-size: 18px;
+    color: #fff;
+    font-weight: bold;
+}

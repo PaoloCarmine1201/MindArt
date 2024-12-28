@@ -11,12 +11,18 @@ import DettaglioBambino from "./pages/DettagliBambino";
 import EventiTeraputa from "./pages/EventiTeraputa";
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
+import VisualizzazioneMateriale from "./pages/VisualizzazioneMateriale";
 
 const router = createBrowserRouter([
     {
         path: '/',
         name: "Home",
         element: <App />
+    },
+    {
+        path: "/visualizzazioneMateriale",
+        name: "visualizzazioneMateriale",
+        element: <VisualizzazioneMateriale />
     },
     {
         path: '/gestioneBambini',

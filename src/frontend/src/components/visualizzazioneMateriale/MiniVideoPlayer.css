@@ -1,52 +1,42 @@
-.mini-video-player {
-    position: relative;
-    width: 500px;
-    max-width: 80%;
-    margin: 0 auto;
-    background: #000; /* Sfondo scuro */
-    border: 2px solid #444;
-    border-radius: 8px;
-}
-
-.player-header {
-    display: flex;
-    justify-content: flex-end;
-    background: #222;
-    padding: 4px;
-}
-
-.close-btn {
-    color: #fff;
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    outline: none;
-}
-
-.player-video {
-    width: 100%;
-    display: block;
-}
-
 .player-controls {
     display: flex;
+    align-items: center;
     justify-content: center;
     background: #222;
     padding: 8px;
+    gap: 10px; /* Spazio tra i controlli */
 }
 
-.play-pause-btn {
-    color: #fff;
+.time-slider {
+    flex-grow: 1;
+    margin: 0 10px;
+    appearance: none;
+    height: 4px;
     background: #444;
-    border: none;
-    border-radius: 4px;
-    font-size: 18px;
-    padding: 8px 16px;
+    border-radius: 2px;
     cursor: pointer;
     outline: none;
 }
 
-.play-pause-btn:hover {
-    background: #666;
+.time-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.time-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.time-display {
+    color: #fff;
+    font-size: 14px;
+    white-space: nowrap;
 }

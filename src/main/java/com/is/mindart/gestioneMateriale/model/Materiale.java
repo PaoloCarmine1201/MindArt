@@ -18,7 +18,8 @@ import lombok.ToString;
 import java.util.List;
 
 /**
- * Rappresenta un materiale utilizzato durante le sessioni terapeutiche.
+ * Rappresenta un materiale utilizzato durante le
+ * sessioni terapeutiche.
  */
 @Entity
 @AllArgsConstructor
@@ -39,7 +40,7 @@ public class Materiale {
     private String nome;
 
     /**
-     * Tipo del materiale (PDF, immagine, video).
+     * Tipo del materiale (es. PDF, immagine, video).
      */
     private TipoMateriale tipo;
 
@@ -57,10 +58,11 @@ public class Materiale {
     private Terapeuta terapeuta;
 
     /**
-     * Elenco delle sessioni terapeutiche
-     * che utilizzano questo materiale.
+     * Elenco delle sessioni terapeutiche che utilizzano
+     * questo materiale.
      */
-    @OneToMany(mappedBy = "materiale",
+    @OneToMany(
+            mappedBy = "materiale",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @ToString.Exclude

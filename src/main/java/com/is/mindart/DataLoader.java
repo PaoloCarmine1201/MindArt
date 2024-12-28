@@ -217,28 +217,28 @@ public class DataLoader implements CommandLineRunner {
                         sdfh.parse("2024-01-23 12:00"), terapeuta3)
             ));
 
-            materialeRepository.saveAll(List.of(
-                new Materiale(null, "PDF di prova", TipoMateriale.PDF,
-                        "/src/frontend/src/assets/materiali/materiale1.pdf", terapeuta1, null),
-                new Materiale(null, "Materiale apprendimento 1", TipoMateriale.IMMAGINE,
-                        "/path/to/materiale2", terapeuta1, null),
-                new Materiale(null, "Materiale colore 1", TipoMateriale.VIDEO,
-                        "/path/to/materiale3", terapeuta1, null),
+            if(materialeRepository.count() == 0) {
+                materialeRepository.saveAll(List.of(
+                        new Materiale(null, "Materiale apprendimento 1", TipoMateriale.IMMAGINE,
+                                "/path/to/materiale2", terapeuta1, null),
+                        new Materiale(null, "Materiale colore 1", TipoMateriale.VIDEO,
+                                "/path/to/materiale3", terapeuta1, null),
 
-                new Materiale(null, "Materiale disegno 2", TipoMateriale.PDF,
-                        "/path/to/materiale4", terapeuta2, null),
-                new Materiale(null, "Materiale apprendimento 2", TipoMateriale.IMMAGINE,
-                        "/path/to/materiale5", terapeuta2, null),
-                new Materiale(null, "Materiale colore 2", TipoMateriale.VIDEO,
-                        "/path/to/materiale6", terapeuta2, null),
+                        new Materiale(null, "Materiale disegno 2", TipoMateriale.PDF,
+                                "/path/to/materiale4", terapeuta2, null),
+                        new Materiale(null, "Materiale apprendimento 2", TipoMateriale.IMMAGINE,
+                                "/path/to/materiale5", terapeuta2, null),
+                        new Materiale(null, "Materiale colore 2", TipoMateriale.VIDEO,
+                                "/path/to/materiale6", terapeuta2, null),
 
-                new Materiale(null, "Materiale disegno 3", TipoMateriale.PDF,
-                        "/path/to/materiale7", terapeuta3, null),
-                new Materiale(null, "Materiale apprendimento 3", TipoMateriale.IMMAGINE,
-                        "/path/to/materiale8", terapeuta3, null),
-                new Materiale(null, "Materiale colore 3", TipoMateriale.VIDEO,
-                        "/path/to/materiale9", terapeuta3, null)
-            ));
+                        new Materiale(null, "Materiale disegno 3", TipoMateriale.PDF,
+                                "/path/to/materiale7", terapeuta3, null),
+                        new Materiale(null, "Materiale apprendimento 3", TipoMateriale.IMMAGINE,
+                                "/path/to/materiale8", terapeuta3, null),
+                        new Materiale(null, "Materiale colore 3", TipoMateriale.VIDEO,
+                                "/path/to/materiale9", terapeuta3, null)
+                ));
+            }
 
             List<Materiale> materiali = materialeRepository.findAll();
             List<Terapeuta> terapeuti2 = terapeutaRepository.findAll();

@@ -4,7 +4,7 @@ import com.is.mindart.gestioneMateriale.model.TipoMateriale;
 import com.is.mindart.gestioneMateriale.service.InputMaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
 import com.is.mindart.gestioneMateriale.service.OutputMaterialeDTO;
-import com.is.mindart.security.model.TerapeutaDetails;
+import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,8 +34,11 @@ public class MaterialeController {
     /**
      * Service relativa al materiale.
      */
-    @Autowired
     private final MaterialeService materialeServiceInjected;
+    /**
+     * Repository del Terapeuta.
+     */
+    private final TerapeutaRepository terapeutaRepository;
 
     /**
      * Costruttore.
@@ -43,9 +46,10 @@ public class MaterialeController {
      * @param materialeService {@link MaterialeService}
      */
     @Autowired
-    public MaterialeController(final MaterialeService materialeService) {
+    public MaterialeController(final MaterialeService materialeService, TerapeutaRepository terapeutaRepository) {
         // Assegna il service al campo della classe
         this.materialeServiceInjected = materialeService;
+        this.terapeutaRepository = terapeutaRepository;
     }
 
     /**
@@ -120,13 +124,16 @@ public class MaterialeController {
                 .getContext()
                 .getAuthentication();
 
-        // Ottiene i dettagli del terapeuta loggato
-        TerapeutaDetails principal = (TerapeutaDetails) authentication
-                .getPrincipal();
+        String principal = (String) authentication.getPrincipal();
+
+        long terapeutaId = terapeutaRepository
+                .findByEmail(principal)
+                .orElseThrow()
+                .getId();
 
         // Recupera i materiali caricati dal terapeuta
         List<OutputMaterialeDTO> materiali = this.materialeServiceInjected
-                .getClientMateriali(principal.getTerapeuta().getId());
+                .getClientMateriali(terapeutaId);
 
         // Se la lista è vuota, restituisce No Content
         if (materiali.isEmpty()) {
@@ -152,10 +159,13 @@ public class MaterialeController {
         Authentication authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
-        TerapeutaDetails principal = (TerapeutaDetails) authentication
-                .getPrincipal();
 
-        long terapeutaId = principal.getTerapeuta().getId();
+        String principal = (String) authentication.getPrincipal();
+
+        long terapeutaId = terapeutaRepository
+                .findByEmail(principal)
+                .orElseThrow()
+                .getId();
 
         // Verifica se il file non è vuoto
         if (file == null || file.isEmpty()) {

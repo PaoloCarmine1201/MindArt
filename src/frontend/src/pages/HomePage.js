@@ -7,6 +7,7 @@ import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniLi
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
 import axiosInstance from "../config/axiosInstance";
 import TerminaSessione from "../components/TerminaSessione/TerminaSessione";
+import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMaterialeWidget";
 
 function HomePage() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
@@ -57,7 +58,7 @@ function HomePage() {
                         <div className="box materiali">
                             <Link to={"/materiale"} className={"link"}><h2>I tuoi materiali</h2></Link>
                             <div className={"item-container"}>
-                                {/*Materiali component*/}
+                                <GestioneMaterialeWidget/>
                             </div>
                         </div>
                     </div>

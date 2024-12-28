@@ -5,7 +5,7 @@
  * <ul>
  *     <li>{@link com.is.mindart.gestioneCalendario.model.Evento} -
  *         Classe che rappresenta un evento pianificato nel calendario.</li>
- *     <li>{@link com.is.mindart.gestioneCalendario.model.EventRespository} -
+ *     <li>{@link com.is.mindart.gestioneCalendario.model.EventoRespository} -
  *         Repository per la gestione degli eventi nel database.</li>
  * </ul>
  */

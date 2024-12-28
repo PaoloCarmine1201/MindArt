@@ -2,31 +2,34 @@ package com.is.mindart.gestioneTerapeuta.service;
 
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
+import com.is.mindart.security.jwt.JwtUtil;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class TerapeutaService {
 
     /**
      *  Provvede ad accedere al database per l'entità Terapeuta.
      */
-    @Autowired
-    private TerapeutaRepository repository;
+    private final TerapeutaRepository terapeutaRepository;
 
     /**
      *  Provvede a mappare l'entità Terapeuta con TerapeutaDTO.
      */
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     /**
      *  Provvede a criptare la password.
      */
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    /**
+     *  Provvede a generare il token JWT.
+     */
+    private final JwtUtil jwtUtil;
 
     /**
      * Provvede alla registrazione del terapeuta.
@@ -40,8 +43,25 @@ public class TerapeutaService {
         terapeutaDto.setPassword(hashedPassword);
 
         Terapeuta terapeuta = modelMapper.map(terapeutaDto, Terapeuta.class);
-        repository.save(terapeuta);
+        terapeutaRepository.save(terapeuta);
     }
+
+    /**
+     * Provvede a verificare se il terapeuta esiste.
+     * @param email Email del terapeuta
+     * @return true se il terapeuta esiste, false altrimenti
+     */
+    public String loginTerapeuta(final String email, final String rawPassword) {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElse(null);
+        if (terapeuta != null) {
+            if (passwordEncoder.matches(rawPassword, terapeuta.getPassword())) {
+                return jwtUtil.generateToken(terapeuta.getEmail(), "TERAPEUTA");
+            }
+        }
+        return null;
+    }
+
 
 
 }

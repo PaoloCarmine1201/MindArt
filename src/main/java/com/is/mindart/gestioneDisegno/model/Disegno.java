@@ -16,6 +16,7 @@ import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.lang.NonNull;
 
 import java.util.Date;
@@ -64,16 +65,18 @@ public class Disegno {
      * Relazione obbligatoria.
      */
     @NonNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "sessione_id", referencedColumnName = "id")
     private Sessione profilo;
 
     /**
      * Elenco dei bambini coinvolti nella creazione del disegno.
      */
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(
-            name = "disegno_bambino",
+            name = "bambino_disegno",
             joinColumns = @JoinColumn(name = "disegno_id"),
             inverseJoinColumns = @JoinColumn(name = "bambino_id"))
     private List<Bambino> bambini;

@@ -1,25 +1,36 @@
+
 package com.is.mindart.gestioneBambino.controller;
+
 import com.is.mindart.gestioneBambino.service.BambinoDTO;
+import com.is.mindart.gestioneBambino.service.BambinoDTOSimple;
 import com.is.mindart.gestioneBambino.service.BambinoService;
 import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bambino")
+@RequestMapping("/api/terapeuta/bambino")
 @CrossOrigin(origins = "http://localhost:3000")
+@AllArgsConstructor
 public class BambinoController {
 
     /**
      * Servizio per la gestione dei bambini.
      */
-    @Autowired
-    private BambinoService bambinoService;
+    private final BambinoService bambinoService;
 
     /**
      * @author gabrieleristallo
@@ -35,15 +46,16 @@ public class BambinoController {
     /**
      * @author gabrieleristallo
      * Restituisce tutti i bambini relativi a un terapeuta.
-     *
-     * @param terapeuta identificativo del terapeuta
      * @return lista di bambini del terapeuta
      */
     @GetMapping("/getallbyterapeuta")
-    public ResponseEntity<List<BambinoDTO>> getAllBambiniByTerapeuta(
-            @RequestParam final Long terapeuta
-    ) {
-        List<BambinoDTO> bambini = bambinoService.getBambiniByT(terapeuta);
+    public ResponseEntity<List<BambinoDTOSimple>> getAllBambiniByTerapeuta() {
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+
+
+        List<BambinoDTOSimple> bambini = bambinoService
+                .getBambiniByT((String) authentication.getPrincipal());
         return ResponseEntity.ok(bambini);
     }
 
@@ -55,8 +67,10 @@ public class BambinoController {
      * @return bambino con l'identificativo specificato
      */
     @GetMapping("/get/{id}")
-    public ResponseEntity<BambinoDTO> getBambino(@PathVariable final Long id) {
-        BambinoDTO bambino = bambinoService.getBambino(id);
+    public ResponseEntity<BambinoDTOSimple> getBambino(
+            @PathVariable final Long id
+    ) {
+        BambinoDTOSimple bambino = bambinoService.getBambino(id);
         return ResponseEntity.ok(bambino);
     }
 

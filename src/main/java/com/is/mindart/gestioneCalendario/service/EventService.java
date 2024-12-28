@@ -1,7 +1,7 @@
 package com.is.mindart.gestioneCalendario.service;
 
 import com.is.mindart.gestioneCalendario.exception.EventNotFoundException;
-import com.is.mindart.gestioneCalendario.model.EventRespository;
+import com.is.mindart.gestioneCalendario.model.EventoRespository;
 import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class EventService {
     /**
      * Repository per la gestione delle operazioni sugli eventi.
      */
-    private final EventRespository eventRepository;
+    private final EventoRespository eventRepository;
 
     /**
      * Repository per la gestione delle operazioni sui terapeuti.
@@ -37,11 +37,11 @@ public class EventService {
     /**
      * Recupera tutti gli eventi associati a un terapeuta specifico.
      *
-     * @param id l'identificativo del terapeuta
+     * @param email l'email del terapeuta
      * @return una lista di {@link EventDto} associati al terapeuta
      */
-    public List<EventDto> getAllEvents(Long id) {
-        return eventRepository.findAllByTerapeutaId(id).stream()
+    public List<EventDto> getAllEvents(final String email) {
+        return eventRepository.findByTerapeutaEmail(email).stream()
                 .map(this::mapToEventDto)
                 .collect(Collectors.toList());
     }
@@ -49,11 +49,11 @@ public class EventService {
     /**
      * Recupera un evento specifico tramite il suo ID.
      * @param idEvento l'identificativo dell'evento
-     * @param idTerapeuta l'identificativo del terapeuta
+     * @param email l'email del terapeuta
      * @return un oggetto {@link EventDto} rappresentante l'evento
      */
-    public EventDto getEventByIdAndTerapeutaId(Long idEvento, Long idTerapeuta) {
-        Evento event = eventRepository.findByIdAndTerapeutaId(idEvento, idTerapeuta)
+    public EventDto getEventByIdAndTerapeutaEmail(final Long idEvento, final String email) {
+        Evento event = eventRepository.findByIdAndTerapeutaEmail(idEvento, email)
                 .orElseThrow(() ->
                         new EventNotFoundException("Event not found"));
         return mapToEventDto(event);
@@ -66,8 +66,10 @@ public class EventService {
      *                 rappresentante i dati dell'evento
      * @return l'evento salvato come {@link EventDto}
      */
-    public EventDto addEvent(EventDto eventDto, Long terapeutaId) {
+    public EventDto addEvent(final EventDto eventDto, final String email) {
         Evento event = mapToEvent(eventDto);
+        event.setTerapeuta(terapeutaRepository.findByEmail(email)
+                .orElseThrow(() -> new EventNotFoundException("Terapeuta not found")));
         Evento savedEvent = eventRepository.save(event);
         return mapToEventDto(savedEvent);
     }
@@ -79,7 +81,7 @@ public class EventService {
      * @return l'evento aggiornato come {@link EventDto}
      * @throws EventNotFoundException se l'evento non esiste
      */
-    public EventDto updateEvent(EventDto eventDto, Long terapeutaId) {
+    public EventDto updateEvent(final EventDto eventDto, final String email) {
         Evento existingEvent = eventRepository.findById(eventDto.getId())
                 .orElseThrow(() ->
                         new EventNotFoundException("Event not found"));
@@ -89,7 +91,7 @@ public class EventService {
         existingEvent.setInizio(eventDto.getInizio());
         existingEvent.setFine(eventDto.getFine());
 
-        if (!existingEvent.getTerapeuta().getId().equals(terapeutaId)){
+        if (!existingEvent.getTerapeuta().getEmail().equals(email)) {
             throw new EventNotFoundException("Event not found");
         }
         Evento updatedEvent = eventRepository.save(existingEvent);
@@ -100,11 +102,11 @@ public class EventService {
      * Elimina un evento dal calendario.
      *
      * @param id l'identificativo dell'evento da eliminare
-     * @param terapeutaId l'identificativo del terapeuta
+     * @param email l'email del terapeuta
      * @throws EventNotFoundException se l'evento non esiste
      */
-    public void deleteEvent(Long id, Long terapeutaId) {
-        Evento event = eventRepository.findByIdAndTerapeutaId(id, terapeutaId)
+    public void deleteEvent(final Long id, final String email) {
+        Evento event = eventRepository.findByIdAndTerapeutaEmail(id, email)
                 .orElseThrow(() ->
                         new EventNotFoundException("Event not found"));
         eventRepository.delete(event);
@@ -116,7 +118,7 @@ public class EventService {
      * @param event l'entità da convertire
      * @return il DTO corrispondente
      */
-    private EventDto mapToEventDto(Evento event) {
+    private EventDto mapToEventDto(final Evento event) {
         return modelMapper.map(event, EventDto.class);
     }
 
@@ -126,7 +128,7 @@ public class EventService {
      * @param eventDto il DTO da convertire
      * @return l'entità corrispondente
      */
-    private Evento mapToEvent(EventDto eventDto) {
+    private Evento mapToEvent(final EventDto eventDto) {
         Evento evento = modelMapper.map(eventDto, Evento.class);
         evento.setTerapeuta(
                 terapeutaRepository.getReferenceById(eventDto.getTerapeuta())

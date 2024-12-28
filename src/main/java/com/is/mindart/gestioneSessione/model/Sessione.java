@@ -1,26 +1,42 @@
 package com.is.mindart.gestioneSessione.model;
 
+import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.util.Date;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Rappresenta una sessione terapeutica.
  */
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class Sessione {
+
+    public Sessione(Long id,
+                    String temaAssegnato,
+                    LocalDateTime data,
+                    String nota,
+                    TipoSessione tipo,
+                    Materiale materiale,
+                    Terapeuta terapeuta,
+                    List<Bambino> bambini) {
+        this.id = id;
+        this.temaAssegnato = temaAssegnato;
+        this.data = data;
+        this.nota = nota;
+        this.tipo = tipo;
+        this.materiale = materiale;
+        this.terapeuta = terapeuta;
+        this.bambini = bambini;
+    }
 
     /**
      * Identificativo univoco della sessione.
@@ -37,12 +53,13 @@ public class Sessione {
     /**
      * Data in cui si svolge la sessione.
      */
-    private Date data;
+    private LocalDateTime data;
 
     /**
-     * Data in cui si svolge la sessione.
+     * Indica se la sessione è terminata
      */
-    private Date fine;
+    @ColumnDefault("false")
+    private Boolean terminata;
 
     /**
      * Nota aggiuntiva relativa alla sessione.
@@ -57,6 +74,7 @@ public class Sessione {
     /**
      * Materiale utilizzato durante la sessione.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "materiale_id")
     private Materiale materiale;
@@ -64,7 +82,15 @@ public class Sessione {
     /**
      * Terapeuta associato alla sessione.
      */
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "terapeuta_id")
     private Terapeuta terapeuta;
+
+    /**
+     * Bambini associati alla sessione
+     */
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "sessioni")
+    private List<Bambino> bambini;
 }

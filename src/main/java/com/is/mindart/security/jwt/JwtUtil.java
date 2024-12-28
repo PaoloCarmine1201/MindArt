@@ -1,13 +1,14 @@
 
 package com.is.mindart.security.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+
 
 @Component
 public class JwtUtil {
@@ -18,47 +19,47 @@ public class JwtUtil {
     private String secret;
 
     /**
-     *  Tempo prima che scada la sessione del terapeuta
+     *  Tempo prima che scada
+     *  la sessione del terapeuta
      */
-    @Value("${jwt.expiration.terapeuta}")
-    private long expirationTerapeuta;
+    @Value("${jwt.expiration}")
+    private Long expiration;
 
-    /**
-     *  Tempo prima che scada la sessione del bambino
-     */
-    @Value("${jwt.expiration.bambino}")
-    private long expirationBambino;
-
-    public String generateToken(String username) {
+    public String generateToken(final String username, final String role) {
         Date now = new Date();
 
-        if (username.contains("@")) {
-            return Jwts.builder()
-                    .setSubject(username)
-                    .setIssuedAt(now)
-                    .setExpiration(new Date(now.getTime() + expirationTerapeuta))
-                    .signWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
-                    .compact();
-        } else {
-            return Jwts.builder()
-                    .setSubject(username)
-                    .setIssuedAt(now)
-                    .setExpiration(new Date(now.getTime() + expirationBambino))
-                    .signWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
-                    .compact();
-        }
+        return Jwts.builder()
+                .claim("role", role)
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + expiration))
+                .signWith(io.jsonwebtoken.security.Keys.
+                        hmacShaKeyFor(secret.getBytes()))
+                .compact();
     }
 
-    public String getUsernameFromToken(String token) {
+    /**
+     * Metodo per ottenere l'username dal token
+     * @param token Il token
+     * @return L'username
+     */
+    public String getUsernameFromToken(final String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
+                .setSigningKey(io.jsonwebtoken.security.Keys
+                        .hmacShaKeyFor(secret.getBytes()))
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    /**
+     * Metodo per ottenere il ruolo dal
+     * token
+     * @param token Il token da validare
+     * @return se il token è valido o meno
+     */
+    public boolean validateToken(final String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
@@ -69,5 +70,33 @@ public class JwtUtil {
             return false;
         }
     }
+
+    /**
+     * Metodo per estrarre tutti i claim
+     * dal token
+     * @param token Il token
+     * @return I claim
+     */
+    public Claims extractAllClaims(final String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    /**
+     * Metodo per estrarre un claim specifico
+     * dal token
+     * @param token Il token
+     * @param claimKey La chiave del claim
+     * @return Il claim
+     */
+    public String extractClaim(final String token, final String claimKey) {
+        Claims claims = extractAllClaims(token);
+        // Ritorna il valore del claim specifico
+        return claims.get(claimKey, String.class);
+    }
+
 }
 

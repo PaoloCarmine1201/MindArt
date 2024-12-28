@@ -6,69 +6,82 @@ import RegisterBambinoValidatedForm from "./RegisterBambinoValidatedForm";
 import "../../style/RegisterBambino.css";
 import "../../style/Button.css";
 import "../../style/Modal.css";
+import axiosInstance from "../../config/axiosInstance";
 
 
 function RegisterBambino(){
 
-    // Mostra o nasconde il modale
+// State to control modal visibility
     const [show, setShow] = useState(false);
-    // Riferimento al form per farne il submit
+
+    // Reference to the form for programmatic submission
     const formRef = useRef(null);
 
-    // Funzioni per mostrare e nascondere il modale
+    // Function to close the modal
     const handleClose = () => setShow(false);
+
+    // Function to open the modal
     const handleShow = () => setShow(true);
 
-    // Funzione per inviare i dati del form al server
-    const handleSubmit = async (values) => {
-        // Aggiungi l'id del terapeuta
-        const terapeutaId = 1;
-        const codice = 'BGYHHU';
+    // Function to generate a unique codice (simple example using current timestamp)
+    const generateCodice = () => {
+        return 'BGY' + Date.now();
+    };
 
-        // TODO Recupera l'id del terapeuta loggato e generare codice bimbo
+    // Function to handle form submission
+    const handleSubmit = async (values) => {
+        // Retrieve the id of the logged-in terapeuta from localStorage
+        const terapeutaId = parseInt(localStorage.getItem("idTerapeuta"), 10);
+
+        // Generate a unique codice for the bambino
+        const codice = generateCodice();
+
+        // Prepare the payload with form values, terapeutaId, and codice
         const payload = {
             ...values,
-            terapeutaId, // Aggiungi l'id del terapeuta
-            codice// Genera un codice univoco
+            terapeutaId, // Add the id of the terapeuta
+            codice // Add the generated codice
         };
+
         try {
-            console.log('Dati inviati:', values);
-            // Effettua la chiamata POST al server
-            const response = await fetch('http://localhost:8080/api/bambino/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            console.log('Dati inviati:', payload);
 
-                body: JSON.stringify(payload),
-            });
+            // Make a POST request to add a new bambino
+            const response = await axiosInstance.post('/api/terapeuta/bambino/add', payload);
 
-            if (!response.ok) {
+            // Check if the response status indicates success
+            if (response.status === 201 || response.status === 200) {
+                console.log('Bambino registrato con successo:', response.data);
+                toast.success(
+                    'Bambino registrato con successo!',
+                    {
+                        position: 'bottom-right'
+                    }
+                );
+                handleClose(); // Close the modal upon success
+                // Optionally, you can reset the form or perform additional actions here
+            } else {
                 console.log('Errore richiesta:', response);
                 toast.error(
                     'Si è verificato un errore durante la registrazione del bambino.',
                     {
                         position: 'bottom-right'
-                    });
-            }
-            else {
-                console.log('Bambino registrato con successo:', response);
-                toast.success(
-                    'Bambino registrato con successo!',
-                    {
-                        position: 'bottom-right'
-                    });
-                handleClose(); // Chiudi il modale
+                    }
+                );
             }
         } catch (error) {
             console.error('Errore:', error);
+            // Extract error message from response if available
+            const errorMessage = error.response?.data?.message || 'Si è verificato un errore durante la registrazione del bambino.';
             toast.error(
-                'Si è verificato un errore durante la registrazione del bambino.',
+                errorMessage,
                 {
                     position: 'bottom-right'
-                });
+                }
+            );
         }
     };
+
 
     return (
         <>

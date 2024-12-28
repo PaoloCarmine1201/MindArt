@@ -1,61 +1,79 @@
 
 package com.is.mindart.security.controller;
 
-import com.is.mindart.security.jwt.JwtUtil;
-import com.is.mindart.security.model.BambinoDetails;
-import com.is.mindart.security.service.BambinoUserDetailsService;
-import com.is.mindart.security.service.TerapeutaUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import com.is.mindart.gestioneBambino.service.BambinoService;
+import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTO;
+import com.is.mindart.gestioneTerapeuta.service.TerapeutaService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private TerapeutaUserDetailsService terapeutaUserDetailsService;
+    /**
+     * Il servizio per la gestione dei terapeuti.
+     */
+    private final TerapeutaService terapeutaService;
 
-    @Autowired
-    private BambinoUserDetailsService bambinoUserDetailsService;
+    /**
+     * Il servizio per la gestione dei bambini.
+     */
+    private final BambinoService bambinoService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    // DTO per login terapeuta
-    static class TerapeutaLoginRequest {
-        public String email;
-        public String password;
-    }
-
-    // DTO per login bambino
-    static class BambinoLoginRequest {
-        public String codiceFiscale;
-        public String codice;
-    }
-
+    /**
+     * Questo metodo gestisce la richiesta di login per un terapeuta.
+     * @param request La richiesta di login
+     * @return Il token JWT
+     */
     @PostMapping("/terapeuta/login")
-    public String loginTerapeuta(@RequestBody TerapeutaLoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email, request.password)
-        );
-        UserDetails userDetails = terapeutaUserDetailsService.loadUserByUsername(request.email);
-        return jwtUtil.generateToken(userDetails.getUsername());
+    public ResponseEntity<String> loginTerapeuta(
+            @RequestBody final TerapeutaLoginRequest request)
+            throws AuthenticationException {
+           String token = terapeutaService.loginTerapeuta(
+                   request.getEmail(),
+                   request.getPassword());
+              if (token == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+              }
+                return ResponseEntity.ok(token);
     }
 
+    /**
+     * Questo metodo gestisce la richiesta di login per un bambino.
+     * @param request La richiesta di login
+     * @return Il token JWT
+     */
     @PostMapping("/bambino/login")
-    public String loginBambino(@RequestBody BambinoLoginRequest request) {
-        // Non usiamo l'AuthenticationManager classico perché qui non abbiamo password encoder classico.
-        // Possiamo considerare che il bambinoUserDetailsService ha già validato il codice.
-        BambinoDetails bambinoDetails = bambinoUserDetailsService.loadBambinoByCodiceFiscaleECodice(
-                request.codiceFiscale, request.codice
-        );
-        // Generiamo un token basato sul codiceFiscale
-        return jwtUtil.generateToken(bambinoDetails.getUsername());
+    public ResponseEntity<String> loginBambino(
+            @RequestBody final BambinoLoginRequest request) {
+        String token = bambinoService.loginBambino(request.getCodice());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(token);
+
+    }
+
+    /**
+     * Questo metodo gestisce la richiesta di registrazione per un terapeuta.
+     * @param terapeutaDto Il terapeuta da registrare
+     * @return Il terapeuta registrato
+     */
+    @PostMapping("/terapeuta/register")
+    public ResponseEntity<TerapeutaDTO> registerTerapeuta(
+            @Valid @RequestBody final TerapeutaDTO terapeutaDto) {
+        terapeutaService.registerTerapeuta(terapeutaDto);
+        return ResponseEntity.ok(terapeutaDto);
     }
 }

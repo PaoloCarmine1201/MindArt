@@ -2,52 +2,182 @@
     Da aggiungere assieme a btn-outline-primary
  */
 .btn-conferma {
-    color: #28a745; /* Testo verde */
-    border: 2px solid #28a745; /* Bordo verde */
-    background-color: white; /* Sfondo bianco */
-    border-radius: 5px; /* Smusso angoli */
-    padding: 8px 16px; /* Margine interno */
-    transition: all 0.3s ease; /* Transizione morbida */
+    color: #28a745 !important; /* Testo verde */
+    border: 2px solid #28a745 !important; /* Bordo verde */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+.btn-conferma:hover {
+    background-color: #28a745 !important; /* Sfondo verde */
+    border-color: #28a745 !important; /* Bordo verde */
+    color: white !important; /* Testo bianco */
 }
 
-.btn-conferma:hover {
-    background-color: #28a745; /* Sfondo verde */
-    border-color: #28a745; /* Bordo verde */
-    color: white; /* Testo bianco */
+.btn-conferma-full {
+    color: white !important; /* Testo bianco */
+    border: 2px solid #28a745 !important; /* Bordo verde */
+    background-color: #28a745 !important; /* Sfondo verde */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
 }
+.btn-conferma-full:hover {
+    color: white !important; /* Testo bianco */
+    border: 2px solid #28a745 !important; /* Bordo verde */
+    background-color: #28a745 !important; /* Sfondo verde */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+
 
 /* Pulsante Annulla (Grigio con hover)
     Da aggiungere assieme a btn-outline-secondary
  */
 .btn-annulla {
-    color: #6c757d; /* Testo grigio */
-    border: 2px solid #6c757d; /* Bordo grigio */
-    background-color: white; /* Sfondo bianco */
-    border-radius: 5px; /* Smusso angoli */
-    padding: 8px 16px; /* Margine interno */
-    transition: all 0.3s ease; /* Transizione morbida */
+    color: #6c757d !important; /* Testo grigio */
+    border: 2px solid #6c757d !important; /* Bordo grigio */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+.btn-annulla:hover {
+    background-color: #6c757d !important; /* Sfondo grigio */
+    border-color: #6c757d !important; /* Bordo grigio */
+    color: white !important; /* Testo bianco */
 }
 
-.btn-annulla:hover {
-    background-color: #6c757d; /* Sfondo grigio */
-    border-color: #6c757d; /* Bordo grigio */
-    color: white; /* Testo bianco */
+.btn-annulla-full {
+    color: white !important; /* Testo bianco */
+    border: 2px solid #6c757d !important; /* Bordo grigio */
+    background-color: #6c757d !important; /* Sfondo grigio */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
 }
+.btn-annulla-full:hover {
+    color: white !important; /* Testo bianco */
+    border: 2px solid #6c757d !important; /* Bordo grigio */
+    background-color: #6c757d !important; /* Sfondo grigio */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+
 
 /* Pulsante Annulla (Rosso con hover)
     Da aggiungere assieme a btn-outline-secondary
  */
 .btn-cancella {
-    color: #dc3545; /* Testo rosso */
-    border: 2px solid #dc3545; /* Bordo grigio */
-    background-color: white; /* Sfondo bianco */
-    border-radius: 5px; /* Smusso angoli */
-    padding: 8px 16px; /* Margine interno */
-    transition: all 0.3s ease; /* Transizione morbida */
+    color: #dc3545 !important; /* Testo rosso */
+    border: 2px solid #dc3545 !important; /* Bordo rosso */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
 }
 
 .btn-cancella:hover {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    color: white; /* Testo bianco */
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important; /* Testo bianco */
+}
+
+.btn-cancella-full {
+    color: white !important; /* Testo bianco */
+    border: 2px solid #dc3545 !important; /* Bordo rosso */
+    background-color: #dc3545 !important; /* Sfondo rosso */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+.btn-cancella-full:hover {
+    color: white !important; /* Testo bianco */
+    border: 2px solid #dc3545 !important; /* Bordo rosso */
+    background-color: #dc3545 !important; /* Sfondo rosso */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+
+/* Pulsante Upload (Verde con hover) */
+.custom-upload-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #28a745; /* Verde chiaro */
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    background-color: white;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-upload-button:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Pulsante PDF (Rosso con hover) */
+.btn-pdf {
+    color: #dc3545 !important; /* Testo rosso */
+    border: 2px solid #dc3545 !important; /* Bordo rosso */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+.btn-pdf:hover {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important; /* Testo bianco */
+}
+
+/* Pulsante Video (Arancione con hover) */
+.btn-video {
+    color: #fd7e14 !important; /* Testo arancione */
+    border: 2px solid #fd7e14 !important; /* Bordo arancione */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+.btn-video:hover {
+    background-color: #fd7e14 !important;
+    border-color: #fd7e14 !important;
+    color: white !important; /* Testo bianco */
+}
+
+/* Pulsante Immagine (Giallo con hover) */
+.btn-immagine {
+    color: rgba(113, 78, 50, 0.88) !important; /* Testo giallo */
+    border: 2px solid #714E32E0 !important; /* Bordo giallo */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+.btn-immagine:hover {
+    background-color: #714e32 !important;
+    border-color: #714E32E0 !important;
+    color: white !important; /* Testo bianco */
+}
+
+/* Pulsante ALL (Blu con hover) */
+.btn-all {
+    color: #007bff !important; /* Testo blu */
+    border: 2px solid #007bff !important; /* Bordo blu */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+.btn-all:hover {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important; /* Testo bianco */
 }

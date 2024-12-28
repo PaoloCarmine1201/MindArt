@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
+import axiosInstance from "../../config/axiosInstance";
 
 /**
  * @autor gabrieleristallo
  * componente utilizzata per visualizzare i dettagli di un bambino
  * grazie ad useParams si ottiene l'id del bambino passato tramite url
  */
-
 function DettaglioBambinoComponent() {
     const { id } = useParams();
     const [bambino, setBambino] = useState(null);
@@ -16,13 +16,12 @@ function DettaglioBambinoComponent() {
         const fetchData = async () => {
             try {
                 console.log(id);
-                const result = await fetch('http://localhost:8080/api/bambino/get/' + id);
+                const result = await fetch('http://localhost:8080/api/terapeuta/bambino/get/' + id);
 
                 if (!result.ok) {
                     throw new Error('Errore nella risposta del server: ' + result.status);
                 }
 
-                console.log(result);
                 const data = await result.json();
                 console.log(data);
                 setBambino(data);
@@ -32,6 +31,16 @@ function DettaglioBambinoComponent() {
         };
 
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        axiosInstance.get("api/terapeuta/bambino/get/" + id)
+            .then(response => {
+                setBambino(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }, []);
 
 
@@ -51,12 +60,15 @@ function DettaglioBambinoComponent() {
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Sesso:</label>
                     <span className="dettaglio-value">
-                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'M' ? 'Maschio' : 'Femmina'}
+                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'MASCHIO' ?
+                            'Maschio' : 'Femmina'}
                     </span>
                 </div>
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Data di Nascita:</label>
-                    <span className="dettaglio-value">{bambino.dataDiNascita}</span>
+                    <span className="dettaglio-value">
+                        {new Date(bambino.dataDiNascita).toLocaleDateString('it-IT')}
+                    </span>
                 </div>
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Codice Fiscale:</label>

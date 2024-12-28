@@ -1,29 +1,12 @@
 .visualizza-bambini-box {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
     max-width: 100%;
     margin: 0;
     height: 100%;
     overflow-y: auto;
-}
-
-.visualizza-bambini-titolo {
-    z-index: 100;
-    position: fixed;
-    font-size: 18px;
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 15px;
+    position: relative;
 }
 
 .list-box {
-    margin-top: 30px;
-}
-
-.title-container {
-    z-index: 100;
-    background-color: white;
+    margin-top: 0px;
 }
 

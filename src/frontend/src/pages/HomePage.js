@@ -5,21 +5,23 @@ import NavBar from "../components/HomePageTerapeuta/NavBar";
 import "../style/HomaPageStyle.css";
 import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniListComponent";
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
-import axiosInstance from "../config/axiosInstance";
+import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMaterialeWidget";
 
 function HomePage() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
     localStorage.setItem("idTerapeuta", idTerapeuta);
     const [bambini, setBambini] = useState([]);
-    const [bambiniError, setBambiniError] = useState(null);
 
-    axiosInstance.get('http://localhost:8080/api/terapeuta/bambini/getallbyterapeuta')
-        .then(response => {
-            setBambini(response.data);
-        })
-        .catch(error => {
-            setBambiniError('Errore nel caricamento dei bambini.');
-        });
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await fetch(
+                'http://localhost:8080/api/bambino/getallbyterapeuta?terapeuta=' + idTerapeuta
+            );
+            const data = await result.json();
+            setBambini(data);
+        };
+        fetchData();
+    }, [idTerapeuta]);
 
     return (
         <>
@@ -43,10 +45,8 @@ function HomePage() {
                         </div>
 
                         <div className="box materiali">
-                            <Link to={"/materiale"} className={"link"}><h2>I tuoi materiali</h2></Link>
-                            <div className={"item-container"}>
-                                {/*Materiali component*/}
-                            </div>
+                            <Link to={"/gestioneMateriale"} className={"link"}><h2>I tuoi materiali</h2></Link>
+                            <GestioneMaterialeWidget/>
                         </div>
                     </div>
                 </div>

@@ -4,25 +4,12 @@ package com.is.mindart.gestioneDisegno.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.is.mindart.gestioneBambino.model.Bambino;
-import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
-import com.is.mindart.gestioneDisegno.model.DrawingData;
-import com.is.mindart.gestioneDisegno.model.PointData;
-import com.is.mindart.gestioneSessione.model.Sessione;
-import com.is.mindart.gestioneSessione.model.SessioneRepository;
-import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 

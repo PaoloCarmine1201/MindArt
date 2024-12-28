@@ -12,5 +12,6 @@ import java.util.List;
 public class StrokeDTO {
     private String color;
     private List<List<Double>> points;
+    private int strokeWidth;
 }
 

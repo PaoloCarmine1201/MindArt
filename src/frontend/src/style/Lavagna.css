@@ -1,0 +1,47 @@
+/* Stile per il contenitore del selettore colori */
+.color-selector {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    background-color: #d3d3d3;
+    border-radius: 20px;
+    padding: 10px;
+    width: 80px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Stile per i cerchietti dei colori */
+.color-circle {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-bottom: 10px;
+    border: 2px solid grey;
+}
+
+.color-circle.selected {
+    border: 4px solid white;
+}
+
+/* Stile per il pulsante gomma */
+.eraser-button {
+    position: absolute;
+    top: calc(50% + 150px); /* Posiziona sotto il selettore colori */
+    left: 10px; /* Allineato con il selettore colori */
+    padding:30px;
+    background-color: white;
+    border: 0 solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.eraser-button.active {
+    background-color: grey;
+}

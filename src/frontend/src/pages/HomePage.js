@@ -65,7 +65,6 @@ function HomePage() {
                 </div>
             </div>
             <ToastContainer position="bottom-right"/>
-            <TerminaSessione />
         </>
     );
 }

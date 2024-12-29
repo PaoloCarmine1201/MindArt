@@ -54,7 +54,7 @@ const router = createBrowserRouter([
     {
         path:"/register",
         name: "Registrazione",
-        element :<Registration />
+        element : <Registration />
         },
     {
         path:"/childlogin",
@@ -79,7 +79,7 @@ const router = createBrowserRouter([
     {
         path:"/gestioneMateriale",
         name:"GestioneMateriale",
-        element: <GestioneMaterialeFull />
+        element: <ProtectedRoute><GestioneMaterialeFull /></ProtectedRoute>
     }
 ])
 

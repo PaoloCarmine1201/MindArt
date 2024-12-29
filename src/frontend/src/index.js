@@ -18,6 +18,7 @@ import {AuthProvider} from "./auth/AuthProvider";
 import DisegnaBambino from "./pages/DisegnaBambino";
 import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
 import ProtectedRouteChild from "./auth/ProtectedRouteChild";
+import GestioneMaterialeFull from "./components/GestioneMateriale/GestioneMaterialeFull";
 
 const router = createBrowserRouter([
     {
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
     {
         path:"/register",
         name: "Registrazione",
-        element :<ProtectedRoute>  <Registration /></ProtectedRoute>
+        element :<Registration />
         },
     {
         path:"/childlogin",
@@ -74,6 +75,11 @@ const router = createBrowserRouter([
         path:"/home",
         name: "Home",
         element : <ProtectedRoute><HomePage /></ProtectedRoute>
+    },
+    {
+        path:"/gestioneMateriale",
+        name:"GestioneMateriale",
+        element: <GestioneMaterialeFull />
     }
 ])
 

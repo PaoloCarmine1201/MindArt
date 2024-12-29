@@ -5,7 +5,6 @@ import AvviaSessioneButton from "../AvvioSessione/AvviaSessioneButton";
 import TerminaSessione from "../TerminaSessione/TerminaSessione";
 import axiosInstance from "../../config/axiosInstance";
 import logo from '../../assets/logo_horizontal_2048x1024.png';
-import profileIcon from '../../assets/profile_icon.png';
 
 function NavBar({ name }) {
     // SE IL TERAPEUTA HA UNA SESSIONE ATTIVA VIENE MOSTRATO OSSERVA E TERMINA SESSIONE
@@ -55,7 +54,7 @@ function NavBar({ name }) {
                 )}
 
                 <div className="profile-icon">
-                    <img src={profileIcon} alt="Profile" className="profile-icon" />
+                    <img src={require('../../assets/profile_icon.png')} alt="Profile" className="profile-icon"/>
                 </div>
             </div>
         </nav>

@@ -1,28 +1,29 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axiosInstance from "../../config/axiosInstance";
-import { Button, Modal } from "react-bootstrap";
-import "../../style/Modal.css";
+import {Button, Modal} from "react-bootstrap";
+import "../../style/Modal.css"
 
-const TerminaSessione = ({ nomeBottone = "Termina sessione" }) => {
+const ConfermaDisegno = ({nomeBottone = "Consegna"}) => {
     const [showModal, setShowModal] = useState(false);
 
     const handleSubmit = async () => {
         try {
-            const response = await axiosInstance.post(`/api/terapeuta/sessione/termina`, {});
+            const response = await axiosInstance.post(`/api/bambino/sessione/consegna`,{});
             if (response && response.status === 200) {
-                console.log("Sessione chiusa.");
+                console.log("Disegno consegnato con successo.");
+                window.location.href = "/childLogin";
+                localStorage.removeItem("jwtToken");
             }
-            //TODO: verificare se ci sono soluzioni migliori per il redirect
-            window.location.href = "/home";
         } catch (error) {
             if (error.response && error.response.status === 404) {
                 console.log("ID della sessione non trovato.");
-            } else if (error.response && error.response.status === 403) {
-                console.log("Errore nella terminazione della sessione.");
+            } else if (error.response && error.response.status === 403){
+                console.log("Errore nella consegna del disegno.");
             } else {
-                console.error("Errore: ", error);
+                console.error("Errore: " + error);
             }
+
         } finally {
             setShowModal(false);
         }
@@ -49,13 +50,15 @@ const TerminaSessione = ({ nomeBottone = "Termina sessione" }) => {
             >
                 <Modal.Header>
                     <Modal.Title>
-                        Sei sicuro di voler terminare la sessione?
+                        Sei sicuro di voler consegnare?
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Footer>
                     <Button
                         className="btn-cancella"
-                        onClick={() => setShowModal(false)}
+                        onClick={() => {
+                            setShowModal(false)
+                        }}
                     >
                         Annulla
                     </Button>
@@ -71,4 +74,4 @@ const TerminaSessione = ({ nomeBottone = "Termina sessione" }) => {
     );
 };
 
-export default TerminaSessione;
+export default ConfermaDisegno;

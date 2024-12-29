@@ -2,6 +2,7 @@ package com.is.mindart.gestioneBambino.service;
 
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
+import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
@@ -46,8 +47,7 @@ public class BambinoService {
      *  Provvede ad accedere al database per l'entità Sessione.
      */
     private final SessioneRepository sessioneRepository;
-
-
+    private final DisegnoRepository disegnoRepository;
 
 
     /**
@@ -67,7 +67,7 @@ public class BambinoService {
                 return null;
             }
 
-            // Verifica se la sessione è già iniziata
+            // Verifica se la sessione non è già iniziata
             if (session.getData().isAfter(LocalDateTime.now())) {
                 return null;
             }

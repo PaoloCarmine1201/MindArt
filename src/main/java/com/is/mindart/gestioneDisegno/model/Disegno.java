@@ -1,25 +1,17 @@
 package com.is.mindart.gestioneDisegno.model;
 
+
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,6 +22,11 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class Disegno {
+    /**
+     * Versione del disegno.
+     */
+    @Version
+    private Long version;
 
     /**
      * Identificativo univoco del disegno.
@@ -44,9 +41,18 @@ public class Disegno {
     private int voto;
 
     /**
+     * Campo che conterrà l'insieme dei tratti di disegno
+     * in formato JSON (es. un array di stroke).
+     */
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String strokesJson;
+
+    /**
      * Data in cui il disegno è stato creato.
      */
-    private Date data;
+    @CreationTimestamp
+    private LocalDateTime data;
 
     /**
      * Valutazione emotiva associata al disegno.
@@ -68,7 +74,7 @@ public class Disegno {
     @ToString.Exclude
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "sessione_id", referencedColumnName = "id")
-    private Sessione profilo;
+    private Sessione sessione;
 
     /**
      * Elenco dei bambini coinvolti nella creazione del disegno.
@@ -80,5 +86,8 @@ public class Disegno {
             joinColumns = @JoinColumn(name = "disegno_id"),
             inverseJoinColumns = @JoinColumn(name = "bambino_id"))
     private List<Bambino> bambini;
+
+
+
 
 }

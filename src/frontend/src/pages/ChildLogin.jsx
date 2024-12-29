@@ -31,9 +31,6 @@ function ChildLogin() {
 
             // Handle successful login
             console.log("Login successful:", response.data);
-            toast.success('Login effettuato con successo!', {
-                position: 'bottom-right',
-            });
 
             localStorage.setItem('jwtToken', response.data);
             navigate("/visualizzazioneMateriale");

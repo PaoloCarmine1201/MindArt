@@ -1,17 +1,19 @@
 package com.is.mindart.gestioneSessione.service;
 
 import com.is.mindart.configuration.SessioneMapper;
+import com.is.mindart.gestioneDisegno.model.Disegno;
+import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
+import com.is.mindart.gestioneSessione.model.TipoSessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,12 +40,10 @@ public class SessioneService {
      * Repository del terapeuta.
      */
     private final TerapeutaRepository terapeutaRepository;
-
     /**
-     * Repository del bambino.
+     * Repository del disegno.
      */
-    private final BambinoRepository bambinoRepository;
-
+    private final DisegnoRepository disegnoRepository;
 
 
     /**
@@ -51,9 +51,11 @@ public class SessioneService {
      * Mappa {@link SessioneDTO} a {@link Sessione} e
      * aggiorna la lista delle sessioni per ogni Bambino
      * @param sessioneDto - proveniente dall'endpoint di creazione
+     * @param terapeuta terapeuta che desidera creare la sessione
      */
     @Transactional
-    public void creaSessione(final SessioneDTO sessioneDto, final String terapeuta) {
+    public void creaSessione(final SessioneDTO sessioneDto,
+                             final String terapeuta) {
         Optional<Terapeuta> t = terapeutaRepository.findByEmail(terapeuta);
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
         sessione.setTerapeuta(t.get());
@@ -61,27 +63,48 @@ public class SessioneService {
             sessione.getBambini().forEach(
                     bambino -> bambino.getSessioni().add(sessione));
         }
+        if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO)) {
+            Disegno disegno = new Disegno();
+            disegno.setSessione(sessione);
+            disegno.setTerapeuta(sessione.getTerapeuta());
+            disegno.setBambini(sessione.getBambini());
+            disegnoRepository.save(disegno);
+        }
+
         repository.save(sessione);
     }
 
     /**
      * Terminazione della sessione.
-     * @param id id sessione
-     * @throws EntityNotFoundException se il bambino o la sessione non vengono
-     * trovati nel database
+     * @param email email del terapeuta
+     * @throws EntityNotFoundException se l'id non viene trovato
      */
     @Transactional
-    public void terminaSessione(final long id, final String codice)
+    public void terminaSessione(final String email)
             throws EntityNotFoundException {
-        Bambino bambino = bambinoRepository.findByCodice(codice)
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Terapeuta con email " + email + " non trovato"));
+        sessioneRepository.terminaSessione(sessione.getId());
+    }
+    /**
+     * Terminazione della sessione.
+     * @param codice codice del bambino
+     * @throws EntityNotFoundException se l'id non viene trovato
+     */
+    @Transactional
+    public void consegnaDisegno(final String codice)
+            throws EntityNotFoundException {
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bambino con codice " + codice + " non trovato"));
-        //se la sessione appartiene al bambino può terminarla
-        if (bambino.getSessioni().stream().noneMatch(sessione -> sessione.getId() == id)) {
-            throw new EntityNotFoundException(
-                    "Sessione con id " + id + " non trovato");
-        }
-        sessioneRepository.terminaSessione(id);
+        sessioneRepository.terminaSessione(sessione.getId());
     }
 
     /**

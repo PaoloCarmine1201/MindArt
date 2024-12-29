@@ -1,5 +1,7 @@
 package com.is.mindart.gestioneTerapeuta.service;
 
+import com.is.mindart.gestioneSessione.model.Sessione;
+import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.security.jwt.JwtUtil;
@@ -30,6 +32,7 @@ public class TerapeutaService {
      *  Provvede a generare il token JWT.
      */
     private final JwtUtil jwtUtil;
+    private final SessioneRepository sessioneRepository;
 
     /**
      * Provvede alla registrazione del terapeuta.
@@ -54,6 +57,7 @@ public class TerapeutaService {
     public String loginTerapeuta(final String email, final String rawPassword) {
         Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
                 .orElse(null);
+        Sessione sessione = sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email).getFirst();
         if (terapeuta != null) {
             if (passwordEncoder.matches(rawPassword, terapeuta.getPassword())) {
                 return jwtUtil.generateToken(terapeuta.getEmail(), "TERAPEUTA");

@@ -2,15 +2,14 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Line, Rect, Circle } from 'react-konva';
-import { connectWebSocket, subscribeToDraw} from "../../utils/websocket";
+import { connectWebSocket, subscribeToDraw } from "../../utils/websocket";
 import axiosInstance from "../../config/axiosInstance";
 import { FaEraser, FaSlash } from "react-icons/fa"; // Import delle icone
 import "../../style/Lavagna.css"; // Import del file CSS
 
 const DrawingBoard = () => {
-    const [strokes, setStrokes] = useState([]);
-    const [filledAreas, setFilledAreas] = useState([]); // Array per le aree riempite con il lasso
-    const [disegnoId, setDisegnoId] = useState(); // ID del disegno
+    const [actions, setActions] = useState([]); // Unico array per tutte le azioni
+    const [disegnoId, setDisegnoId] = useState(null); // ID del disegno
     const stageRef = useRef(null);
     const [currentStroke, setCurrentStroke] = useState(null);
     const [currentLasso, setCurrentLasso] = useState(null); // Stato per il lasso corrente
@@ -36,14 +35,44 @@ const DrawingBoard = () => {
     const DRAWING_AREA_WIDTH = dimensions.width - 150; // Larghezza dell'area di disegno
     const DRAWING_AREA_HEIGHT = dimensions.height - DRAWING_AREA_OFFSET_Y - 50; // Altezza dell'area di disegno
 
+    // Funzione per formattare i punti
+    const formatPoints = (points) => {
+        if (Array.isArray(points) && points.length > 0) {
+            // Verifica se i punti sono annidati, ad esempio [[x1, y1], [x2, y2], ...]
+            if (Array.isArray(points[0])) {
+                return points.flat();
+            }
+            // Se i punti sono già in formato piatto [x1, y1, x2, y2, ...]
+            return points;
+        }
+        return [];
+    };
+
+    // Effetto per gestire il caricamento iniziale dei dati
     useEffect(() => {
-        // 1. Carica i dati iniziali via REST
-        const loadStrokes = async () => {
+        const loadActions = async () => {
             try {
-                const disegno = await axiosInstance.get(`/api/bambino/sessione/disegno/`);
-                setDisegnoId(disegno.data.id);
-                setStrokes(disegno.data.strokes);
-                setFilledAreas(disegno.data.filledAreas || []); // Assicurati che l'API ritorni anche filledAreas
+                const disegnoResponse = await axiosInstance.get(`/api/bambino/sessione/disegno/`);
+                const disegno = disegnoResponse.data;
+                setDisegnoId(disegno.id);
+
+                // Formattazione delle azioni (strokes e filledAreas)
+                const initialStrokes = disegno.strokes.map(stroke => ({
+                    ...stroke,
+                    type: stroke.type || "stroke",
+                    points: formatPoints(stroke.points),
+                }));
+
+                const initialFilledAreas = (disegno.filledAreas || []).map(area => ({
+                    ...area,
+                    type: area.type || "lasso",
+                    points: formatPoints(area.points),
+                }));
+
+                const initialActions = [...initialStrokes, ...initialFilledAreas];
+                setActions(initialActions);
+
+                console.log('Actions loaded:', initialActions);
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
                 window.location.href = "/childLogin";
@@ -51,23 +80,33 @@ const DrawingBoard = () => {
             }
         };
 
-        loadStrokes();
+        loadActions();
+    }, []);
 
-        // 2. Connessione WebSocket
+    // Effetto per gestire la connessione WebSocket una volta ottenuto disegnoId
+    useEffect(() => {
+        if (!disegnoId) return; // Attendi che disegnoId sia disponibile
+
         const client = connectWebSocket();
 
         client.onConnect = () => {
             console.log('Connesso al WebSocket');
-            subscribeToDraw(client, disegnoId, (newStroke) => {
-                setStrokes((prevStrokes) => [...prevStrokes, newStroke]);
+            subscribeToDraw(client, disegnoId, (data) => {
+                const formattedAction = {
+                    ...data,
+                    points: formatPoints(data.points), // Formatta i punti
+                };
+                setActions((prevActions) => [...prevActions, formattedAction]);
+                console.log('Received action via WebSocket:', formattedAction);
             });
-
         };
 
         client.onStompError = (frame) => {
             console.error('Errore STOMP:', frame.headers['message']);
             // Puoi gestire errori STOMP qui, ad esempio mostrando un messaggio all'utente
         };
+
+        client.activate(); // Attiva il client STOMP
 
         stompClientRef.current = client;
 
@@ -223,18 +262,27 @@ const DrawingBoard = () => {
             return;
         }
 
+        // Trasforma i punti in array di [x, y] interi
+        const formattedPoints = [];
+        for (let i = 0; i < currentLasso.points.length; i += 2) {
+            const x = Math.round(currentLasso.points[i]);
+            const y = Math.round(currentLasso.points[i + 1]);
+            formattedPoints.push([x, y]);
+        }
+
         // Crea una nuova area riempita
         const filledArea = {
-            points: currentLasso.points,
+            points: formattedPoints,
             color: selectedColor,
+            type: "lasso", // Aggiungi il tipo "lasso"
         };
 
-        setFilledAreas((prevFilledAreas) => [...prevFilledAreas, filledArea]);
+        setActions((prevActions) => [...prevActions, filledArea]);
 
-        // Invia l'azione via WebSocket
+        // Invia l'azione via WebSocket nello stesso formato di handleMouseUp
         if (stompClientRef.current && stompClientRef.current.connected) {
             stompClientRef.current.publish({
-                destination: `/app/fill/${disegnoId}`,
+                destination: `/app/draw/${disegnoId}`,
                 body: JSON.stringify(filledArea),
             });
         }
@@ -266,24 +314,25 @@ const DrawingBoard = () => {
         if (selectedTool === "draw" || selectedTool === "eraser") {
             const newStroke = {
                 color: selectedTool === "eraser" ? "white" : selectedColor,
-                points: [pos.x, pos.y],
+                points: [Math.round(pos.x), Math.round(pos.y)], // Arrotonda le coordinate
                 strokeWidth: selectedTool === "eraser" ? ERASER_STROKE : LINE_STROKE,
+                type: "stroke", // Aggiungi il tipo "stroke"
             };
             setCurrentStroke(newStroke);
-            setStrokes((prevStrokes) => [...prevStrokes, newStroke]);
+            setActions((prevActions) => [...prevActions, newStroke]);
         }
 
         if (selectedTool === "lasso") {
             if (!currentLasso) {
                 // Inizia un nuovo lasso
                 setCurrentLasso({
-                    points: [pos.x, pos.y],
+                    points: [Math.round(pos.x), Math.round(pos.y)],
                 });
             } else {
                 // Aggiungi punti al lasso
                 setCurrentLasso((prevLasso) => ({
                     ...prevLasso,
-                    points: [...prevLasso.points, pos.x, pos.y],
+                    points: [...prevLasso.points, Math.round(pos.x), Math.round(pos.y)],
                 }));
             }
         }
@@ -311,14 +360,18 @@ const DrawingBoard = () => {
         if ((selectedTool === "draw" || selectedTool === "eraser") && currentStroke && inside) {
             const updatedStroke = {
                 ...currentStroke,
-                points: [...currentStroke.points, point.x, point.y],
+                points: [
+                    ...currentStroke.points,
+                    Math.round(point.x), // Arrotonda le coordinate
+                    Math.round(point.y),
+                ],
             };
 
             // Aggiorna l'ultimo stroke
-            setStrokes((prevStrokes) => {
-                const newStrokes = [...prevStrokes];
-                newStrokes[newStrokes.length - 1] = updatedStroke;
-                return newStrokes;
+            setActions((prevActions) => {
+                const newActions = [...prevActions];
+                newActions[newActions.length - 1] = updatedStroke;
+                return newActions;
             });
 
             setCurrentStroke(updatedStroke);
@@ -328,28 +381,38 @@ const DrawingBoard = () => {
         if (selectedTool === "lasso" && currentLasso && inside) {
             setCurrentLasso((prevLasso) => ({
                 ...prevLasso,
-                points: [...prevLasso.points, point.x, point.y],
+                points: [
+                    ...prevLasso.points,
+                    Math.round(point.x), // Arrotonda le coordinate
+                    Math.round(point.y),
+                ],
             }));
         }
     };
 
     const handleMouseUp = () => {
         if (currentStroke) {
-            // Invio dello stroke via WebSocket
+            // Invio dello stroke via WebSocket nello stesso formato di handleLassoComplete
             if (stompClientRef.current && stompClientRef.current.connected) {
+                const formattedPoints = [];
+                for (let i = 0; i < currentStroke.points.length; i += 2) {
+                    const x = currentStroke.points[i];
+                    const y = currentStroke.points[i + 1];
+                    formattedPoints.push([x, y]);
+                }
+
+                const message = {
+                    color: currentStroke.color,
+                    points: formattedPoints,
+                    strokeWidth: currentStroke.strokeWidth,
+                    type: currentStroke.type, // "stroke"
+                };
+
+                console.log('Sending message:', message); // Log per verifica
+
                 stompClientRef.current.publish({
                     destination: `/app/draw/${disegnoId}`,
-                    body: JSON.stringify({
-                        color: currentStroke.color,
-                        points: [
-                            // Trasforma i punti in array di coppie [x, y]
-                            ...currentStroke.points.reduce((acc, value, index) => {
-                                if (index % 2 === 0) acc.push([value, currentStroke.points[index + 1]]);
-                                return acc;
-                            }, []),
-                        ],
-                        strokeWidth: currentStroke.strokeWidth,
-                    }),
+                    body: JSON.stringify(message),
                 });
             }
 
@@ -373,7 +436,7 @@ const DrawingBoard = () => {
         setSelectedTool(tool);
     };
 
-    const colors = ["red", "green", "yellow", "black", "blue", "#FF5733", "#33FF57", "#3357FF"]; // Aggiungi altri colori se necessario
+    const colors = ["red", "green", "yellow", "black", "blue"];
 
     return (
         <div>
@@ -417,32 +480,37 @@ const DrawingBoard = () => {
                         shadowOpacity={0.2} // Opacità dell'ombra
                     />
 
-                    {/* Tratti disegnati */}
-                    {strokes.map((stroke, index) => (
-                        <Line
-                            key={index}
-                            points={stroke.points.flat()} // Appiattimento
-                            stroke={stroke.color}
-                            strokeWidth={stroke.strokeWidth}
-                            lineCap="round"
-                            lineJoin="round"
-                            tension={0.5}
-                            globalCompositeOperation={stroke.color === "white" ? 'destination-out' : 'source-over'} /* per gestione eventuale della gomma */
-                        />
-                    ))}
-
-                    {/* Aree riempite con il lasso */}
-                    {filledAreas.map((area, index) => (
-                        <Line
-                            key={`filled-${index}`}
-                            points={area.points}
-                            closed={true}
-                            fill={area.color}
-                            stroke={area.color}
-                            strokeWidth={1}
-                            opacity={0.5}
-                        />
-                    ))}
+                    {/* Itera su tutte le azioni */}
+                    {actions.map((action, index) => {
+                        if (action.type === "lasso") {
+                            return (
+                                <Line
+                                    key={`action-${index}`}
+                                    points={action.points} // Punti già formattati
+                                    closed={true}
+                                    fill={action.color}
+                                    stroke={action.color}
+                                    strokeWidth={1}
+                                    opacity={0.5}
+                                />
+                            );
+                        } else if (action.type === "stroke") {
+                            return (
+                                <Line
+                                    key={`action-${index}`}
+                                    points={action.points} // Punti già formattati
+                                    stroke={action.color}
+                                    strokeWidth={action.strokeWidth}
+                                    lineCap="round"
+                                    lineJoin="round"
+                                    tension={0.5}
+                                    globalCompositeOperation={action.color === "white" ? 'destination-out' : 'source-over'}
+                                />
+                            );
+                        } else {
+                            return null; // In caso di tipi sconosciuti
+                        }
+                    })}
 
                     {/* Tratto temporaneo per il lasso in fase di disegno */}
                     {selectedTool === "lasso" && currentLasso && (

@@ -6,24 +6,36 @@
     top: 10px;
     left: 10px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap; /* Permette ai colori di avvolgersi su più righe */
     gap: 10px;
     z-index: 10;
+    background: rgba(255, 255, 255, 0.8); /* Sfondo semi-trasparente */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombreggiatura per profondità */
 }
 
 /* Cerchi per i colori */
 .color-circle {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     cursor: pointer;
-    border: 2px solid transparent;
-    transition: border 0.2s;
+    border: 1px solid #ccc; /* Bordo sottile per contrasto */
+    transition: transform 0.2s, border 0.2s, box-shadow 0.2s; /* Transizioni fluide */
+    position: relative;
+}
+
+/* Effetto hover per i cerchi di colore */
+.color-circle:hover {
+    transform: scale(1.1); /* Ingrandimento leggero */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombra per evidenziare */
 }
 
 /* Stato selezionato per il cerchio del colore */
 .color-circle.selected {
-    border: 2px solid #000;
+    border: 3px solid #000; /* Bordo nero più evidente */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Ombra per maggiore enfasi */
 }
 
 /* Container per i pulsanti degli strumenti */
@@ -35,70 +47,96 @@
     flex-direction: row;
     gap: 10px;
     z-index: 10;
+    background: rgba(255, 255, 255, 0.8); /* Sfondo semi-trasparente */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombreggiatura per profondità */
 }
 
 /* Pulsante Gomma */
 .eraser-button {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     background: #fff;
     border: 2px solid #000;
-    border-radius: 5px;
+    border-radius: 50%; /* Forma circolare per coerenza */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s; /* Transizioni fluide */
+    position: relative;
+}
+
+/* Effetto hover per il pulsante Gomma */
+.eraser-button:hover {
+    background: #f0f0f0; /* Cambia colore di sfondo al passaggio del mouse */
+    transform: scale(1.05); /* Ingrandimento leggero */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Ombra per evidenziare */
 }
 
 /* Stato attivo per il pulsante Gomma */
 .eraser-button.active {
-    background: #ddd;
+    background: #ddd; /* Sfondo grigio per indicare lo stato attivo */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Ombra per maggiore enfasi */
 }
 
 /* Pulsante Lasso */
 .lasso-button {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     background: #fff;
     border: 2px solid #000;
-    border-radius: 5px;
+    border-radius: 50%; /* Forma circolare per coerenza */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s; /* Transizioni fluide */
+    position: relative;
+}
+
+/* Effetto hover per il pulsante Lasso */
+.lasso-button:hover {
+    background: #f0f0f0; /* Cambia colore di sfondo al passaggio del mouse */
+    transform: scale(1.05); /* Ingrandimento leggero */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Ombra per evidenziare */
 }
 
 /* Stato attivo per il pulsante Lasso */
 .lasso-button.active {
-    background: #ddd;
+    background: #ddd; /* Sfondo grigio per indicare lo stato attivo */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Ombra per maggiore enfasi */
 }
 
 /* Responsività per schermi più piccoli */
 @media (max-width: 768px) {
     .color-selector {
-        flex-direction: row;
+        flex-direction: row; /* Disposizione orizzontale */
+        justify-content: center; /* Allinea al centro */
         top: auto;
         bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
+        width: 90%; /* Adatta la larghezza */
     }
 
     .tool-selector {
         top: auto;
         bottom: 10px;
         left: 10px;
+        flex-direction: row;
+        justify-content: center; /* Allinea al centro */
     }
 
     .eraser-button,
     .lasso-button {
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
     }
 
     .color-circle {
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
     }
 }

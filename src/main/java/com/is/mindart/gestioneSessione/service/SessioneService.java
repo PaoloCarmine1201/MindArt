@@ -35,10 +35,6 @@ public class SessioneService {
      */
     private final TerapeutaRepository terapeutaRepository;
 
-    /**
-     * Repository del bambino.
-     */
-    private final BambinoRepository bambinoRepository;
 
 
     /**

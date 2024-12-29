@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 @Controller
 @AllArgsConstructor
 public class DisegnoWebSocketController {
-
     /**
      * Servizio per la gestione dei Disegni
      */
@@ -24,7 +23,8 @@ public class DisegnoWebSocketController {
      * Gestisce un nuovo stroke inviato da un client.
      * @param disegnoId ID del Disegno a cui appartiene lo stroke
      * @param strokeDto DTO dello stroke inviato dal client
-     * @return Lo stesso DTO dello stroke, da inviare in broadcast a tutti i client connessi a /topic/draw/{disegnoId}
+     * @return Lo stesso DTO dello stroke, da inviare in broadcast a
+     * tutti i client connessi a /topic/draw/{disegnoId}
      */
     @MessageMapping("/draw/{disegnoId}")
     @SendTo("/topic/draw/{disegnoId}")
@@ -35,7 +35,6 @@ public class DisegnoWebSocketController {
         // Aggiorno il Disegno sul DB
         disegnoService.addStrokeToDisegno(disegnoId, strokeDto);
 
-        // Ritorno lo stroke in broadcast a tutti i client connessi a /topic/draw/{disegnoId}
         return strokeDto;
     }
 

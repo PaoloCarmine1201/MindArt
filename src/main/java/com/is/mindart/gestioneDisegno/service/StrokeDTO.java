@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class StrokeDTO {
     private String color;
-    private List<List<Double>> points;
+    private List<List<Integer>> points;
     private int strokeWidth;
+    private String type;
 }
 

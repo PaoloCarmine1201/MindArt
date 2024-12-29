@@ -1,9 +1,7 @@
 package com.is.mindart.gestioneDisegno.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.is.mindart.gestioneBambino.model.Bambino;
-import com.is.mindart.gestioneDisegno.service.DisegnoMessage;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.persistence.*;

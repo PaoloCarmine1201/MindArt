@@ -2,15 +2,11 @@ package com.is.mindart.gestioneDisegno.controller;
 
 import com.is.mindart.gestioneDisegno.service.DisegnoService;
 import com.is.mindart.gestioneDisegno.service.StrokeDTO;
-import com.is.mindart.gestioneSessione.model.Sessione;
-import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 
@@ -35,7 +31,6 @@ public class DisegnoWebSocketController {
     public StrokeDTO handleNewStroke(
              final @DestinationVariable("disegnoId") Long disegnoId,
              final @Payload StrokeDTO strokeDto) {
-
 
         // Aggiorno il Disegno sul DB
         disegnoService.addStrokeToDisegno(disegnoId, strokeDto);

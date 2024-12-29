@@ -74,7 +74,7 @@ const router = createBrowserRouter([
     {
         path:"/visualizzazioneMateriale",
         name: "Visualizzazione Materiale",
-        element : <ProtectedRoute><VisualizzazioneMateriale /></ProtectedRoute>
+        element : <VisualizzazioneMateriale />
     },
     {
         path:"/gestioneMateriale",

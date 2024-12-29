@@ -7,11 +7,11 @@ import axiosInstance from "../config/axiosInstance"; // Assuming your CSS for Mi
 
 /**
  *
- * @param id Sessione ID
+ * @param codiceBambino
  * @returns {Element}
  * @constructor
  */
-const App = ({ id }) => {
+const App = () => {
     const [materiale, setMateriale] = useState(null);
     const [error, setError] = useState(null);
 
@@ -21,7 +21,7 @@ const App = ({ id }) => {
         }
         const fetchMateriale = async () => {
             try {
-                const response = await axiosInstance.get(`/api/bambino/sessione/getMateriale/${10}`);
+                const response = await axiosInstance.get(`/api/bambino/sessione/getMateriale/`);
                 setMateriale(response.data);
             } catch (err) {
                 setError("Errore durante il caricamento del materiale.");
@@ -30,7 +30,7 @@ const App = ({ id }) => {
         };
 
         fetchMateriale();
-    }, [id]);
+    });
 
     if (error) return <div>{error}</div>;
 

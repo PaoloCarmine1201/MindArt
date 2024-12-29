@@ -11,13 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.CrossOrigin;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
@@ -87,5 +87,21 @@ public class BambinoController {
             @Valid @RequestBody final RegisterBambinoDTO bambinoDto) {
         bambinoService.addBambino(bambinoDto);
         return ResponseEntity.ok(bambinoDto);
+    }
+
+    /**
+     * Elimina un bambino dal database.
+     *
+     * @param id Identificativo del bambino.
+     * @return Stringa di risposta
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBambino(
+            @PathVariable final Long id
+    ) {
+        bambinoService.deleteBambino(id);
+        return ResponseEntity.ok("Il bambino con id ("
+                + id
+                + ") è stato eliminato con successo");
     }
 }

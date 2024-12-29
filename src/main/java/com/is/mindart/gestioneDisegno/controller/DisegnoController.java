@@ -1,8 +1,6 @@
 
 package com.is.mindart.gestioneDisegno.controller;
 
-import com.is.mindart.gestioneDisegno.model.Disegno;
-import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneDisegno.service.DisegnoDTO;
 import com.is.mindart.gestioneDisegno.service.DisegnoDTOResponse;
 import com.is.mindart.gestioneDisegno.service.DisegnoService;
@@ -33,7 +31,6 @@ public class DisegnoController {
      * Repository per la gestione delle sessioni.
      */
     private final SessioneRepository sessioneRepository;
-    private final DisegnoRepository disegnoRepository;
 
     /**
      * Restituisce il disegno associato ad una sessione per il bambino.
@@ -64,7 +61,7 @@ public class DisegnoController {
          String principal = (String) authentication.getPrincipal();
         Long sessioneId = sessioneRepository
                 .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(principal)
-                .get(0).getId();
+                .getFirst().getId();
             DisegnoDTO disegnoResponseDTO = disegnoService
                     .getDisegnoBySessioneId(sessioneId);
         return ResponseEntity.ok(disegnoResponseDTO);
@@ -74,6 +71,7 @@ public class DisegnoController {
     /**
      * Restituisce i disegni di un bambino.
      * @param id id del bambino
+     * @return 200 OK
      */
     @GetMapping("terapeuta/bambino/{id}/disegni/")
     public ResponseEntity<List<DisegnoDTOResponse>> getDisegniByBambinoId(
@@ -83,13 +81,14 @@ public class DisegnoController {
         String principal = (String) authentication.getPrincipal();
 
         List<DisegnoDTOResponse> disegnoResponseDTO = disegnoService
-                .getDisegniByBambinoId(id, principal);
+                .getDisegniByBambinoId(id);
         return ResponseEntity.ok(disegnoResponseDTO);
     }
 
     /**
      * Restituisce i disegni di un bambino.
      * @param id id del bambino
+     * @return 200 OK
      */
     @GetMapping("terapeuta/disegno/{id}")
     public ResponseEntity<DisegnoDTO> getDisegnoById(

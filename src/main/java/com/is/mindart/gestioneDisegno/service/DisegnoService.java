@@ -4,8 +4,6 @@ package com.is.mindart.gestioneDisegno.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.is.mindart.gestioneBambino.model.Bambino;
-import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import lombok.AllArgsConstructor;
@@ -123,16 +121,17 @@ public class DisegnoService {
     }
 
     /**
-     * Metodo che restituisce i disegni di un bambino
+     * Metodo che restituisce i disegni di un bambino.
      * @param bambinoId id del bambino
-     * @param terapeutaEmail email del terapeuta
      * @return lista di disegni
      */
-    public List<DisegnoDTOResponse> getDisegniByBambinoId(final Long bambinoId, final String terapeutaEmail) {
+    public List<DisegnoDTOResponse> getDisegniByBambinoId(
+            final Long bambinoId) {
         List<Disegno> disegni = disegnoRepository.findByBambini_Id(bambinoId);
         if (disegni.isEmpty()) {
             throw new NoSuchElementException(
-                    "Nessun disegno trovato per il bambino con id " + bambinoId);
+                    "Nessun disegno trovato per il bambino con id "
+                            + bambinoId);
         }
         return disegni.stream()
                 .map(disegno -> new DisegnoDTOResponse(disegno.getId(),

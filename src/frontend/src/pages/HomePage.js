@@ -56,7 +56,7 @@ function HomePage() {
                         </div>
 
                         <div className="box materiali">
-                            <Link to={"/materiale"} className={"link"}><h2>I tuoi materiali</h2></Link>
+                            <Link to={"/gestioneMateriale"} className={"link"}><h2>I tuoi materiali</h2></Link>
                             <div className={"item-container"}>
                                 <GestioneMaterialeWidget/>
                             </div>

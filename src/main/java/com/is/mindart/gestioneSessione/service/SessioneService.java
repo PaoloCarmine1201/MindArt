@@ -3,6 +3,8 @@ package com.is.mindart.gestioneSessione.service;
 import com.is.mindart.configuration.SessioneMapper;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
+import com.is.mindart.gestioneMateriale.model.Materiale;
+import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
@@ -43,6 +45,7 @@ public class SessioneService {
     private final BambinoRepository bambinoRepository;
 
 
+
     /**
      * Creazione della sessione.
      * Mappa {@link SessioneDTO} a {@link Sessione} e
@@ -64,7 +67,8 @@ public class SessioneService {
     /**
      * Terminazione della sessione.
      * @param id id sessione
-     * @throws EntityNotFoundException se l'id non viene trovato
+     * @throws EntityNotFoundException se il bambino o la sessione non vengono
+     * trovati nel database
      */
     @Transactional
     public void terminaSessione(final long id, final String codice)
@@ -78,5 +82,20 @@ public class SessioneService {
                     "Sessione con id " + id + " non trovato");
         }
         sessioneRepository.terminaSessione(id);
+    }
+
+    /**
+     * Getter del Materiale
+     * @param id id sessione
+     * @throws EntityNotFoundException se la sessione non viene trovata
+     */
+    @Transactional
+    public Materiale getMaterialeFromSessione(final long id)
+            throws EntityNotFoundException {
+        Sessione sessione = sessioneRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Sessione con codice " + id + " non trovato"));
+        return sessione.getMateriale();
+
     }
 }

@@ -4,15 +4,12 @@ import com.is.mindart.gestioneMateriale.model.TipoMateriale;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.web.multipart.MultipartFile;
 
-/**
- * DTO per l'output del materiale. Contiene le informazioni
- * di un materiale da restituire come risultato di un'operazione.
- */
 @Data
 @NoArgsConstructor
-public class OutputMaterialeDTO {
-
+public class MaterialeDTO {
     /**
      * Identificatore del materiale.
      */
@@ -30,6 +27,8 @@ public class OutputMaterialeDTO {
     @NotNull
     private TipoMateriale tipoMateriale;
 
+    @NotNull
+    private byte[] file;
 
 
     /**
@@ -39,14 +38,18 @@ public class OutputMaterialeDTO {
      * @param paramId             Identificatore del materiale
      * @param paramNome           Nome del materiale
      * @param paramTipoMateriale  Tipo del materiale
+     * @param paramFile           File in ByteArrayResource
      */
-    public OutputMaterialeDTO(
+    public MaterialeDTO(
             final Long paramId,
             final String paramNome,
-            final TipoMateriale paramTipoMateriale
+            final TipoMateriale paramTipoMateriale,
+            final byte[] paramFile
     ) {
         this.id = paramId;
         this.nome = paramNome;
         this.tipoMateriale = paramTipoMateriale;
+        this.file = paramFile;
+
     }
 }

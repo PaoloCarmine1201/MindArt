@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneSessione.controller;
 
+import com.is.mindart.gestioneMateriale.service.OutputMaterialeDTO;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
 import jakarta.persistence.EntityNotFoundException;
@@ -9,11 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -39,6 +36,7 @@ public class SessioneController {
         String principal = (String) authentication.getPrincipal();
 
         sessioneService.creaSessione(sessioneDTO, principal);
+
         return ResponseEntity.ok(sessioneDTO);
     }
 
@@ -59,4 +57,6 @@ public class SessioneController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 }

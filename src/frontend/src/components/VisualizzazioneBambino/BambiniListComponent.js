@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import BambinoListItemComponent from "./BambinoListItemComponent";
 import "../../style/BambiniListStyle.css";
 import { Button } from "react-bootstrap";
-import axiosInstance from "../../config/axiosInstance";
 import React from "react";
+import GestioneListaDisegno from "../GestioneListaDisegno/GestioneListaDisegno";
 
 function BambiniListComponent(props) {
     console.log(props);
@@ -29,24 +29,14 @@ function BambiniListComponent(props) {
                                 {/* Se button è true, allora visualizzo i pulsanti (utilizzato per differenziare tra widget e fullpage */}
                                 {button ? (
                                     <>
-                                        <Button
-                                            className="btn-conferma"
-                                            style={{ marginLeft: "10px" }}
-                                            onClick={() => {
-                                                axiosInstance
-                                                    .delete(
-                                                        `http://localhost:8080/api/terapeuta/bambino/${bambino.id}`
-                                                    )
-                                                    .then((response) => {
-                                                        console.log(response);
-                                                    })
-                                                    .catch((error) => {
-                                                        console.error(error);
-                                                    });
-                                            }}
+                                        <Link
+                                            to={`/dettaglioDisegni/${bambino.id}`}
+                                            style={{ borderRadius: "10px", marginLeft: "10px" }}
                                         >
-                                            Disegni
-                                        </Button>
+                                            <Button className="btn-all">
+                                                Visualizza disegni
+                                            </Button>
+                                        </Link>
                                     </>
                                 ) : null}
                             </div>

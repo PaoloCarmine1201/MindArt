@@ -56,7 +56,15 @@ public class Bambino {
      * Codice fiscale del bambino.
      */
     private String codiceFiscale;
+
+    /**
+     * Email del genitore
+     */
     private String emailGenitore;
+
+    /**
+     * Telefono del genitore
+     */
     private String telefonoGenitore;
 
     /**

@@ -19,6 +19,7 @@ import DisegnaBambino from "./pages/DisegnaBambino";
 import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
 import ProtectedRouteChild from "./auth/ProtectedRouteChild";
 import GestioneMaterialeFull from "./components/GestioneMateriale/GestioneMaterialeFull";
+import GestioneListaDisegno from "./components/GestioneListaDisegno/GestioneListaDisegno";
 
 const router = createBrowserRouter([
     {
@@ -40,6 +41,11 @@ const router = createBrowserRouter([
         path: '/dettaglioBambino/:id',
         name: 'Dettaglio',
         element: <ProtectedRoute> <DettaglioBambino/> </ProtectedRoute>
+    },
+    {
+        path: '/dettaglioDisegni/:id',
+        name: 'Dettaglio Disegni Bambino',
+        element: <ProtectedRoute> <GestioneListaDisegno/> </ProtectedRoute>
     },
     {
         path: '/calendarioEventi',

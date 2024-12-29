@@ -1,42 +1,41 @@
-.player-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #222;
-    padding: 8px;
-    gap: 10px; /* Spazio tra i controlli */
-}
-
-.time-slider {
-    flex-grow: 1;
-    margin: 0 10px;
-    appearance: none;
-    height: 4px;
-    background: #444;
-    border-radius: 2px;
-    cursor: pointer;
-    outline: none;
-}
-
-.time-slider::-webkit-slider-thumb {
-    appearance: none;
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.time-slider::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.time-display {
+/* Heading Styling */
+.app-heading {
+    font-size: 2rem;
     color: #fff;
-    font-size: 14px;
-    white-space: nowrap;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mini-video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 900px; /* Increase the container width */
+    max-width: 90vw; /* Maintain responsiveness for smaller screens */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mini-video-container video {
+    width: 100%; /* Video scales to fit the container width */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Adjustments for Smaller Screens */
+@media (max-width: 768px) {
+    .mini-video-container {
+        width: 90%; /* Adjust width on smaller screens */
+        padding: 15px;
+    }
+
+    .app-heading {
+        font-size: 1.5rem; /* Adjust font size */
+    }
 }

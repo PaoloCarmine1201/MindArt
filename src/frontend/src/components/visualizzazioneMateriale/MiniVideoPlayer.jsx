@@ -1,27 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './MiniVideoPlayer.css'; // Eventuale file CSS per lo stile
+import './MiniVideoPlayer.css';
 
 const MiniVideoPlayer = ({ videoUrl, onClose }) => {
     const videoRef = useRef(null);
     const [isPaused, setIsPaused] = useState(true);
-    const [currentTime, setCurrentTime] = useState(0); // Tempo attuale del video
-    const [duration, setDuration] = useState(0); // Durata totale del video
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
 
-    // Aggiorna il tempo attuale del video
+    // Update current time
     const handleTimeUpdate = () => {
         if (videoRef.current) {
             setCurrentTime(videoRef.current.currentTime);
         }
     };
 
-    // Aggiorna la durata totale del video
+    // Update total duration
     const handleLoadedMetadata = () => {
         if (videoRef.current) {
             setDuration(videoRef.current.duration);
         }
     };
 
-    // Gestisce il play/pausa
+    // Play/Pause toggle
     const handlePlayPause = () => {
         if (!videoRef.current) return;
 
@@ -34,7 +34,7 @@ const MiniVideoPlayer = ({ videoUrl, onClose }) => {
         }
     };
 
-    // Gestisce la modifica della barra del tempo
+    // Seek the video
     const handleSeek = (event) => {
         const time = parseFloat(event.target.value);
         if (videoRef.current) {
@@ -43,7 +43,7 @@ const MiniVideoPlayer = ({ videoUrl, onClose }) => {
         setCurrentTime(time);
     };
 
-    // Formatta il tempo in mm:ss
+    // Format time
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60).toString().padStart(2, '0');
@@ -54,7 +54,7 @@ const MiniVideoPlayer = ({ videoUrl, onClose }) => {
         <div className="mini-video-player">
             <div className="player-header">
                 <button className="close-btn" onClick={onClose}>
-                    × {/* Icona di chiusura (X) */}
+                    ×
                 </button>
             </div>
 
@@ -62,9 +62,9 @@ const MiniVideoPlayer = ({ videoUrl, onClose }) => {
                 ref={videoRef}
                 src={videoUrl}
                 className="player-video"
-                onTimeUpdate={handleTimeUpdate} // Aggiorna il tempo corrente
-                onLoadedMetadata={handleLoadedMetadata} // Imposta la durata totale
-                controls={false} // Rimuove i controlli nativi del browser
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
+                controls={false}
             />
 
             <div className="player-controls">

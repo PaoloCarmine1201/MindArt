@@ -14,7 +14,7 @@ const FileViewer = ({ fileUrl, fileType }) => {
     const [showPPTXPlayer, setShowPPTXPlayer] = useState(true);
 
     switch (fileType) {
-        case 'pdf':
+        case 'PDF':
             return showPdfViewer ? (
                 <PDFViewer
                     file={fileUrl}
@@ -24,7 +24,7 @@ const FileViewer = ({ fileUrl, fileType }) => {
                 <p>PDF chiuso</p>
             );
 
-        case 'video':
+        case 'VIDEO':
             return showVideoPlayer ? (
                 <MiniVideoPlayer
                     videoUrl={fileUrl}
@@ -34,13 +34,6 @@ const FileViewer = ({ fileUrl, fileType }) => {
                 <p>Video chiuso</p>
             );
 
-        case 'pptx':
-            return (
-                <PPTXViewer
-                    pptxUrl={fileType}
-                    //onClose={setShowPPTXPlayer(false)}
-                />
-            );
 
         default:
             return <p>Formato non supportato o fileType non riconosciuto.</p>;

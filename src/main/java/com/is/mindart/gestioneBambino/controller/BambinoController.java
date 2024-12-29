@@ -8,6 +8,7 @@ import com.is.mindart.gestioneBambino.service.RegisterBambinoDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,7 @@ public class BambinoController {
      *
      * @return lista di bambini presenti nel database
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/getall")
     public ResponseEntity<List<BambinoDTO>> getAllBambini() {
         List<BambinoDTO> bambini = bambinoService.getAllBambini();
@@ -48,6 +50,7 @@ public class BambinoController {
      * Restituisce tutti i bambini relativi a un terapeuta.
      * @return lista di bambini del terapeuta
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/getallbyterapeuta")
     public ResponseEntity<List<BambinoDTOSimple>> getAllBambiniByTerapeuta() {
         Authentication authentication = SecurityContextHolder
@@ -66,6 +69,7 @@ public class BambinoController {
      * @param id identificativo del bambino
      * @return bambino con l'identificativo specificato
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/get/{id}")
     public ResponseEntity<BambinoDTOSimple> getBambino(
             @PathVariable final Long id
@@ -82,6 +86,7 @@ public class BambinoController {
      *                   contenente i dati del bambino.
      * @return bambino salvato come {@link RegisterBambinoDTO}
      */
+    @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping("/add")
     public ResponseEntity<RegisterBambinoDTO> addBambino(
             @Valid @RequestBody final RegisterBambinoDTO bambinoDto) {

@@ -14,7 +14,7 @@ function NavBar({name}) {
             <div className="navbar-right">
                 <AvviaSessioneButton />
                 <div className="profile-icon">
-                    <img src={require('../../assets/profile_icon.png')} alt="Profile" className="profile-icon"/>
+                    <Link to={"/profilo"}><img src={require('../../assets/profile_icon.png')} alt="Profile" className="profile-icon"/></Link>
                 </div>
             </div>
         </nav>

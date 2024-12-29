@@ -6,6 +6,7 @@ import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneSessione.model.Sessione;
+import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOStat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -110,4 +111,20 @@ public class Terapeuta{
     @JsonBackReference
     @ToString.Exclude
     private List<Bambino> bambini;
+
+    public int getNumeroSessioni() {
+        return sessioni.stream()
+                .map(Sessione::getId)
+                .distinct()
+                .toList()
+                .size();
+    }
+
+    public int getNumeroBambini() {
+        return bambini.stream()
+                .map(Bambino::getId)
+                .distinct()
+                .toList()
+                .size();
+    }
 }

@@ -1,0 +1,115 @@
+/* Contenitore principale della pagina */
+.dettaglio-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Intestazione principale */
+.dettaglio-header {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Sezione principale per i dettagli */
+.dettaglio-section {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Riga per ciascun dato */
+.dettaglio-data-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 16px;
+}
+
+/* Etichetta dei dati */
+.dettaglio-label {
+    font-weight: bold;
+    color: #555;
+    width: 150px;
+}
+
+/* Valore dei dati */
+.dettaglio-value {
+    color: #333;
+}
+
+/* Contenitore dei pulsanti */
+.dettaglio-button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Pulsante Modifica */
+.dettaglio-button-link-modifica {
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(135deg, #001447, #0057e1);
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.dettaglio-button-link-modifica:hover {
+    /*transform: translateY(-3px);*/
+    background: linear-gradient(135deg, #0057e1, #001447);
+}
+
+/* Pulsante Elimina */
+.dettaglio-button-link-elimina {
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff4d4d, #e53935);
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.dettaglio-button-link-elimina:hover {
+    /*transform: translateY(-3px);*/
+    background: linear-gradient(135deg, #e53935, #ff4d4d);
+}
+
+/* Pulsante Indietro con colore standard */
+.dettaglio-back-button {
+    font-size: 16px;
+    color: #007BFF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.dettaglio-back-button:hover {
+    color: #0056b3;
+}
+
+/* Responsività */
+@media (max-width: 768px) {
+    .dettaglio-container {
+        padding: 15px;
+    }
+
+    .dettaglio-header {
+        font-size: 20px;
+    }
+
+    .dettaglio-button-container {
+        flex-direction: column;
+    }
+}

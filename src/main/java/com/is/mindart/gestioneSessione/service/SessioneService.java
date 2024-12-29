@@ -1,9 +1,11 @@
 package com.is.mindart.gestioneSessione.service;
 
 import com.is.mindart.configuration.SessioneMapper;
-import com.is.mindart.gestioneBambino.model.BambinoRepository;
+import com.is.mindart.gestioneDisegno.model.Disegno;
+import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
+import com.is.mindart.gestioneSessione.model.TipoSessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,7 +36,10 @@ public class SessioneService {
      * Repository del terapeuta.
      */
     private final TerapeutaRepository terapeutaRepository;
-
+    /**
+     * Repository del disegno.
+     */
+    private final DisegnoRepository disegnoRepository;
 
 
     /**
@@ -54,6 +59,14 @@ public class SessioneService {
             sessione.getBambini().forEach(
                     bambino -> bambino.getSessioni().add(sessione));
         }
+        if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO)) {
+            Disegno disegno = new Disegno();
+            disegno.setSessione(sessione);
+            disegno.setTerapeuta(sessione.getTerapeuta());
+            disegno.setBambini(sessione.getBambini());
+            disegnoRepository.save(disegno);
+        }
+
         repository.save(sessione);
     }
 

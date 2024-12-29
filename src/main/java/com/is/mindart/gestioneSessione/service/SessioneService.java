@@ -1,7 +1,6 @@
 package com.is.mindart.gestioneSessione.service;
 
 import com.is.mindart.configuration.SessioneMapper;
-import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
@@ -9,7 +8,6 @@ import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,9 +46,11 @@ public class SessioneService {
      * Mappa {@link SessioneDTO} a {@link Sessione} e
      * aggiorna la lista delle sessioni per ogni Bambino
      * @param sessioneDto - proveniente dall'endpoint di creazione
+     * @param terapeuta terapeuta che desidera creare la sessione
      */
     @Transactional
-    public void creaSessione(final SessioneDTO sessioneDto, final String terapeuta) {
+    public void creaSessione(final SessioneDTO sessioneDto,
+                             final String terapeuta) {
         Optional<Terapeuta> t = terapeutaRepository.findByEmail(terapeuta);
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
         sessione.setTerapeuta(t.get());
@@ -63,46 +63,34 @@ public class SessioneService {
 
     /**
      * Terminazione della sessione.
-     * @param id id sessione
      * @param email email del terapeuta
      * @throws EntityNotFoundException se l'id non viene trovato
      */
     @Transactional
-    public void terminaSessione(final long id, final String email)
+    public void terminaSessione(final String email)
             throws EntityNotFoundException {
-        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email)
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Terapeuta con email " + email + " non trovato"));
-        //se la sessione appartiene al bambino può terminarla
-        if (terapeuta
-                .getSessioni()
-                .stream()
-                .noneMatch(sessione -> sessione.getId() == id)) {
-            throw new EntityNotFoundException(
-                    "Sessione con id " + id + " non trovato");
-        }
-        sessioneRepository.terminaSessione(id);
+        sessioneRepository.terminaSessione(sessione.getId());
     }
     /**
      * Terminazione della sessione.
-     * @param id id sessione
      * @param codice codice del bambino
      * @throws EntityNotFoundException se l'id non viene trovato
      */
     @Transactional
-    public void consegnaDisegno(final long id, final String codice)
+    public void consegnaDisegno(final String codice)
             throws EntityNotFoundException {
-        Bambino bambino = bambinoRepository.findByCodice(codice)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Terapeuta con email " + codice + " non trovato"));
-        //se la sessione appartiene al bambino può terminarla
-        if (bambino
-                .getSessioni()
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
                 .stream()
-                .noneMatch(sessione -> sessione.getId() == id)) {
-            throw new EntityNotFoundException(
-                    "Sessione con id " + id + " non trovato");
-        }
-        sessioneRepository.terminaSessione(id);
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Bambino con codice " + codice + " non trovato"));
+        sessioneRepository.terminaSessione(sessione.getId());
     }
 }

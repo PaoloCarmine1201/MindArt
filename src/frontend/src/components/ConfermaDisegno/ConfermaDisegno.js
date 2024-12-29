@@ -4,15 +4,16 @@ import axiosInstance from "../../config/axiosInstance";
 import {Button, Modal} from "react-bootstrap";
 import "../../style/Modal.css"
 
-const ConfermaDisegno = () => {
+const ConfermaDisegno = ({nomeBottone = "Consegna"}) => {
     const [showModal, setShowModal] = useState(false);
-    const [idSessione, setIdSessione] = useState(1); // todo id dinamico
 
     const handleSubmit = async () => {
         try {
-            const response = await axiosInstance().patch(`/api/bambino/sessione/${idSessione}/consegna`);
+            const response = await axiosInstance.post(`/api/bambino/sessione/consegna`,{});
             if (response && response.status === 200) {
                 console.log("Disegno consegnato con successo.");
+                window.location.href = "/childLogin";
+                localStorage.removeItem("jwtToken");
             }
         } catch (error) {
             if (error.response && error.response.status === 404) {
@@ -22,6 +23,7 @@ const ConfermaDisegno = () => {
             } else {
                 console.error("Errore: " + error);
             }
+
         } finally {
             setShowModal(false);
         }
@@ -34,7 +36,7 @@ const ConfermaDisegno = () => {
     return (
         <div className="container text-center mt-5">
             <Button className="btn-conferma" onClick={handleOpenModal}>
-                Consegna Disegno
+                {nomeBottone}
             </Button>
 
             {/* Modale di conferma */}

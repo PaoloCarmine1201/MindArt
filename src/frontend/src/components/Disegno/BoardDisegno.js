@@ -46,7 +46,8 @@ const DrawingBoard = () => {
                 setFilledAreas(disegno.data.filledAreas || []); // Assicurati che l'API ritorni anche filledAreas
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
-                // Puoi mostrare un messaggio all'utente o gestire l'errore come preferisci
+                window.location.href = "/childLogin";
+                localStorage.removeItem("jwtToken");
             }
         };
 

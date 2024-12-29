@@ -2,30 +2,19 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Stage, Layer, Line, Rect } from 'react-konva';
 import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css";
+import "../../style/LavagnaVisualizzaDisegni.css"
 
 const MostraDisegnoBambino = ({ disegnoId }) => {
     const [actions, setActions] = useState([]);
     const stageRef = useRef(null);
 
     const [dimensions, setDimensions] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window.innerWidth * 0.8, // Rende la lavagna l'80% della larghezza dello schermo
+        height: window.innerHeight * 0.6, // Rende la lavagna il 60% dell'altezza dello schermo
     });
 
-    const DRAWING_AREA_OFFSET_X = 120;
-    const DRAWING_AREA_OFFSET_Y = 25;
-    const DRAWING_AREA_WIDTH = dimensions.width - 150;
-    const DRAWING_AREA_HEIGHT = dimensions.height - DRAWING_AREA_OFFSET_Y - 50;
-
-    const formatPoints = (points) => {
-        if (Array.isArray(points) && points.length > 0) {
-            if (Array.isArray(points[0])) {
-                return points.flat();
-            }
-            return points;
-        }
-        return [];
-    };
+    const DRAWING_AREA_OFFSET_X = 20;
+    const DRAWING_AREA_OFFSET_Y = 20;
 
     useEffect(() => {
         const loadActions = async () => {
@@ -36,19 +25,18 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
                 const initialStrokes = disegno.strokes.map(stroke => ({
                     ...stroke,
                     type: stroke.type || "stroke",
-                    points: formatPoints(stroke.points),
+                    points: stroke.points.flat(),
                 }));
 
                 const initialFilledAreas = (disegno.filledAreas || []).map(area => ({
                     ...area,
                     type: area.type || "lasso",
-                    points: formatPoints(area.points),
+                    points: area.points.flat(),
                 }));
 
                 const initialActions = [...initialStrokes, ...initialFilledAreas];
                 setActions(initialActions);
 
-                console.log('Actions loaded:', initialActions);
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
             }
@@ -62,8 +50,8 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
     useEffect(() => {
         const handleResize = () => {
             setDimensions({
-                width: window.innerWidth,
-                height: window.innerHeight,
+                width: window.innerWidth * 0.8,
+                height: window.innerHeight * 0.6,
             });
         };
 
@@ -73,18 +61,14 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
         };
     }, []);
 
-    useEffect(() => {
-        console.log('Current actions:', actions);
-    }, [actions]);
-
     return (
-        <div>
+        <div className="lavagna-container">
             <Stage
                 width={dimensions.width}
                 height={dimensions.height}
                 ref={stageRef}
                 style={{
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "transparent",
                     cursor: "default",
                 }}
             >
@@ -92,8 +76,8 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
                     <Rect
                         x={DRAWING_AREA_OFFSET_X}
                         y={DRAWING_AREA_OFFSET_Y}
-                        width={DRAWING_AREA_WIDTH}
-                        height={DRAWING_AREA_HEIGHT}
+                        width={dimensions.width - DRAWING_AREA_OFFSET_X * 2}
+                        height={dimensions.height - DRAWING_AREA_OFFSET_Y * 2}
                         fill="#ffffff"
                         stroke="black"
                         strokeWidth={2}

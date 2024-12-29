@@ -1,11 +1,12 @@
 // GestioneListaDisegno.js
 import React, { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Row, Col, Container } from "react-bootstrap";
 import "../../style/BambiniListStyle.css";
 import "../../style/Button.css";
 import MostraDisegnoBambino from "./MostraDisegnoBambino";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../config/axiosInstance";
+import NavBar from "../HomePageTerapeuta/NavBar";
 
 function GestioneListaDisegno() {
     const { id } = useParams();
@@ -30,6 +31,11 @@ function GestioneListaDisegno() {
         }
     }, [id]);
 
+    const formatDate = (dateString) => {
+        const options = { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" };
+        return new Date(dateString).toLocaleDateString("it-IT", options);
+    };
+
     if (error) {
         return (
             <div className="disegni-list-container">
@@ -42,33 +48,50 @@ function GestioneListaDisegno() {
 
     return (
         <>
-            <div className="disegni-list-container">
-                {disegni && disegni.length > 0 ? (
-                    disegni.map((disegno) => (
-                        <div key={disegno.id}>
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <div>
-                                    <h4 style={{ margin: 0 }}>{disegno.temaAssegnato}</h4>
-                                    <p>Data: {disegno.data}</p>
-                                </div>
+            <NavBar />
 
-                                <Button
-                                    className="btn-disegno"
-                                    style={{ marginLeft: "10px" }}
-                                    onClick={() => {
-                                        setDisegnoId(disegno.id);
-                                    }}
-                                >
-                                    Visualizza
-                                </Button>
-                            </div>
-                            <hr className="separatore" />
-                        </div>
-                    ))
+            <Container className="disegni-list-container text-center">
+                {disegni && disegni.length > 0 ? (
+                    <>
+                        <Row className="py-3 border-bottom table-header">
+                            <Col md={1} className="table-header-cell fw-bold">#</Col>
+                            <Col md={5} className="table-header-cell fw-bold">Tema Assegnato</Col>
+                            <Col md={4} className="table-header-cell fw-bold">Data</Col>
+                            <Col md={2} className="table-header-cell fw-bold"></Col>
+                        </Row>
+                        {disegni.map((disegno, index) => (
+                            <Row
+                                key={disegno.id}
+                                className="align-items-center py-3 border-bottom table-row"
+                            >
+                                <Col md={1} className="fw-bold table-cell">
+                                    {index + 1}
+                                </Col>
+                                <Col md={5} className="table-cell">
+                                    <span>{disegno.tema}</span>
+                                </Col>
+                                <Col md={4} className="text-muted table-cell">
+                                    {formatDate(disegno.data)}
+                                </Col>
+                                <Col md={2} className="table-cell">
+                                    <Button
+                                        variant="primary"
+                                        size="md"
+                                        className="btn-disegno"
+                                        onClick={() => {
+                                            setDisegnoId(disegno.id);
+                                        }}
+                                    >
+                                        Visualizza
+                                    </Button>
+                                </Col>
+                            </Row>
+                        ))}
+                    </>
                 ) : (
-                    <p>Nessun disegno trovato</p>
+                    <p className="text-center text-muted">Nessun disegno trovato</p>
                 )}
-            </div>
+            </Container>
             <MostraDisegnoBambino disegnoId={disegnoId} />
         </>
     );

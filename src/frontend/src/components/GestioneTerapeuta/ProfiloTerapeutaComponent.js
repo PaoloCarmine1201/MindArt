@@ -17,7 +17,6 @@ function ProfiloTerapuetaComponent() {
         id: '',
         nome: '',
         cognome: '',
-        /*dataDiNascita: '',*/
         email: ''
     });
 

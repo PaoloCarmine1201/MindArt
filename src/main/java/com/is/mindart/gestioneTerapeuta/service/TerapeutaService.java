@@ -10,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+
 @Service
 @AllArgsConstructor
 public class TerapeutaService {
@@ -63,7 +65,7 @@ public class TerapeutaService {
     public String loginTerapeuta(final String email, final String rawPassword) {
         Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
                 .orElse(null);
-        Sessione sessione = sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email).getFirst();
+        //Sessione sessione = sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email).getFirst();
         if (terapeuta != null) {
             if (passwordEncoder.matches(rawPassword, terapeuta.getPassword())) {
                 return jwtUtil.generateToken(terapeuta.getEmail(), "TERAPEUTA");
@@ -72,6 +74,13 @@ public class TerapeutaService {
         return null;
     }
 
-
-
+    public TerapeutaDTOSimple updateTerapeuta(TerapeutaDTOSimple terapeutaDTO) {
+        Terapeuta terapeuta = terapeutaRepository.findById(terapeutaDTO.getId()).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta non trovato"));
+        terapeuta.setNome(terapeutaDTO.getNome());
+        terapeuta.setCognome(terapeutaDTO.getCognome());
+        terapeuta.setEmail(terapeutaDTO.getEmail());
+        terapeutaRepository.save(terapeuta);
+        return modelMapper.map(terapeuta, TerapeutaDTOSimple.class);
+    }
 }

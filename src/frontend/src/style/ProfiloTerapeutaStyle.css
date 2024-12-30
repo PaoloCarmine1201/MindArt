@@ -99,6 +99,20 @@
     color: #0056b3;
 }
 
+.btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 20px 5px 20px;
+}
+
+.btn-conferma-in {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* Responsività */
 @media (max-width: 768px) {
     .dettaglio-container {

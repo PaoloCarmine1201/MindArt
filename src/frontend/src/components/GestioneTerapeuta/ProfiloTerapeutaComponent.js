@@ -4,9 +4,7 @@ import '../../style/ProfiloTerapeutaStyle.css';
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
-import ConfirmModal from "../GestioneCalendario/ConfirmModal";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
 
 function ProfiloTerapuetaComponent() {
     const [idTerapeuta, setIdTerapeuta] = useState(null);

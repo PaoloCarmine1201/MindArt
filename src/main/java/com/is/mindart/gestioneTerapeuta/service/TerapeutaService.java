@@ -65,7 +65,6 @@ public class TerapeutaService {
     public String loginTerapeuta(final String email, final String rawPassword) {
         Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
                 .orElse(null);
-        //Sessione sessione = sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email).getFirst();
         if (terapeuta != null) {
             if (passwordEncoder.matches(rawPassword, terapeuta.getPassword())) {
                 return jwtUtil.generateToken(terapeuta.getEmail(), "TERAPEUTA");

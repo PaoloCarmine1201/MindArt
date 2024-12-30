@@ -12,7 +12,6 @@ function GestioneListaDisegno() {
     const { id } = useParams();
     const [disegni, setDisegni] = useState([]);
     const [disegnoId, setDisegnoId] = useState(null);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchDisegni = async () => {
@@ -22,7 +21,7 @@ function GestioneListaDisegno() {
                 );
                 setDisegni(response.data);
             } catch (err) {
-                setError(err);
+                console.log(err);
             }
         };
 
@@ -35,16 +34,6 @@ function GestioneListaDisegno() {
         const options = { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" };
         return new Date(dateString).toLocaleDateString("it-IT", options);
     };
-
-    if (error) {
-        return (
-            <div className="disegni-list-container">
-                <p style={{ color: "red" }}>
-                    Errore durante il caricamento dei disegni: {error.message}
-                </p>
-            </div>
-        );
-    }
 
     return (
         <>

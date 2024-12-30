@@ -5,7 +5,8 @@ import { Stage, Layer, Line, Rect, Circle } from 'react-konva';
 import { connectWebSocket, subscribeToDraw } from "../../utils/websocket";
 import axiosInstance from "../../config/axiosInstance";
 import { FaEraser, FaSlash } from "react-icons/fa"; // Import delle icone
-import "../../style/Lavagna.css"; // Import del file CSS
+import "../../style/Lavagna.css";
+import ConfermaDisegno from "../ConfermaDisegno/ConfermaDisegno"; // Import del file CSS
 
 const DrawingBoard = () => {
     const [actions, setActions] = useState([]); // Unico array per tutte le azioni
@@ -30,9 +31,9 @@ const DrawingBoard = () => {
     const ERASER_STROKE = 20;
 
     // Drawing area offsets and dimensions based on state
-    const DRAWING_AREA_OFFSET_X = 120; // Offset orizzontale (largo quanto il selettore)
+    const DRAWING_AREA_OFFSET_X = 25; // Offset orizzontale (largo quanto il selettore)
     const DRAWING_AREA_OFFSET_Y = 25; // Offset verticale (per lasciare un margine in alto)
-    const DRAWING_AREA_WIDTH = dimensions.width - 150; // Larghezza dell'area di disegno
+    const DRAWING_AREA_WIDTH = dimensions.width - 50; // Larghezza dell'area di disegno
     const DRAWING_AREA_HEIGHT = dimensions.height - DRAWING_AREA_OFFSET_Y - 50; // Altezza dell'area di disegno
 
     // Funzione per formattare i punti
@@ -425,12 +426,6 @@ const DrawingBoard = () => {
         }
     };
 
-    // Gestione del cambio colore
-    const handleColorChange = (e) => {
-        setSelectedColor(e.target.value);
-        setSelectedTool("draw"); // Torna allo strumento disegno quando si cambia colore
-    };
-
     // Gestione del cambio strumento
     const handleToolChange = (tool) => {
         setSelectedTool(tool);
@@ -439,7 +434,8 @@ const DrawingBoard = () => {
     const colors = ["red", "green", "yellow", "black", "blue"];
 
     return (
-        <div>
+        <div className="drawing-container">
+            <ConfermaDisegno/>
             <Stage
                 width={dimensions.width}
                 height={dimensions.height}
@@ -535,7 +531,12 @@ const DrawingBoard = () => {
                     )}
                 </Layer>
             </Stage>
-
+            <div
+                style={{
+                    position: "fixed",
+                    bottom: 0,
+                    left: "50%",
+                }}>
             {/* Selettore colori */}
             <div className="color-selector">
                 {colors.map((colorOption, index) => (
@@ -555,23 +556,24 @@ const DrawingBoard = () => {
 
             {/* Selettore strumenti */}
             <div className="tool-selector">
-                {/* Pulsante gomma */}
+                {/* Pulsante Gomma */}
                 <button
                     onClick={() => handleToolChange(selectedTool === "eraser" ? "draw" : "eraser")}
                     className={`eraser-button ${selectedTool === "eraser" ? "active" : ""}`}
                     title="Gomma"
                 >
-                    <FaEraser size={20}/> {/* Icona della gomma */}
+                    <FaEraser size={20} />
                 </button>
 
-                {/* Pulsante lasso */}
+                {/* Pulsante Lasso */}
                 <button
                     onClick={() => handleToolChange(selectedTool === "lasso" ? "draw" : "lasso")}
                     className={`lasso-button ${selectedTool === "lasso" ? "active" : ""}`}
                     title="Lasso"
                 >
-                    <FaSlash size={20}/> {/* Icona del lasso */}
+                    <FaSlash size={20} />
                 </button>
+            </div>
             </div>
         </div>
     );

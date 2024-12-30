@@ -4,7 +4,6 @@ import ConfermaDisegno from "../components/ConfermaDisegno/ConfermaDisegno";
 function DisegnaBambino() {
     return (
         <>
-            <ConfermaDisegno/>
             <BoardDisegno/>
         </>
     )

@@ -3,7 +3,6 @@ import BambinoListItemComponent from "./BambinoListItemComponent";
 import "../../style/BambiniListStyle.css";
 import { Button } from "react-bootstrap";
 import React from "react";
-import GestioneListaDisegno from "../GestioneListaDisegno/GestioneListaDisegno";
 
 function BambiniListComponent(props) {
     console.log(props);

@@ -1,0 +1,60 @@
+/* GestioneBambiniStyle.css */
+.gestione-bambini-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.bambini-list-box {
+    width: 65%;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 30px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    border: #001447 1px solid;
+}
+
+.button-space {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.aggiungi-bambino-link {
+    background-color: #001447;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.aggiungi-bambino-link:hover {
+    background-color: #005599;
+}
+
+.indietro-link {
+    font-size: 16px;
+    color: #007BFF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.indietro-link:hover {
+    color: #0056b3;
+}

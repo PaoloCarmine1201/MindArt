@@ -1,0 +1,147 @@
+/* Stile generale del calendario */
+/*.rbc-calendar {
+    font-family: 'Arial, sans-serif' !important;
+    background-color: #e8e8e8 !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+}*/
+
+/* Header della toolbar */
+.rbc-toolbar {
+    background-color: #001446 !important;
+    color: #fff !important;
+    padding: 10px !important;
+    border-radius: 8px 8px 0 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+}
+
+.rbc-toolbar button {
+    background-color: #001446 !important;
+    color: #fdfdfd !important;
+    border: none !important;
+    padding: 8px 12px !important;
+    margin-right: 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s, color 0.2s !important;
+}
+
+.rbc-toolbar button:hover {
+    background-color: #38466e !important;
+    color: #ffffff !important;
+}
+
+.rbc-toolbar button:active, .rbc-toolbar button.rbc-active{
+    background-color: #4a5371 !important;
+    color: #ffffff !important;
+}
+
+/* Titolo della toolbar */
+.rbc-toolbar-label {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+/* Giorni della settimana */
+.rbc-header {
+    background-color: #001446 !important;
+    color: #fdfdfd !important;
+    padding: 15px !important;
+    border-radius: 8px 8px 0 0 !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    border-bottom: 1px solid #ddd !important;
+}
+
+/* Stile per le celle del calendario */
+.rbc-day-bg {
+    background-color: #ffffff !important;
+}
+
+.rbc-day-bg.rbc-today {
+    background-color: #e6f7ff !important;
+}
+
+/* Eventi nel calendario */
+.rbc-event {
+    background-color: #28a745 !important;
+    color: white !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    border: none !important;
+}
+
+.rbc-event:hover {
+    background-color: #28a644 !important;
+}
+
+.rbc-event .rbc-selected {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+/* Vista del mese */
+.rbc-month-view {
+    padding: 10px;
+    border: 1px solid #ddd !important;
+    border-radius: 0 0 8px 8px !important;
+}
+
+/* Vista della settimana e del giorno */
+.rbc-time-view {
+    padding: 10px;
+    border: 1px solid #ddd !important;
+    border-radius: 0 0 8px 8px !important;
+}
+
+/* Scorciatoie per la navigazione */
+.rbc-btn-group {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Disabilita il bordo inferiore degli slot */
+.rbc-timeslot-group {
+    border-bottom: none !important;
+}
+
+/* Bordo per le righe degli orari */
+.rbc-time-slot {
+    border-top: 1px solid #ddd !important;
+}
+
+/* Vista agenda */
+.rbc-agenda-view table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+
+.rbc-agenda-view td,
+.rbc-agenda-view th {
+    border: 1px solid #ddd !important;
+    padding: 10px !important;
+}
+
+.rbc-button-link {
+    font-weight: bold !important;
+}
+
+.rbc-event.rbc-selected{
+    background-color: #e8e8e8 !important;
+}
+
+/* styles.css */
+
+.app-container {
+    transition: filter 0.3s ease-in-out !important;
+
+}
+
+.blur {
+    filter: blur(5px) !important;
+}

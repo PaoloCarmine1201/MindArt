@@ -1,0 +1,42 @@
+/* Stile contenitore principale */
+.bambino-item {
+    display: flex;
+    justify-content: space-between; /* Dividere il contenuto principale e i pulsanti */
+    align-items: center; /* Allineare verticalmente */
+    padding: 10px;
+    margin: 0px 0;
+    font-size: 18px;
+}
+
+/* Pulsanti allineati a destra */
+.bambino-item-link {
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(135deg, #001447, #0057e1);
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background 0.2s ease;
+    margin-right: 10px;
+}
+
+.bambino-item-link:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #0057e1, #001447);
+}
+
+/* Pulsante Elimina */
+.bambino-item-link.eliminazione {
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff4d4d, #e53935);
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.bambino-item-link.eliminazione:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #e53935, #ff4d4d);
+}

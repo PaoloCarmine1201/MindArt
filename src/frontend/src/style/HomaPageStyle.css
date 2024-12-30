@@ -1,0 +1,82 @@
+h2 {
+    font-family: Inter, sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    color: #001447;
+    position: sticky;
+    z-index: 1;
+    text-decoration: none;
+}
+
+.link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.link:hover {
+    text-shadow: 1px 1px 1px rgba(0, 20, 71, 0.34);
+}
+
+.link:active {
+    text-shadow: 0.1px 0.1px 0.1px rgb(0, 20, 71);
+}
+
+.app-container {
+    display: flex;
+    height: calc(100vh - 100px);
+    flex-direction: row;
+    background-color: #EAEAEA;
+}
+
+.content-container {
+    padding: 10px;
+    margin-top: 0px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.eventi {
+    width: 40%;
+    height: 95%;
+    background-color: #f4f4f4;
+    padding: 0;
+    margin: 20px;
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    overflow-y: scroll;
+}
+
+.right-box {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 300px);
+    padding: 20px;
+    gap: 20px;
+    height: auto;
+}
+
+.box {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.pazienti {
+    max-height: calc(100% - 100px);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.materiali {
+    margin-top: 10px;
+    max-height: calc(100% - 100px);
+}
+
+.item-container {
+    margin-top: 15px;
+    max-height: 90%;
+    overflow-y: scroll;
+}
+

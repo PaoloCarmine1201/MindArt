@@ -1,0 +1,12 @@
+.visualizza-bambini-box {
+    max-width: 100%;
+    margin: 0;
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.list-box {
+    margin-top: 0px;
+}
+

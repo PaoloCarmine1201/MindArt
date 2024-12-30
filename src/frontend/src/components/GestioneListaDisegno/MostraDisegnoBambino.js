@@ -3,14 +3,19 @@ import { Stage, Layer, Line, Rect } from 'react-konva';
 import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css";
 import "../../style/LavagnaVisualizzaDisegni.css"
+import "../../style/Button.css";
+import { Button } from "react-bootstrap";
+import ValutazionePopup from "./ValutazionePopup"; // Importa il modal
 
 const MostraDisegnoBambino = ({ disegnoId }) => {
     const [actions, setActions] = useState([]);
     const stageRef = useRef(null);
-
+    const [showValutazione, setShowValutazione] = useState(false);
+    const [valutazione, setValutazione] = useState("");
+    const [commento, setCommento] = useState("");
     const [dimensions, setDimensions] = useState({
-        width: window.innerWidth * 0.8, // Rende la lavagna l'80% della larghezza dello schermo
-        height: window.innerHeight * 0.6, // Rende la lavagna il 60% dell'altezza dello schermo
+        width: window.innerWidth * 0.8,
+        height: window.innerHeight * 0.6,
     });
 
     const DRAWING_AREA_OFFSET_X = 20;
@@ -61,8 +66,34 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
         };
     }, []);
 
+    const handleSubmitValutazione = async () => {
+        try {
+            await Promise.all([
+                axiosInstance.post(`/api/terapeuta/disegno/${disegnoId}/valutazione`, {
+                    valutazione,
+                }),
+            ]);
+
+            alert("Valutazione inviata con successo!");
+            setShowValutazione(false);
+        } catch (error) {
+            console.error("Errore nell'invio della valutazione:", error);
+            alert("Errore nell'invio della valutazione.");
+        }
+    };
+
+
     return (
         <div className="lavagna-container">
+            <Button
+                variant="primary"
+                className={"btn-vota"}
+                style={{ alignContent: "right", marginLeft: "auto", marginRight: "10px", alignSelf: "flex-end" }}
+                onClick={() => setShowValutazione(true)}
+            >
+                Vota
+            </Button>
+
             <Stage
                 width={dimensions.width}
                 height={dimensions.height}
@@ -120,6 +151,17 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
                     })}
                 </Layer>
             </Stage>
+
+            {/* Usa il componente del modal */}
+            <ValutazionePopup
+                show={showValutazione}
+                onClose={() => setShowValutazione(false)}
+                onSubmit={handleSubmitValutazione}
+                valutazione={valutazione}
+                setValutazione={setValutazione}
+                commento={commento}
+                setCommento={setCommento}
+            />
         </div>
     );
 };

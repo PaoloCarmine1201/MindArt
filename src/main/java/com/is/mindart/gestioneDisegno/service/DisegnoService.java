@@ -120,5 +120,26 @@ public class DisegnoService {
         }
     }
 
+    /**
+     * Metodo che restituisce i disegni di un bambino.
+     * @param bambinoId id del bambino
+     * @return lista di disegni
+     */
+    public List<DisegnoDTOResponse> getDisegniByBambinoId(
+            final Long bambinoId) {
+        List<Disegno> disegni = disegnoRepository.findByBambini_Id(bambinoId);
+        if (disegni.isEmpty()) {
+            throw new NoSuchElementException(
+                    "Nessun disegno trovato per il bambino con id "
+                            + bambinoId);
+        }
+        return disegni.stream()
+                .map(disegno -> new DisegnoDTOResponse(disegno.getId(),
+                        disegno.getSessione().getTemaAssegnato(),
+                        disegno.getData()))
+                .toList();
+    }
+
+
 
 }

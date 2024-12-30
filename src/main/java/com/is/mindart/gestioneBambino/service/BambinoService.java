@@ -148,7 +148,15 @@ public class BambinoService {
         bambinoRepository.save(bambino);
     }
 
-    private BambinoDTOSimple mapToBambinoDto(Bambino bambino) {
+    /**
+     * Questo metodo gestisce la richiesta di delete per un bambino.
+     * @param id Il codice del bambino
+     */
+    public void deleteBambino(final Long id) {
+        bambinoRepository.deleteById(id);
+    }
+
+    private BambinoDTOSimple mapToBambinoDto(final Bambino bambino) {
         return modelMapper.map(bambino, BambinoDTOSimple.class);
     }
 }

@@ -136,10 +136,20 @@ public class DisegnoService {
         return disegni.stream()
                 .map(disegno -> new DisegnoDTOResponse(disegno.getId(),
                         disegno.getSessione().getTemaAssegnato(),
-                        disegno.getData()))
+                        disegno.getData(), disegno.getVoto()))
                 .toList();
     }
 
-
-
+    /**
+     * Metodo che permette di votare un disegno.
+     * @param disegnoId id del disegno
+     * @param voto voto da assegnare
+     */
+    public void vota(final Long disegnoId, final int voto) {
+        Disegno disegno = disegnoRepository.findById(disegnoId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Disegno non trovato con id " + disegnoId));
+        disegno.setVoto(voto);
+        disegnoRepository.save(disegno);
+    }
 }

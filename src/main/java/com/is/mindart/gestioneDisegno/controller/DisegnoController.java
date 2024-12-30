@@ -9,12 +9,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller per gestire le operazioni relative ai Disegni.
@@ -65,6 +68,22 @@ public class DisegnoController {
             DisegnoDTO disegnoResponseDTO = disegnoService
                     .getDisegnoBySessioneId(sessioneId);
         return ResponseEntity.ok(disegnoResponseDTO);
+    }
+
+    /**
+     * Permette al terapeuta di votare un disegno.
+     * @param disegnoId id del disegno.
+     * @param valutazione voto da assegnare.
+     * @return 200 OK
+     */
+    @PostMapping("terapeuta/disegno/{disegnoId}/valutazione")
+    public ResponseEntity<Void> vota(
+            @PathVariable final long disegnoId,
+            @RequestBody final Map<String, String> valutazione) {
+        disegnoService
+                .vota(disegnoId, Integer
+                        .parseInt(valutazione.get("valutazione")));
+        return ResponseEntity.ok().build();
     }
 
 

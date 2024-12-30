@@ -35,4 +35,9 @@ public class DisegnoDTOResponse {
     @NotNull
     private LocalDateTime data;
 
+    /**
+     * Voto assegnato al disegno.
+     */
+    private int voto;
+
 }

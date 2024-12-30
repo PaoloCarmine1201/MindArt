@@ -1,6 +1,6 @@
 /* Lavagna centrata */
 .lavagna-container {
-    display: flex;
+    display: grid;
     justify-content: center; /* Centra orizzontalmente */
     align-items: center; /* Centra verticalmente */
     height: 80vh; /* Altezza del contenitore */

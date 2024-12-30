@@ -31,7 +31,6 @@ import java.util.logging.Logger;
  *
  * @author  Gabriele Ristallo
  * Classe per popolare il db all'avvio dell'app
- *
  * Questa classe viene eseguita solo se il profilo "dev" è attivo,
  * @code @Profile("dev")
  * @implements CommandLineRunner
@@ -65,12 +64,6 @@ public class DataLoader implements CommandLineRunner {
     private MaterialeRepository materialeRepository;
 
     /**
-     * Repository per la gestione dei disegni.
-     */
-    @Autowired
-    private DisegnoRepository disegnoRepository;
-
-    /**
      * Repository per la gestione dei terapeuti.
      */
     @Autowired
@@ -102,7 +95,7 @@ public class DataLoader implements CommandLineRunner {
      * Ha lo scopo di creare diverse istanze di prova delle entità del sistema
      * e inserirle nel database.
      *
-     * @param args
+     * @param args arguments
      * @throws Exception se si verifica un errore durante l'esecuzione
      */
     @Override

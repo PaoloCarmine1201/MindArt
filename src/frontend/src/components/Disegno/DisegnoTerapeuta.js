@@ -19,9 +19,9 @@ const DrawingBoard = () => {
     });
 
     // Drawing area offsets and dimensions based on state
-    const DRAWING_AREA_OFFSET_X = 120; // Offset orizzontale (largo quanto il selettore)
+    const DRAWING_AREA_OFFSET_X = 25; // Offset orizzontale (largo quanto il selettore)
     const DRAWING_AREA_OFFSET_Y = 25; // Offset verticale (per lasciare un margine in alto)
-    const DRAWING_AREA_WIDTH = dimensions.width - 150; // Larghezza dell'area di disegno
+    const DRAWING_AREA_WIDTH = dimensions.width - 50; // Larghezza dell'area di disegno
     const DRAWING_AREA_HEIGHT = dimensions.height - DRAWING_AREA_OFFSET_Y - 50; // Altezza dell'area di disegno
 
     // Funzione per formattare i punti

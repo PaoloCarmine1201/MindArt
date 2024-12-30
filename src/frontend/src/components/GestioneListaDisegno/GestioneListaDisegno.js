@@ -1,4 +1,3 @@
-// GestioneListaDisegno.js
 import React, { useEffect, useState } from "react";
 import { Button, Row, Col, Container } from "react-bootstrap";
 import "../../style/BambiniListStyle.css";
@@ -12,6 +11,7 @@ function GestioneListaDisegno() {
     const { id } = useParams();
     const [disegni, setDisegni] = useState([]);
     const [disegnoId, setDisegnoId] = useState(null);
+    const [showBoard, setShowBoard] = useState(false);
 
     useEffect(() => {
         const fetchDisegni = async () => {
@@ -44,8 +44,9 @@ function GestioneListaDisegno() {
                     <>
                         <Row className="py-3 border-bottom table-header">
                             <Col md={1} className="table-header-cell fw-bold">#</Col>
-                            <Col md={5} className="table-header-cell fw-bold">Tema Assegnato</Col>
-                            <Col md={4} className="table-header-cell fw-bold">Data</Col>
+                            <Col md={4} className="table-header-cell fw-bold">Tema Assegnato</Col>
+                            <Col md={3} className="table-header-cell fw-bold">Data</Col>
+                            <Col md={2} className="table-header-cell fw-bold">Valutazione</Col>
                             <Col md={2} className="table-header-cell fw-bold"></Col>
                         </Row>
                         {disegni.map((disegno, index) => (
@@ -56,11 +57,14 @@ function GestioneListaDisegno() {
                                 <Col md={1} className="fw-bold table-cell">
                                     {index + 1}
                                 </Col>
-                                <Col md={5} className="table-cell">
+                                <Col md={4} className="table-cell">
                                     <span>{disegno.tema}</span>
                                 </Col>
-                                <Col md={4} className="text-muted table-cell">
+                                <Col md={3} className="text-muted table-cell">
                                     {formatDate(disegno.data)}
+                                </Col>
+                                <Col md={2} className="text-muted table-cell">
+                                    {disegno.voto ? disegno.voto : "Non valutato"}
                                 </Col>
                                 <Col md={2} className="table-cell">
                                     <Button
@@ -69,6 +73,7 @@ function GestioneListaDisegno() {
                                         className="btn-disegno"
                                         onClick={() => {
                                             setDisegnoId(disegno.id);
+                                            setShowBoard(true);
                                         }}
                                     >
                                         Visualizza
@@ -81,7 +86,10 @@ function GestioneListaDisegno() {
                     <p className="text-center text-muted">Nessun disegno trovato</p>
                 )}
             </Container>
-            <MostraDisegnoBambino disegnoId={disegnoId} />
+
+            { showBoard && (
+                <MostraDisegnoBambino disegnoId={disegnoId} />
+            )}
         </>
     );
 }

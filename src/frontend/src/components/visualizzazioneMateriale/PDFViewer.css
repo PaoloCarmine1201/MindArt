@@ -1,0 +1,30 @@
+.pdf-viewer-container {
+    text-align: center;
+    margin: 20px;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.navigation button {
+    margin: 0 10px;
+    padding: 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.navigation span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.pdf-document {
+    display: flex;
+    justify-content: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+}

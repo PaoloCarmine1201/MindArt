@@ -1,6 +1,9 @@
 import React from "react";
 import "../../style/BambinoListItemButtonStyle.css";
 import { Link } from 'react-router-dom';
+import {Button} from "react-bootstrap";
+import axiosInstance from "../../config/axiosInstance";
+import "../../style/Button.css";
 
 function BambinoListItemButtonComponent(props) {
     const { id, nome, cognome } = props.bambino;
@@ -16,9 +19,19 @@ function BambinoListItemButtonComponent(props) {
                 <Link to={`/disegni/${id}`} className="bambino-item-link">
                     Disegni
                 </Link>
-                <Link to={`/elimina/${id}`} className="bambino-item-link eliminazione">
+                {/* Voglio poter eliminare un bambino con un Button */}
+                <Button className={"btn-cancella"} onClick={() => {
+                    axiosInstance.delete(`http://localhost:8080/api/terapeuta/bambino/${id}`)
+                        .then(response => {
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+                }>
                     Elimina
-                </Link>
+                </Button>
             </div>
         </div>
     );

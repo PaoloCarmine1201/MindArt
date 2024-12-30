@@ -6,9 +6,14 @@ import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -169,6 +174,18 @@ public class MaterialeService {
         // Ritorna il DTO del materiale appena creato
         return this.materialeMapperInjected.toDTO(materiale);
     }
+
+    public ByteArrayResource getByteArray(final String path) throws IOException {
+        // Creazione del file dal percorso
+        File file = new File(path);
+        // Lettura del contenuto del file
+        FileInputStream fis = new FileInputStream(file);
+        byte[] fileBytes = fis.readAllBytes();
+        fis.close();
+        // Converte il file in una risorsa
+        return new ByteArrayResource(fileBytes);
+    }
+
 
     /**
      * Rimuove un materiale cancellando il file dal filesystem

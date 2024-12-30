@@ -1,0 +1,30 @@
+.pptx-viewer {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.viewer-header {
+    display: flex;
+    justify-content: flex-end;
+    background: #f4f4f4;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.close-btn {
+    color: #444;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.viewer-content {
+    padding: 10px;
+}

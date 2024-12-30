@@ -12,7 +12,7 @@ function BambinoListItemComponent(props) {
 
     return (
         <div className="bambino-item">
-            <p>{nome} {cognome}</p>→
+            <p>{nome} {cognome}</p>
         </div>
     );
 }

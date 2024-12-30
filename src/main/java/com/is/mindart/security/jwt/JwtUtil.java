@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 
+import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
+
 
 @Component
 public class JwtUtil {
@@ -33,8 +35,7 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expiration))
-                .signWith(io.jsonwebtoken.security.Keys.
-                        hmacShaKeyFor(secret.getBytes()))
+                .signWith(hmacShaKeyFor(secret.getBytes()))
                 .compact();
     }
 
@@ -45,8 +46,7 @@ public class JwtUtil {
      */
     public String getUsernameFromToken(final String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(io.jsonwebtoken.security.Keys
-                        .hmacShaKeyFor(secret.getBytes()))
+                .setSigningKey(hmacShaKeyFor(secret.getBytes()))
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -62,7 +62,7 @@ public class JwtUtil {
     public boolean validateToken(final String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
+                    .setSigningKey(hmacShaKeyFor(secret.getBytes()))
                     .build()
                     .parseClaimsJws(token);
             return true;
@@ -79,7 +79,7 @@ public class JwtUtil {
      */
     public Claims extractAllClaims(final String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes()))
+                .setSigningKey(hmacShaKeyFor(secret.getBytes()))
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

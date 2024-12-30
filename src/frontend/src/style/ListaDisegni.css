@@ -1,0 +1,41 @@
+/* Tabelle */
+.table-header {
+    background-color: #f8f9fa;
+    font-size: 1.2rem; /* Ingrandisce le intestazioni */
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-header-cell {
+    padding: 15px 0;
+    font-weight: bold; /* Titoli in bold */
+}
+
+.table-row {
+    font-size: 1.1rem; /* Ingrandisce il testo della tabella */
+    padding: 20px 0;
+}
+
+.table-cell {
+    padding: 10px 0;
+}
+
+/* Contenitore */
+.disegni-list-container {
+    margin: 20px auto;
+    max-width: 1000px; /* Centra la tabella */
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Testo */
+.text-primary {
+    color: #007bff;
+}
+
+.text-muted {
+    font-size: 1rem; /* Aumenta il font della data */
+    color: #6c757d;
+}

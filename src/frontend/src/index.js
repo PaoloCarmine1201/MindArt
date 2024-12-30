@@ -18,6 +18,10 @@ import {AuthProvider} from "./auth/AuthProvider";
 import ProtectedRouteChild from "./auth/ProtectedRouteChild";
 import DisegnaBambino from "./pages/DisegnaBambino";
 import GestioneMaterialeFull from "./components/GestioneMateriale/GestioneMaterialeFull";
+import ProfiloTerapeuta from "./pages/ProfiloTerapeuta";
+import VisualizzazioneMateriale from "./pages/VisualizzazioneMateriale";
+import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
+import GestioneListaDisegno from "./components/GestioneListaDisegno/GestioneListaDisegno";
 
 const router = createBrowserRouter([
     {

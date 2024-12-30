@@ -1,9 +1,13 @@
 import DettaglioBambinoComponent from "../components/VisualizzazioneBambino/DettaglioBambinoComponent";
+import NavBar from "../components/HomePageTerapeuta/NavBar";
 
 function DettagliBambino() {
     return (
-        <DettaglioBambinoComponent/>
+        <>
+            <NavBar name="Dettagli Bambino"/>
+            <DettaglioBambinoComponent/>
+        </>
     )
 }
 
-export default DettaglioBambinoComponent;
+export default DettagliBambino;

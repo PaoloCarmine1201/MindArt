@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,11 +20,17 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
+     * Il servizio per la gestione dei token JWT expired.
+     */
+    @Autowired
+    private final FileBasedTokenBlacklist tokenBlacklist;
+
+    /**
      * Questo filtro si occupa di estrarre
      * il token JWT dall'header Authorization,
      * validarlo e autenticare l'utente.
      */
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
 
     /**
@@ -49,6 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             if (jwtUtil.validateToken(token)) {
+                if (tokenBlacklist.isTokenBlacklisted(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
                 String subject = jwtUtil.getUsernameFromToken(token);
                 String role = jwtUtil.extractClaim(token, "role");
                 if (role.contains("TERAPEUTA") || role.contains("BAMBINO")) {
@@ -65,6 +76,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             );
                     SecurityContextHolder.getContext()
                             .setAuthentication(authentication);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
                 }
             }
         }

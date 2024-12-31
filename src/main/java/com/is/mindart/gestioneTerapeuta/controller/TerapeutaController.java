@@ -3,11 +3,9 @@ package com.is.mindart.gestioneTerapeuta.controller;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaCambioPasswordDTO;
-import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTO;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOSimple;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOStat;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +57,7 @@ public class TerapeutaController {
 
         Terapeuta terapeuta = terapeutaRepository.findById(request.getId()).orElseThrow();
 
-        if(passwordEncoder.matches(request.getOldPassword(), terapeuta.getPassword())) {
+        if (passwordEncoder.matches(request.getOldPassword(), terapeuta.getPassword())) {
             // Hash the password
             String hashedPassword = passwordEncoder.encode(request
                     .getNewPassword());
@@ -70,6 +68,7 @@ public class TerapeutaController {
 
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 
     @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping("/update")

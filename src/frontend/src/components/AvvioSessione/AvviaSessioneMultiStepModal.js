@@ -16,6 +16,7 @@ import '../../style/Modal.css';
 import '../../style/Transition.css';
 import axiosInstance from "../../config/axiosInstance";
 import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le animazioni
+import ToastNotification from "../Notification/Notification";
 
 
 const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
@@ -32,6 +33,9 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
      // 'forward' o 'backward'
     const [errorMessage, setErrorMessage] = useState('');
     const [direction, setDirection] = useState("forward");
+
+    // Per la notifica
+    const [showToast, setShowToast] = useState(false);
 
 
     const initialValues = {
@@ -129,7 +133,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
 
     const handleSubmit = (values, { resetForm }) => {
         axiosInstance.post('/api/terapeuta/sessione/create', values)
-            .then(r => {alert('Sessione creata con successo'); window.location.reload()})
+            .then(r => window.location.reload())
+            .then(r => setShowToast(true))
             .catch(r => console.log(r));
 
         resetForm();

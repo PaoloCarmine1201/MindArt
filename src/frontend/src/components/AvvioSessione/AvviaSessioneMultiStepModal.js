@@ -16,10 +16,10 @@ import '../../style/Modal.css';
 import '../../style/Transition.css';
 import axiosInstance from "../../config/axiosInstance";
 import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le animazioni
-import ToastNotification from "../Notification/Notification";
+import { toast } from 'react-toastify';
 
 
-const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
+const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     const [materialList, setMaterialList] = useState([]);
@@ -33,10 +33,6 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
      // 'forward' o 'backward'
     const [errorMessage, setErrorMessage] = useState('');
     const [direction, setDirection] = useState("forward");
-
-    // Per la notifica
-    const [showToast, setShowToast] = useState(false);
-
 
     const initialValues = {
         tipoSessione: '',
@@ -133,8 +129,12 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
 
     const handleSubmit = (values, { resetForm }) => {
         axiosInstance.post('/api/terapeuta/sessione/create', values)
-            .then(r => window.location.reload())
-            .then(r => setShowToast(true))
+            .then(r => {
+                toast.success("Sessione creata con successo!");
+                setTimeout(() => {
+                    onSessionCreated(); // Chiama il callback dopo un breve ritardo
+                }, 300);
+            })
             .catch(r => console.log(r));
 
         resetForm();
@@ -184,7 +184,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                   values,
                   errors,
                   resetForm
-              }) => (
+            }) => (
                 <Modal
                     show={show}
                     dialogClassName='custom-modal tall-modal-dialog'
@@ -248,6 +248,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                 </Modal>
             )}
         </Formik>
+
     );
 };
 

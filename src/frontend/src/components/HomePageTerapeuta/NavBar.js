@@ -63,7 +63,7 @@ function NavBar({ name }) {
             <div className="navbar-right">
                 {sessione && localStorage.getItem("jwtToken")? (
                     <>
-                        <TerminaSessione/>
+                        <TerminaSessione onSessionClosed={() => setSessione(false)} />
                         <Link to="/terapeuta/draw" className="link">
                             <Button className="btn-all m-1">
                                 Osserva
@@ -72,7 +72,7 @@ function NavBar({ name }) {
                     </>
                 ) : (
                     <>
-                        <AvviaSessioneButton />
+                        <AvviaSessioneButton onSessionCreated={() => setSessione(true)} />
                         <Button onClick={handleLogout} className="btn-cancella m-1">
                             Logout
                         </Button>

@@ -1,23 +1,18 @@
 import React from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
 
-const ToastNotification = ({ show, title, message, type, closeCallback}) => {
+const ToastNotification = () => {
     return (
-        <ToastContainer position="top-end" className="p-3">
-            <Toast
-                show={show}
-                onClose={closeCallback}
-                bg={type}
-                delay={3000} // Nascondi automaticamente dopo 3 secondi
-                autohide
-            >
-                <Toast.Header>
-                    <strong className="me-auto">{title}</strong>
-                    <small>Ora</small>
-                </Toast.Header>
-                <Toast.Body>{message}</Toast.Body>
-            </Toast>
-        </ToastContainer>
+        <ToastContainer
+            position="bottom-right"
+            autoClose={3000} // 3 secondi di durata
+            hideProgressBar={false} // Mostra la barra di progresso
+            newestOnTop={true} // Mostra le notifiche più recenti in cima
+            closeOnClick // Chiudi al clic
+            pauseOnFocusLoss // Pausa se l'utente cambia finestra
+            draggable // Consente di trascinare il toast
+            pauseOnHover // Pausa al passaggio del mouse
+        />
     );
 };
 

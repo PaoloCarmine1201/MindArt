@@ -8,6 +8,7 @@ import VisualizzaEventiComponent from "../components/GestioneCalendario/Visualiz
 import axiosInstance from "../config/axiosInstance";
 import TerminaSessione from "../components/TerminaSessione/TerminaSessione";
 import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMaterialeWidget";
+import ToastNotification from "../components/Notification/Notification";
 
 function HomePage() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
@@ -34,8 +35,10 @@ function HomePage() {
         fetchBambini();
     }, []);
 
+
     return (
         <>
+            <ToastNotification />
             <NavBar name="Dashboard"/>
             <div className="app-container">
 

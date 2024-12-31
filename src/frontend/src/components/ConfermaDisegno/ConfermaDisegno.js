@@ -34,8 +34,8 @@ const ConfermaDisegno = ({nomeBottone = "Consegna"}) => {
     };
 
     return (
-        <div className="container text-center mt-5">
-            <Button className="btn-conferma" onClick={handleOpenModal}>
+        <div className="">
+            <Button className="btn-conferma consegna" onClick={handleOpenModal}>
                 {nomeBottone}
             </Button>
 

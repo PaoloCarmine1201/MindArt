@@ -1,6 +1,5 @@
 package com.is.mindart.gestioneDisegno.service;
 
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,12 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DisegnoDTO {
+public class DisegnoDTOResponse {
 
     /**
      * L'identificativo del disegno.
@@ -24,10 +24,20 @@ public class DisegnoDTO {
     private Long id;
 
     /**
-     * La valutazione emotiva associata al disegno.
+     * Tema assegnato al disegno.
      */
     @NotNull
-    private List<StrokeDTO> strokes;
+    private String tema;
+
+    /**
+     * Data di creazione del disegno.
+     */
+    @NotNull
+    private LocalDateTime data;
+
+    /**
+     * Voto assegnato al disegno.
+     */
+    private int voto;
 
 }
-

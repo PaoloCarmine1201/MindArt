@@ -1,142 +1,101 @@
-/* src/style/Lavagna.css */
-
-/* Container per il selettore di colori */
-.color-selector {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+/* Contenitore comune per strumenti e colori */
+.tool-color-container {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    flex-wrap: wrap; /* Permette ai colori di avvolgersi su più righe */
-    gap: 10px;
+    flex-direction: column; /* Allinea gli elementi in una riga */
+    gap: 20px; /* Spaziatura tra strumenti e colori */
     z-index: 10;
-    background: rgba(255, 255, 255, 0.8); /* Sfondo semi-trasparente */
-    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombreggiatura per profondità */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Cerchi per i colori */
+/* Stilizza i cerchi dei colori come prima */
 .color-circle {
     width: 35px;
     height: 35px;
     border-radius: 50%;
     cursor: pointer;
-    border: 1px solid #ccc; /* Bordo sottile per contrasto */
-    transition: transform 0.2s, border 0.2s, box-shadow 0.2s; /* Transizioni fluide */
+    border: 1px solid #ccc;
+    transition: transform 0.2s, border 0.2s, box-shadow 0.2s;
     position: relative;
 }
 
-/* Effetto hover per i cerchi di colore */
+/* Hover e stato selezionato per il selettore colori */
 .color-circle:hover {
-    transform: scale(1.1); /* Ingrandimento leggero */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombra per evidenziare */
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
-/* Stato selezionato per il cerchio del colore */
 .color-circle.selected {
-    border: 3px solid #000; /* Bordo nero più evidente */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Ombra per maggiore enfasi */
+    border: 3px solid #000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Container per i pulsanti degli strumenti */
-.tool-selector {
-    position: absolute;
-    top: 10px;
-    left: 180px; /* Posiziona i pulsanti dopo il selettore di colori */
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    z-index: 10;
-    background: rgba(255, 255, 255, 0.8); /* Sfondo semi-trasparente */
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombreggiatura per profondità */
-}
-
-/* Pulsante Gomma */
-.eraser-button {
-    width: 35px;
-    height: 35px;
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 50%; /* Forma circolare per coerenza */
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s, transform 0.2s, box-shadow 0.2s; /* Transizioni fluide */
-    position: relative;
-}
-
-/* Effetto hover per il pulsante Gomma */
-.eraser-button:hover {
-    background: #f0f0f0; /* Cambia colore di sfondo al passaggio del mouse */
-    transform: scale(1.05); /* Ingrandimento leggero */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Ombra per evidenziare */
-}
-
-/* Stato attivo per il pulsante Gomma */
-.eraser-button.active {
-    background: #ddd; /* Sfondo grigio per indicare lo stato attivo */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Ombra per maggiore enfasi */
-}
-
-/* Pulsante Lasso */
+/* Pulsanti strumenti */
+.eraser-button,
 .lasso-button {
     width: 35px;
     height: 35px;
     background: #fff;
     border: 2px solid #000;
-    border-radius: 50%; /* Forma circolare per coerenza */
+    border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s, transform 0.2s, box-shadow 0.2s; /* Transizioni fluide */
-    position: relative;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
-/* Effetto hover per il pulsante Lasso */
+.eraser-button:hover,
 .lasso-button:hover {
-    background: #f0f0f0; /* Cambia colore di sfondo al passaggio del mouse */
-    transform: scale(1.05); /* Ingrandimento leggero */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Ombra per evidenziare */
+    background: #f0f0f0;
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Stato attivo per il pulsante Lasso */
+.eraser-button.active,
 .lasso-button.active {
-    background: #ddd; /* Sfondo grigio per indicare lo stato attivo */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Ombra per maggiore enfasi */
+    background: #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsività per schermi più piccoli */
+/* Adattamenti per schermi piccoli */
 @media (max-width: 768px) {
-    .color-selector {
-        flex-direction: row; /* Disposizione orizzontale */
-        justify-content: center; /* Allinea al centro */
-        top: auto;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%; /* Adatta la larghezza */
-    }
-
-    .tool-selector {
-        top: auto;
-        bottom: 10px;
-        left: 10px;
-        flex-direction: row;
+    .tool-color-container {
+        flex-wrap: wrap; /* Avvolge gli elementi su più righe */
         justify-content: center; /* Allinea al centro */
     }
 
     .eraser-button,
-    .lasso-button {
-        width: 30px;
-        height: 30px;
-    }
-
+    .lasso-button,
     .color-circle {
         width: 30px;
         height: 30px;
     }
+}
+.consegna {
+    position: fixed; /* Posizione fissa */
+    top: 10px; /* Distanza dall'alto */
+    right: 10px; /* Distanza dal lato destro */
+    z-index: 20; /* Priorità per essere sopra altri elementi */
+
+}
+
+/* Selettore colori e strumenti */
+.color-selector,
+.tool-selector {
+
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

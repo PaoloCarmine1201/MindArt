@@ -15,11 +15,13 @@ import ChildLogin from "./pages/ChildLogin";
 import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import {AuthProvider} from "./auth/AuthProvider";
-import DisegnaBambino from "./pages/DisegnaBambino";
-import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
 import ProtectedRouteChild from "./auth/ProtectedRouteChild";
+import DisegnaBambino from "./pages/DisegnaBambino";
 import GestioneMaterialeFull from "./components/GestioneMateriale/GestioneMaterialeFull";
+import ProfiloTerapeuta from "./pages/ProfiloTerapeuta";
 import VisualizzazioneMateriale from "./pages/VisualizzazioneMateriale";
+import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
+import GestioneListaDisegno from "./components/GestioneListaDisegno/GestioneListaDisegno";
 
 const router = createBrowserRouter([
     {
@@ -41,6 +43,11 @@ const router = createBrowserRouter([
         path: '/dettaglioBambino/:id',
         name: 'Dettaglio',
         element: <ProtectedRoute> <DettaglioBambino/> </ProtectedRoute>
+    },
+    {
+        path: '/dettaglioDisegni/:id',
+        name: 'Dettaglio Disegni Bambino',
+        element: <ProtectedRoute> <GestioneListaDisegno/> </ProtectedRoute>
     },
     {
         path: '/calendarioEventi',
@@ -85,7 +92,12 @@ const router = createBrowserRouter([
     {
         path:"/gestioneMateriale",
         name:"GestioneMateriale",
-        element: <ProtectedRoute><GestioneMaterialeFull /></ProtectedRoute>
+        element: <GestioneMaterialeFull />
+    },
+    {
+        path: "/profilo",
+        name: "Profilo",
+        element: <ProtectedRoute><ProfiloTerapeuta /></ProtectedRoute>
     }
 ])
 

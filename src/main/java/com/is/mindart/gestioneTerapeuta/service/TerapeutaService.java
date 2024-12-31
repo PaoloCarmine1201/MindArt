@@ -1,6 +1,5 @@
 package com.is.mindart.gestioneTerapeuta.service;
 
-import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
@@ -9,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.sql.Date;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +33,6 @@ public class TerapeutaService {
      *  Provvede a generare il token JWT.
      */
     private final JwtUtil jwtUtil;
-    private final SessioneRepository sessioneRepository;
 
     /**
      * Provvede alla registrazione del terapeuta.
@@ -49,6 +49,12 @@ public class TerapeutaService {
         terapeutaRepository.save(terapeuta);
     }
 
+    public TerapeutaDTOStat getTerapeuta(Long id) {
+        Terapeuta terapeuta = terapeutaRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta non trovato"));
+        return modelMapper.map(terapeuta, TerapeutaDTOStat.class);
+    }
+
     /**
      * Provvede a verificare se il terapeuta esiste.
      * @param email Email del terapeuta
@@ -57,7 +63,6 @@ public class TerapeutaService {
     public String loginTerapeuta(final String email, final String rawPassword) {
         Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
                 .orElse(null);
-        Sessione sessione = sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email).getFirst();
         if (terapeuta != null) {
             if (passwordEncoder.matches(rawPassword, terapeuta.getPassword())) {
                 return jwtUtil.generateToken(terapeuta.getEmail(), "TERAPEUTA");
@@ -70,4 +75,13 @@ public class TerapeutaService {
 
 
 
+    public TerapeutaDTOSimple updateTerapeuta(TerapeutaDTOSimple terapeutaDTO) {
+        Terapeuta terapeuta = terapeutaRepository.findById(terapeutaDTO.getId()).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta non trovato"));
+        terapeuta.setNome(terapeutaDTO.getNome());
+        terapeuta.setCognome(terapeutaDTO.getCognome());
+        terapeuta.setEmail(terapeutaDTO.getEmail());
+        terapeutaRepository.save(terapeuta);
+        return modelMapper.map(terapeuta, TerapeutaDTOSimple.class);
+    }
 }

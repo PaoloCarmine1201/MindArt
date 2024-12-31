@@ -181,3 +181,33 @@
     border-color: #007bff !important;
     color: white !important; /* Testo bianco */
 }
+
+.btn-disegno {
+    color: rgba(72, 50, 113, 0.88) !important; /* Testo giallo */
+    border: 2px solid #483271E0 !important; /* Bordo giallo */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+
+.btn-disegno:hover {
+    background-color: #483271E0 !important;
+    border-color: #483271E0 !important;
+    color: white !important; /* Testo bianco */
+}
+
+.btn-vota{
+    color: rgba(50, 113, 70, 0.88) !important; /* Testo giallo */
+    border: 2px solid #327146E0 !important; /* Bordo giallo */
+    background-color: white !important; /* Sfondo bianco */
+    border-radius: 5px !important; /* Smusso angoli */
+    padding: 8px 16px !important; /* Margine interno */
+    transition: all 0.3s ease !important; /* Transizione morbida */
+}
+
+.btn-vota:hover {
+    background-color: #327146E0 !important;
+    border-color: #327146E0 !important;
+    color: white !important; /* Testo bianco */
+}

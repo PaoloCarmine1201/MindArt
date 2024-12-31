@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import '../../style/NavBarStyle.css';
-import { Link } from 'react-router-dom';
+import '../../style/Button.css'
+import {Link, useNavigate} from 'react-router-dom';
 import AvviaSessioneButton from "../AvvioSessione/AvviaSessioneButton";
-import TerminaSessione from "../TerminaSessione/TerminaSessione";
 import axiosInstance from "../../config/axiosInstance";
 import logo from '../../assets/logo_horizontal_2048x1024.png';
+import {Button} from "react-bootstrap";
+import TerminaSessione from "../TerminaSessione/TerminaSessione";
 
 function NavBar({ name }) {
-    // SE IL TERAPEUTA HA UNA SESSIONE ATTIVA VIENE MOSTRATO OSSERVA E TERMINA SESSIONE
-    // ALTRIMENTI VIENE MOSTRATO AVVIA SESSIONE
     const [sessione, setSessione] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,10 +28,28 @@ function NavBar({ name }) {
                 setSessione(false);
             }
         } catch (error) {
-            console.error("Errore nel recupero della sessione:", error);
+            console.error('Errore nel recupero della sessione:', error);
             setSessione(false);
         }
-    }
+    };
+
+    const handleLogout = async () => {
+        try {
+            const response = await axiosInstance.post('/auth/logout');
+            if (response.status === 200) {
+                // Rimuovi il token JWT dallo storage locale
+                localStorage.removeItem('jwtToken');
+                // Aggiorna lo stato della sessione
+                setSessione(false);
+                // Reindirizza l'utente alla pagina di login
+                navigate('/login');
+            } else {
+                console.error('Errore durante il logout:', response);
+            }
+        } catch (error) {
+            console.error('Errore durante il logout:', error);
+        }
+    };
 
     return (
         <nav className="navbar">
@@ -42,23 +61,35 @@ function NavBar({ name }) {
                 <span className="page-title">{name}</span>
             </div>
             <div className="navbar-right">
-                {sessione ? (
+                {sessione && localStorage.getItem("jwtToken")? (
                     <>
-                        <TerminaSessione />
+                        <TerminaSessione onSessionClosed={() => setSessione(false)} />
                         <Link to="/terapeuta/draw" className="link">
-                            Osserva
+                            <Button className="btn-all m-1">
+                                Osserva
+                            </Button>
                         </Link>
                     </>
                 ) : (
-                    <AvviaSessioneButton />
+                    <>
+                        <AvviaSessioneButton onSessionCreated={() => setSessione(true)} />
+                        <Button onClick={handleLogout} className="btn-cancella m-1">
+                            Logout
+                        </Button>
+                    </>
                 )}
-
                 <div className="profile-icon">
-                    <img src={require('../../assets/profile_icon.png')} alt="Profile" className="profile-icon"/>
+                    <Link to="/profilo">
+                        <img
+                            src={require('../../assets/profile_icon.png')}
+                            alt="Profile"
+                            className="profile-icon"
+                        />
+                    </Link>
                 </div>
             </div>
         </nav>
     );
-};
+}
 
 export default NavBar;

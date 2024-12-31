@@ -10,9 +10,7 @@ function AvviaSessioneButton(){
 
     return (
         <>
-            <Button
-                onClick={handleShow}
-            >
+            <Button className="btn-conferma" onClick={handleShow}>
                 Avvia sessione
             </Button>
             <AvviaSessioneMultiStepModal show={show} onHide={handleClose}/>

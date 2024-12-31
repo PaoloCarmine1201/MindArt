@@ -16,6 +16,7 @@ import '../../style/Modal.css';
 import '../../style/Transition.css';
 import axiosInstance from "../../config/axiosInstance";
 import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le animazioni
+import ToastNotification from "../Notification/Notification";
 
 
 const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
@@ -32,6 +33,9 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
      // 'forward' o 'backward'
     const [errorMessage, setErrorMessage] = useState('');
     const [direction, setDirection] = useState("forward");
+
+    // Per la notifica
+    const [showToast, setShowToast] = useState(false);
 
 
     const initialValues = {
@@ -129,7 +133,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
 
     const handleSubmit = (values, { resetForm }) => {
         axiosInstance.post('/api/terapeuta/sessione/create', values)
-            .then(r => alert('Sessione creata con successo'))
+            .then(r => setShowToast(true))
             .catch(r => console.log(r));
 
         resetForm();
@@ -164,85 +168,95 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     };
 
     return (
-        <Formik
-            initialValues={initialValues}
-            validationSchema={getValidationSchema()}
-            onSubmit={handleSubmit}
-            validateOnBlur={true}
-            validateOnChange={true}
-        >
-            {({
-                  handleSubmit,
-                  validateForm,
-                  touched,
-                  setTouched,
-                  values,
-                  errors,
-                  resetForm
-              }) => (
-                <Modal
-                    show={show}
-                    dialogClassName='custom-modal tall-modal-dialog'
-                    backdropClassName='custom-backdrop'
-                    aria-labelledby='contained-modal-title-vcenter'
-                    centered
-                    onHide={() => {
-                        resetForm();
-                        setCurrentStep(1);
-                        setDirection('backward');
-                        onHide();
-                    }}>
-                    <Form noValidate onSubmit={(e) => {
-                        e.preventDefault();
-                        handleSubmit();
-                    }}>
-                        <Modal.Header>
-                            <Modal.Title className="w-100 text-center">Avvia Sessione</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body className="tall-modal-body" style={{paddingLeft: '40px', paddingRight: '40px', height: '350px', overflow: 'hidden',  }}>
-                            <TransitionGroup>
-                                <CSSTransition
-                                    key={currentStep}
-                                    classNames={direction === 'forward' ? 'slide-forward' : 'slide-backward'}
-                                    timeout={300}
-                                >
-                                    {renderStep()}
-                                </CSSTransition>
-                            </TransitionGroup>
-                        </Modal.Body>
-                        <Modal.Footer>
+        <>
+            <ToastNotification
+                show={showToast}
+                title={"Successo"}
+                message={"Sessione creata con successo"}
+                type={"success"}
+                closeCallback={() => setShowToast(false)}
+            />
 
-                            <Button variant="btn-outline-pimary btn-cancella" onClick={() => {
-                                resetForm();
-                                setCurrentStep(1);
-                                setDirection('backward');
-                                onHide();
-                            }}>
-                                Annulla
-                            </Button>
-                            {currentStep > 1 && (
-                                <Button variant="btn-outline-secondary btn-annulla" onClick={() => handleBack(values)}>
-                                    Indietro
+            <Formik
+                initialValues={initialValues}
+                validationSchema={getValidationSchema()}
+                onSubmit={handleSubmit}
+                validateOnBlur={true}
+                validateOnChange={true}
+            >
+                {({
+                      handleSubmit,
+                      validateForm,
+                      touched,
+                      setTouched,
+                      values,
+                      errors,
+                      resetForm
+                  }) => (
+                    <Modal
+                        show={show}
+                        dialogClassName='custom-modal tall-modal-dialog'
+                        backdropClassName='custom-backdrop'
+                        aria-labelledby='contained-modal-title-vcenter'
+                        centered
+                        onHide={() => {
+                            resetForm();
+                            setCurrentStep(1);
+                            setDirection('backward');
+                            onHide();
+                        }}>
+                        <Form noValidate onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSubmit();
+                        }}>
+                            <Modal.Header>
+                                <Modal.Title className="w-100 text-center">Avvia Sessione</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body className="tall-modal-body" style={{paddingLeft: '40px', paddingRight: '40px', height: '350px', overflow: 'hidden',  }}>
+                                <TransitionGroup>
+                                    <CSSTransition
+                                        key={currentStep}
+                                        classNames={direction === 'forward' ? 'slide-forward' : 'slide-backward'}
+                                        timeout={300}
+                                    >
+                                        {renderStep()}
+                                    </CSSTransition>
+                                </TransitionGroup>
+                            </Modal.Body>
+                            <Modal.Footer>
+
+                                <Button variant="btn-outline-pimary btn-cancella" onClick={() => {
+                                    resetForm();
+                                    setCurrentStep(1);
+                                    setDirection('backward');
+                                    onHide();
+                                }}>
+                                    Annulla
                                 </Button>
-                            )}
-                            {((currentStep < 3) || (currentStep === 3 && values.tipoSessione === 'DISEGNO')) && (
-                                <Button
-                                    variant="btn-outline-primary btn-conferma"
-                                    onClick={() => handleNext(validateForm, touched, setTouched, values, errors)}
-                                >
-                                    Avanti
-                                </Button>
-                            )}
-                            {((currentStep === 3 && values.tipoSessione !== 'DISEGNO') || (currentStep === 4 && values.tipoSessione === 'DISEGNO')) && (
-                                <Button variant="btn-outline-pimary btn-conferma" type="submit">
-                                    Invia
-                                </Button>
-                            )}
-                        </Modal.Footer>
-                    </Form>
-                </Modal>
-            )}
-        </Formik>
+                                {currentStep > 1 && (
+                                    <Button variant="btn-outline-secondary btn-annulla" onClick={() => handleBack(values)}>
+                                        Indietro
+                                    </Button>
+                                )}
+                                {((currentStep < 3) || (currentStep === 3 && values.tipoSessione === 'DISEGNO')) && (
+                                    <Button
+                                        variant="btn-outline-primary btn-conferma"
+                                        onClick={() => handleNext(validateForm, touched, setTouched, values, errors)}
+                                    >
+                                        Avanti
+                                    </Button>
+                                )}
+                                {((currentStep === 3 && values.tipoSessione !== 'DISEGNO') || (currentStep === 4 && values.tipoSessione === 'DISEGNO')) && (
+                                    <Button variant="btn-outline-pimary btn-conferma" type="submit">
+                                        Invia
+                                    </Button>
+                                )}
+                            </Modal.Footer>
+                        </Form>
+                    </Modal>
+                )}
+            </Formik>
+        </>
     );
 };
 

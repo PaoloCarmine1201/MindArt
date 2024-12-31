@@ -1,14 +1,23 @@
 import React from 'react';
+import { Toast, ToastContainer } from 'react-bootstrap';
 
-const ToastNotification = ({ show, message, type }) => {
+const ToastNotification = ({ show, title, message, type, closeCallback}) => {
     return (
-        <div className={`toast align-items-center text-white ${show ? 'show' : ''} bg-${type} position-fixed top-0 end-0 p-3`} style={{ zIndex: 1050 }}>
-            <div className="d-flex">
-                <div className="toast-body">
-                    {message}
-                </div>
-            </div>
-        </div>
+        <ToastContainer position="top-end" className="p-3">
+            <Toast
+                show={show}
+                onClose={closeCallback}
+                bg={type}
+                delay={3000} // Nascondi automaticamente dopo 3 secondi
+                autohide
+            >
+                <Toast.Header>
+                    <strong className="me-auto">{title}</strong>
+                    <small>Ora</small>
+                </Toast.Header>
+                <Toast.Body>{message}</Toast.Body>
+            </Toast>
+        </ToastContainer>
     );
 };
 

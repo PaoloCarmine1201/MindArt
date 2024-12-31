@@ -82,6 +82,12 @@ public class DataLoader implements CommandLineRunner {
     private PasswordEncoder passwordEncoder;
 
     /**
+     * Repository per la gestione del disegno.
+     */
+    @Autowired
+    private DisegnoRepository disegnoRepository;
+
+    /**
      * Oggetto per la gestione delle date.
      */
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

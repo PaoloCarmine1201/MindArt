@@ -61,14 +61,15 @@ function NavBar({ name }) {
             <div className="navbar-right">
                 {sessione && localStorage.getItem("jwtToken")? (
                     <>
-
                         <Link to="/terapeuta/draw" className="link">
-                            Osserva
+                            <Button className="btn-primary m-1">
+                                Osserva
+                            </Button>
                         </Link>
                     </>
                 ) : (
                     <>
-                        <AvviaSessioneButton></AvviaSessioneButton>
+                        <AvviaSessioneButton />
                         <Button onClick={handleLogout} className="btn-primary m-1">
                             Logout
                         </Button>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../../style/NavBarStyle.css';
+import '../../style/Button.css'
 import {Link, useNavigate} from 'react-router-dom';
 import AvviaSessioneButton from "../AvvioSessione/AvviaSessioneButton";
 import axiosInstance from "../../config/axiosInstance";
@@ -60,18 +61,27 @@ function NavBar({ name }) {
                 <span className="page-title">{name}</span>
             </div>
             <div className="navbar-right">
-                <AvviaSessioneButton sessioneAttiva={sessione} />
-                {sessione && localStorage.getItem("jwtToken") ? (
+                {sessione && localStorage.getItem("jwtToken")? (
                     <>
-                        <TerminaSessione></TerminaSessione>
+                        <TerminaSessione onSessionClosed={() => setSessione(false)} />
+
                         <Link to="/terapeuta/draw" className="link">
-                            Osserva
+                            <Button className="btn-all m-1">
+                                Osserva
+                            </Button>
                         </Link>
+                        <Button onClick={handleLogout} className="btn-cancella m-1">
+                            Logout
+                        </Button>
                     </>
-                ) : (<> </>)}
-                <Button onClick={handleLogout} className="btn-primary m-1">
-                    Logout
-                </Button>
+                ) : (
+                    <>
+                        <AvviaSessioneButton onSessionCreated={() => setSessione(true)} />
+                        <Button onClick={handleLogout} className="btn-cancella m-1">
+                            Logout
+                        </Button>
+                    </>
+                )}
                 <div className="profile-icon">
                     <Link to="/profilo">
                         <img

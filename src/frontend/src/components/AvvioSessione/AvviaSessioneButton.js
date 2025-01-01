@@ -4,7 +4,8 @@ import Overlay from "react-bootstrap/Overlay";
 import Tooltip from "react-bootstrap/Tooltip";
 import AvviaSessioneMultiStepModal from "./AvviaSessioneMultiStepModal";
 
-function AvviaSessioneButton({ sessioneAttiva }) {
+function AvviaSessioneButton({ onSessionCreated, sessioneAttiva } ) {
+    const [show, setShow] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
     const target = useRef(null);

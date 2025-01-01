@@ -106,8 +106,10 @@ function DettaglioBambinoComponent() {
 
             <div className="dettaglio-button-container">
                 {/* Pulsante Modifica */}
-                <Link to={`/modifica/${id}`} className="dettaglio-button-link-modifica">
-                    Modifica
+                <Link to={`/modifica/${id}`}>
+                    <Button className="btn-all">
+                        Modifica
+                    </Button>
                 </Link>
 
                 {/* Pulsante Elimina */}

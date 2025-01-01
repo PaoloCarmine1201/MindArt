@@ -1,14 +1,18 @@
 import React from 'react';
+import { Toast, ToastContainer } from 'react-bootstrap';
 
-const ToastNotification = ({ show, message, type }) => {
+const ToastNotification = () => {
     return (
-        <div className={`toast align-items-center text-white ${show ? 'show' : ''} bg-${type} position-fixed top-0 end-0 p-3`} style={{ zIndex: 1050 }}>
-            <div className="d-flex">
-                <div className="toast-body">
-                    {message}
-                </div>
-            </div>
-        </div>
+        <ToastContainer
+            position="bottom-right"
+            autoClose={3000} // 3 secondi di durata
+            hideProgressBar={false} // Mostra la barra di progresso
+            newestOnTop={true} // Mostra le notifiche più recenti in cima
+            closeOnClick // Chiudi al clic
+            pauseOnFocusLoss // Pausa se l'utente cambia finestra
+            draggable // Consente di trascinare il toast
+            pauseOnHover // Pausa al passaggio del mouse
+        />
     );
 };
 

@@ -5,6 +5,7 @@ import AvviaSessioneButton from "../AvvioSessione/AvviaSessioneButton";
 import axiosInstance from "../../config/axiosInstance";
 import logo from '../../assets/logo_horizontal_2048x1024.png';
 import {Button} from "react-bootstrap";
+import TerminaSessione from "../TerminaSessione/TerminaSessione";
 
 function NavBar({ name }) {
     const [sessione, setSessione] = useState(false);
@@ -59,21 +60,18 @@ function NavBar({ name }) {
                 <span className="page-title">{name}</span>
             </div>
             <div className="navbar-right">
-                {sessione && localStorage.getItem("jwtToken")? (
+                <AvviaSessioneButton sessioneAttiva={sessione} />
+                {sessione && localStorage.getItem("jwtToken") ? (
                     <>
-
+                        <TerminaSessione></TerminaSessione>
                         <Link to="/terapeuta/draw" className="link">
                             Osserva
                         </Link>
                     </>
-                ) : (
-                    <>
-                        <AvviaSessioneButton></AvviaSessioneButton>
-                        <Button onClick={handleLogout} className="btn-primary m-1">
-                            Logout
-                        </Button>
-                    </>
-                )}
+                ) : (<> </>)}
+                <Button onClick={handleLogout} className="btn-primary m-1">
+                    Logout
+                </Button>
                 <div className="profile-icon">
                     <Link to="/profilo">
                         <img

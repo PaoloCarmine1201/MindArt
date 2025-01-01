@@ -6,7 +6,6 @@ import "../style/HomaPageStyle.css";
 import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniListComponent";
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
 import axiosInstance from "../config/axiosInstance";
-import TerminaSessione from "../components/TerminaSessione/TerminaSessione";
 import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMaterialeWidget";
 import ToastNotification from "../components/Notification/Notification";
 

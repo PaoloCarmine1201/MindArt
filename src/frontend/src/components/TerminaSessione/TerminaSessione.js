@@ -42,7 +42,9 @@ const TerminaSessione = ({ onSessionClosed }) => {
 
     return (
         <div className="container text-center">
-            <Button className="btn-conferma" onClick={handleOpenModal}>
+            <Button className="btn-conferma"
+                    onMouseOver={() => toast.warning("Terminando la sessione non potrai più accedere ai dati della sessione corrente.")}
+                    onClick={handleOpenModal}>
                 Termina sessione
             </Button>
 

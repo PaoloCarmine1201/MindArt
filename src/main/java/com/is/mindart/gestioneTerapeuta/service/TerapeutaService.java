@@ -1,6 +1,6 @@
 package com.is.mindart.gestioneTerapeuta.service;
 
-import com.is.mindart.gestioneSessione.model.SessioneRepository;
+
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.security.jwt.JwtUtil;
@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 
 @Service
 @AllArgsConstructor
@@ -49,7 +48,7 @@ public class TerapeutaService {
         terapeutaRepository.save(terapeuta);
     }
 
-    public TerapeutaDTOStat getTerapeuta(Long id) {
+    public TerapeutaDTOStat getTerapeuta(final Long id) {
         Terapeuta terapeuta = terapeutaRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Terapeuta non trovato"));
         return modelMapper.map(terapeuta, TerapeutaDTOStat.class);
@@ -71,7 +70,13 @@ public class TerapeutaService {
         return null;
     }
 
-    public TerapeutaDTOSimple updateTerapeuta(TerapeutaDTOSimple terapeutaDTO) {
+    /**
+     * Aggiorna il profile del terapeuta.
+     * @param terapeutaDTO TerapeutaDTO con i nuovi
+     *                     dati del terapeuta da aggiornare
+     * @return TerapeutaDTO con i nuovi dati del terapeuta aggiornato
+     */
+    public TerapeutaDTOSimple updateTerapeuta(final TerapeutaDTOSimple terapeutaDTO) {
         Terapeuta terapeuta = terapeutaRepository.findById(terapeutaDTO.getId()).orElseThrow(() ->
                 new IllegalArgumentException("Terapeuta non trovato"));
         terapeuta.setNome(terapeutaDTO.getNome());

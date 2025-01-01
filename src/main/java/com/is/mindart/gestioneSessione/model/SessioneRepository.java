@@ -26,7 +26,7 @@ public interface SessioneRepository extends JpaRepository<Sessione, Long> {
      * di un terapeuta ordinate per data.
      * @param codiceBambino codice del bambino
      */
-    List<Sessione> findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(String codiceBambino);
+    List<Sessione> findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(String emailTerapeuta);
     /**
      * Imposta il campo "terminata" della sessione.
      * @param id id della sessione

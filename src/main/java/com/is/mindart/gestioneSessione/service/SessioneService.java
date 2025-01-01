@@ -1,12 +1,10 @@
 package com.is.mindart.gestioneSessione.service;
 
 import com.is.mindart.configuration.SessioneMapper;
+import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
-import com.is.mindart.gestioneBambino.model.Bambino;
-import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneMateriale.model.Materiale;
-import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneSessione.model.TipoSessione;
@@ -17,7 +15,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -45,34 +45,55 @@ public class SessioneService {
      */
     private final DisegnoRepository disegnoRepository;
 
+    private final BambinoRepository bambinoRepository;
+
 
     /**
      * Creazione della sessione.
      * Mappa {@link SessioneDTO} a {@link Sessione} e
      * aggiorna la lista delle sessioni per ogni Bambino
      * @param sessioneDto - proveniente dall'endpoint di creazione
-     * @param terapeuta terapeuta che desidera creare la sessione
      */
     @Transactional
-    public void creaSessione(final SessioneDTO sessioneDto,
-                             final String terapeuta) {
-        Optional<Terapeuta> t = terapeutaRepository.findByEmail(terapeuta);
-        Sessione sessione = sessioneMapper.toEntity(sessioneDto);
-        sessione.setTerapeuta(t.get());
-        if (sessione.getBambini() != null) {
-            sessione.getBambini().forEach(
-                    bambino -> bambino.getSessioni().add(sessione));
+    public void creaSessione(final SessioneDTO sessioneDto, final String terapeutaEmail) {
+        // Validate no active session exists
+        if (!sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail)
+                .isEmpty()) {
+            throw new IllegalArgumentException("Terapeuta ha già una sessione attiva");
         }
+        // Fetch terapeuta
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(terapeutaEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Terapeuta not found"));
+
+        // Map DTO to entity
+        Sessione sessione = sessioneMapper.toEntity(sessioneDto);
+        sessione.setTerapeuta(terapeuta);
+
+        // Persist Bambini if necessary
+        if (sessione.getBambini() != null) {
+            sessione.setBambini(
+                    sessione.getBambini().stream()
+                            .map(bambino -> bambinoRepository.findById(bambino.getId())
+                                    .orElseThrow(() -> new IllegalArgumentException("Bambino not found")))
+                            .collect(Collectors.toList())
+            );
+        }
+
+
+        // Handle Disegno for DISEGNO sessions
         if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO)) {
             Disegno disegno = new Disegno();
             disegno.setSessione(sessione);
-            disegno.setTerapeuta(sessione.getTerapeuta());
+            disegno.setTerapeuta(terapeuta);
             disegno.setBambini(sessione.getBambini());
             disegnoRepository.save(disegno);
         }
 
-        repository.save(sessione);
+        // Persist Sessione
+        sessioneRepository.save(sessione);
     }
+
 
     /**
      * Terminazione della sessione.

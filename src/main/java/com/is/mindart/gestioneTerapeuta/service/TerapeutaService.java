@@ -71,7 +71,13 @@ public class TerapeutaService {
         return null;
     }
 
-    public TerapeutaDTOSimple updateTerapeuta(TerapeutaDTOSimple terapeutaDTO) {
+    /**
+     * Aggiorna il profile del terapeuta.
+     * @param terapeutaDTO TerapeutaDTO con i nuovi
+     *                     dati del terapeuta da aggiornare
+     * @return TerapeutaDTO con i nuovi dati del terapeuta aggiornato
+     */
+    public TerapeutaDTOSimple updateTerapeuta(final TerapeutaDTOSimple terapeutaDTO) {
         Terapeuta terapeuta = terapeutaRepository.findById(terapeutaDTO.getId()).orElseThrow(() ->
                 new IllegalArgumentException("Terapeuta non trovato"));
         terapeuta.setNome(terapeutaDTO.getNome());

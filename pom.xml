@@ -165,7 +165,6 @@
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
                             <failOnViolation>true</failOnViolation>
-                            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
                         </configuration>
                         <goals>
                             <goal>check</goal>

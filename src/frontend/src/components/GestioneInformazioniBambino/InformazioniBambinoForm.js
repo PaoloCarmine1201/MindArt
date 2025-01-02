@@ -2,7 +2,7 @@
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap';
 
 // Form per la registrazione di un bambino
-function RegisterBambinoForm({
+function InformazioniBambinoForm({
                                handleChange,
                                handleBlur,
                                values,
@@ -146,4 +146,4 @@ function RegisterBambinoForm({
     );
 }
 
-export default RegisterBambinoForm;
+export default InformazioniBambinoForm;

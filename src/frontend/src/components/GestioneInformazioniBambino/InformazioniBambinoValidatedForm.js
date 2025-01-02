@@ -1,12 +1,35 @@
 import * as formik from "formik";
 import * as yup from "yup";
 import '../../style/RegisterBambino.css';
-import RegisterBambinoForm from "./RegisterBambinoForm";
+import InformazioniBambinoForm from "./InformazioniBambinoForm";
 
 
-function RegisterBambinoValidatedForm({handleSubmit , formRef}) {
+function InformazioniBambinoValidatedForm({handleSubmit , formRef, bambino = null}) {
 
     const { Formik } = formik;
+    let initialValues;
+
+    if(bambino === null){
+        initialValues = {
+            nome: '',
+            cognome: '',
+            sesso: 'MASCHIO',
+            dataDiNascita: '',
+            codiceFiscale: '',
+            emailGenitore: '',
+            telefonoGenitore: ''
+        }
+    }else{
+        initialValues = {
+            nome: bambino.nome,
+            cognome: bambino.cognome,
+            sesso: bambino.sesso,
+            dataDiNascita: bambino.dataDiNascita,
+            codiceFiscale: bambino.codiceFiscale,
+            emailGenitore: bambino.emailGenitore,
+            telefonoGenitore: bambino.telefonoGenitore
+        }
+    }
 
     // Validation schema
     const schema = yup.object().shape({
@@ -48,19 +71,11 @@ function RegisterBambinoValidatedForm({handleSubmit , formRef}) {
             onSubmit={handleSubmit}
             validateOnBlur={true}
             validateOnChange={true}
-            initialValues={{
-                nome: '',
-                cognome: '',
-                sesso: 'MASCHIO',
-                dataDiNascita: '',
-                codiceFiscale: '',
-                emailGenitore: '',
-                telefonoGenitore: ''
-            }}
+            initialValues={initialValues}
         >
             {/* Form component with the form fields */}
             {({handleSubmit, handleChange, handleBlur, values, errors, touched}) => (
-                <RegisterBambinoForm
+                <InformazioniBambinoForm
                     handleSubmit={handleSubmit}
                     handleChange={handleChange}
                     handleBlur={handleBlur}
@@ -73,4 +88,4 @@ function RegisterBambinoValidatedForm({handleSubmit , formRef}) {
     );
 }
 
-export default RegisterBambinoValidatedForm;
+export default InformazioniBambinoValidatedForm;

@@ -2,14 +2,14 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import {useRef, useState} from "react";
 import {toast} from "react-toastify";
-import RegisterBambinoValidatedForm from "./RegisterBambinoValidatedForm";
+import InformazioniBambinoValidatedForm from "./InformazioniBambinoValidatedForm";
 import "../../style/RegisterBambino.css";
 import "../../style/Button.css";
 import "../../style/Modal.css";
 import axiosInstance from "../../config/axiosInstance";
 
 
-function RegisterBambino(){
+function EditBambino({bambino}){
 
 // State to control modal visibility
     const [show, setShow] = useState(false);
@@ -23,37 +23,26 @@ function RegisterBambino(){
     // Function to open the modal
     const handleShow = () => setShow(true);
 
-    // Function to generate a unique codice (simple example using current timestamp)
-    const generateCodice = () => {
-        return 'BGY' + Date.now();
-    };
 
     // Function to handle form submission
     const handleSubmit = async (values) => {
-        // Retrieve the id of the logged-in terapeuta from localStorage
-        const terapeutaId = parseInt(localStorage.getItem("idTerapeuta"), 10);
+        const id = bambino.id;
 
-        // Generate a unique codice for the bambino
-        const codice = generateCodice();
-
-        // Prepare the payload with form values, terapeutaId, and codice
         const payload = {
-            ...values,
-            terapeutaId, // Add the id of the terapeuta
-            codice // Add the generated codice
+            id,
+            ...values
         };
 
         try {
             console.log('Dati inviati:', payload);
-
             // Make a POST request to add a new bambino
-            const response = await axiosInstance.post('/api/terapeuta/bambino/add', payload);
+            const response = await axiosInstance.post('/api/terapeuta/bambino/update', payload);
 
             // Check if the response status indicates success
             if (response.status === 201 || response.status === 200) {
-                console.log('Bambino registrato con successo:', response.data);
+                console.log('Dati modificati con successo:', response.data);
                 toast.success(
-                    'Bambino registrato con successo!',
+                    'Dati modificati con successo!',
                     {
                         position: 'bottom-right'
                     }
@@ -63,7 +52,7 @@ function RegisterBambino(){
             } else {
                 console.log('Errore richiesta:', response);
                 toast.error(
-                    'Si è verificato un errore durante la registrazione del bambino.',
+                    'Si è verificato un errore durante la modifica.',
                     {
                         position: 'bottom-right'
                     }
@@ -72,7 +61,7 @@ function RegisterBambino(){
         } catch (error) {
             console.error('Errore:', error);
             // Extract error message from response if available
-            const errorMessage = error.response?.data?.message || 'Si è verificato un errore durante la registrazione del bambino.';
+            const errorMessage = error.response?.data?.message || 'Si è verificato un errore durante la modifica.';
             toast.error(
                 errorMessage,
                 {
@@ -85,7 +74,7 @@ function RegisterBambino(){
 
     return (
         <>
-            <Button variant="btn-outline-primary btn-conferma" onClick={handleShow}>Aggiungi Bambino</Button>
+            <Button variant="btn-outline-primary btn-conferma" onClick={handleShow}>Modifica</Button>
             <Modal show={show}
                    onHide={handleClose}
                    backdropClassName="custom-backdrop"
@@ -95,14 +84,15 @@ function RegisterBambino(){
                    dialogClassName="custom-modal"
             >
                 <Modal.Header className="border-0">
-                    <Modal.Title className="text-center w-100 fw-bold">Registra un bambino</Modal.Title>
+                    <Modal.Title className="text-center w-100 fw-bold">Modifica Dati Bambino</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <RegisterBambinoValidatedForm
+                    <InformazioniBambinoValidatedForm
                         handleSubmit={handleSubmit}
                         formRef={formRef}
-                    ></RegisterBambinoValidatedForm>
+                        bambino={bambino}
+                    ></InformazioniBambinoValidatedForm>
                 </Modal.Body>
 
                 <Modal.Footer className="border-0 d-flex justify-content-end">
@@ -114,4 +104,4 @@ function RegisterBambino(){
     );
 }
 
-export default RegisterBambino;
+export default EditBambino;

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
 import axiosInstance from "../../config/axiosInstance";
+import EditBambino from "../GestioneInformazioniBambino/EditBambino";
 
 /**
  * @autor gabrieleristallo
@@ -86,9 +87,7 @@ function DettaglioBambinoComponent() {
 
             <div className="dettaglio-button-container">
                 {/* Pulsante Modifica */}
-                <Link to={`/modifica/${id}`} className="dettaglio-button-link-modifica">
-                    Modifica
-                </Link>
+                <EditBambino bambino={bambino}/>
 
                 {/* Pulsante Elimina */}
                 <Link to={`/elimina/${id}`} className="dettaglio-button-link-elimina">

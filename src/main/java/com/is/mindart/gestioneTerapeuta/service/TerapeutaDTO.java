@@ -52,7 +52,7 @@ public class TerapeutaDTO {
      */
     @NotBlank(message = "La password non può essere vuota")
     @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+            regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!?_.,:;@#$%^&*])[A-Za-z0-9!?_.,:;@#$%^&*]{8,}$",
             message = "La password deve contenere almeno una "
                     + "lettera maiuscola, un numero e un carattere speciale."
     )

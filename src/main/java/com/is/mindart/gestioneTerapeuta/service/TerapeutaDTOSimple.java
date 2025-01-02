@@ -11,19 +11,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TerapeutaDTOSimple {
-
-    @NotNull(message = "L'ID non può essere nullo.")
-    @NotBlank(message = "L'ID non può essere vuoto.")
-    private Long id;
-
+    /**
+     * Nome del terapeuta.
+     */
     @NotNull(message = "Il nome non può essere nullo.")
     @NotBlank(message = "Il nome non può essere vuoto.")
     private String nome;
 
+    /**
+     * Cognome del terapeuta.
+     */
     @NotNull(message = "Il cognome non può essere nullo.")
     @NotBlank(message = "Il cognome non può essere vuoto.")
     private String cognome;
 
+    /**
+     * Email del terapeuta.
+     */
     @NotNull(message = "L'email non può essere nulla.")
     @NotBlank(message = "L'email non può essere vuota.")
     @Email(message = "L'email deve essere valida.")

@@ -49,12 +49,12 @@ const Registration = () => {
         }
 
         // Validazione Password (almeno 8 caratteri, una maiuscola, una numero e un carattere speciale)
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!?_.,:;@#$%^&*])[A-Za-z0-9!?_.,:;@#$%^&*]{8,}$/;
         if (!password) {
             errors.password = 'Inserisci la password';
             isValid = false;
         } else if (!passwordRegex.test(password)) {
-            errors.password = 'Formato password non valido: la password deve essere lunga 8 caratteri, contenere almeno una lettera maiuscola, un numero e un carattere speciale';
+            errors.password = 'La password deve essere lunga almeno 8 caratteri, contenere almeno una lettera maiuscola, almeno un numero e almeno un carattere speciale (!?_.,:;@#$%^&*)';
             isValid = false;
         }
 

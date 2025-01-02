@@ -7,7 +7,6 @@ import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 
 function ProfiloTerapuetaComponent() {
-    const [idTerapeuta, setIdTerapeuta] = useState(null);
     const [terapeuta, setTerapeuta] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -21,23 +20,14 @@ function ProfiloTerapuetaComponent() {
     });
 
     useEffect(() => {
-        const storedId = localStorage.getItem('idTerapeuta');
-        if (storedId) {
-            setIdTerapeuta(storedId);
-        }
+        axiosInstance.get(`api/terapeuta/get`)
+            .then(response => {
+                setTerapeuta(response.data);
+            })
+            .catch(error => {
+                console.error("Errore durante il recupero dei dati del terapeuta:", error);
+            });
     }, []);
-
-    useEffect(() => {
-        if (idTerapeuta) {
-            axiosInstance.get(`api/terapeuta/get/${idTerapeuta}`)
-                .then(response => {
-                    setTerapeuta(response.data);
-                })
-                .catch(error => {
-                    console.error("Errore durante il recupero dei dati del terapeuta:", error);
-                });
-        }
-    }, [idTerapeuta]);
 
     useEffect(() => {
         if (terapeuta) {
@@ -85,6 +75,8 @@ function ProfiloTerapuetaComponent() {
         setShowConfirmModal(false);
         if (emailChanged) {
             window.location.href = '/login';
+        }else{
+            window.location.reload();
         }
     }
 
@@ -164,21 +156,19 @@ function ProfiloTerapuetaComponent() {
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <div className="btn-container">
-                        <Button
-                            type="button"
-                            className="btn-conferma"
-                            onClick={handleSubmit}
-                        >
-                            Salva
-                        </Button>
-                        <Button
-                            onClick={() => setShowModal(false)}
-                            className="btn-cancella"
-                        >
-                            Annulla
-                        </Button>
-                    </div>
+                    <Button
+                        onClick={() => setShowModal(false)}
+                        className="btn-cancella"
+                    >
+                        Annulla
+                    </Button>
+                    <Button
+                        type="button"
+                        className="btn-conferma"
+                        onClick={handleSubmit}
+                    >
+                        Salva
+                    </Button>
                 </ModalFooter>
             </Modal>
             <h2 className="dettaglio-header">{terapeuta.nome} {terapeuta.cognome}</h2>

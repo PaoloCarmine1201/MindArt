@@ -48,8 +48,14 @@ public class TerapeutaService {
         terapeutaRepository.save(terapeuta);
     }
 
-    public TerapeutaDTOStat getTerapeuta(final Long id) {
-        Terapeuta terapeuta = terapeutaRepository.findById(id).orElseThrow(() ->
+    /**
+     * Provvede a recuperare il terapeuta.
+     * @param email email del terapeuta
+     * @return {@link TerapeutaDTOStat}
+     */
+    public TerapeutaDTOStat getTerapeuta(final String email) {
+        Terapeuta terapeuta = terapeutaRepository
+                .findByEmail(email).orElseThrow(() ->
                 new IllegalArgumentException("Terapeuta non trovato"));
         return modelMapper.map(terapeuta, TerapeutaDTOStat.class);
     }
@@ -57,6 +63,7 @@ public class TerapeutaService {
     /**
      * Provvede a verificare se il terapeuta esiste.
      * @param email Email del terapeuta
+     * @param rawPassword Password in chiaro
      * @return true se il terapeuta esiste, false altrimenti
      */
     public String loginTerapeuta(final String email, final String rawPassword) {
@@ -74,11 +81,17 @@ public class TerapeutaService {
      * Aggiorna il profile del terapeuta.
      * @param terapeutaDTO TerapeutaDTO con i nuovi
      *                     dati del terapeuta da aggiornare
+     * @param email Email del terapeuta
      * @return TerapeutaDTO con i nuovi dati del terapeuta aggiornato
      */
-    public TerapeutaDTOSimple updateTerapeuta(final TerapeutaDTOSimple terapeutaDTO) {
-        Terapeuta terapeuta = terapeutaRepository.findById(terapeutaDTO.getId()).orElseThrow(() ->
-                new IllegalArgumentException("Terapeuta non trovato"));
+    public TerapeutaDTOSimple updateTerapeuta(
+            final TerapeutaDTOSimple terapeutaDTO,
+            final String email
+    ) {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElseThrow(() ->
+                    new IllegalArgumentException("Terapeuta non trovato")
+                );
         terapeuta.setNome(terapeutaDTO.getNome());
         terapeuta.setCognome(terapeutaDTO.getCognome());
         terapeuta.setEmail(terapeutaDTO.getEmail());

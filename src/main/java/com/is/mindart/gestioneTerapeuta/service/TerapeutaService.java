@@ -48,8 +48,13 @@ public class TerapeutaService {
         terapeutaRepository.save(terapeuta);
     }
 
-    public TerapeutaDTOStat getTerapeuta(final Long id) {
-        Terapeuta terapeuta = terapeutaRepository.findById(id).orElseThrow(() ->
+    /**
+     * Provvede a recuperare il terapeuta.
+     * @param email email del terapeuta
+     * @return {@link TerapeutaDTOStat}
+     */
+    public TerapeutaDTOStat getTerapeuta(final String email) {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email).orElseThrow(() ->
                 new IllegalArgumentException("Terapeuta non trovato"));
         return modelMapper.map(terapeuta, TerapeutaDTOStat.class);
     }

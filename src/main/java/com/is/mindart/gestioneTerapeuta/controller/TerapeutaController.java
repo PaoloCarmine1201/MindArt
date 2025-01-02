@@ -1,13 +1,13 @@
 package com.is.mindart.gestioneTerapeuta.controller;
 
-import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTO;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOSimple;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOStat;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,9 +19,13 @@ public class TerapeutaController {
     private final TerapeutaService terapeutaService;
 
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @GetMapping("/get/{id}")
-    public ResponseEntity<TerapeutaDTOStat> getTerapeuta(@PathVariable Long id) {
-        TerapeutaDTOStat terapeuta = terapeutaService.getTerapeuta(id);
+    @GetMapping("/get")
+    public ResponseEntity<TerapeutaDTOStat> getTerapeuta() {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        String email = authentication.getPrincipal().toString();
+        TerapeutaDTOStat terapeuta = terapeutaService.getTerapeuta(email);
         return ResponseEntity.ok(terapeuta);
     }
 

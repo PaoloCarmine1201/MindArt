@@ -22,19 +22,30 @@ class GestioneMaterialeBase extends Component {
         axiosInstance
             .get("http://localhost:8080/api/terapeuta/materiale/")
             .then((response) => {
-                this.setState({ materialList: response.data, loadingMaterial: false });
+                console.log('Dati ricevuti dall\'API:', response.data); // Log per debug
+                // Verifica se response.data è un array
+                if (Array.isArray(response.data)) {
+                    this.setState({ materialList: response.data, loadingMaterial: false });
+                }
+                // Se response.data è un oggetto con una proprietà che contiene l'array
+                else if (response.data && Array.isArray(response.data.data)) {
+                    this.setState({ materialList: response.data.data, loadingMaterial: false });
+                }
             })
             .catch((error) => {
+                console.error('Errore nel caricamento dei materiali:', error);
                 this.setState({ materialError: "Errore nel caricamento dei materiali.", loadingMaterial: false });
             });
     };
+
+
 
     handleFilterChange = (filterType) => {
         this.setState({ filter: filterType });
     };
 
     getFilteredMaterials = () => {
-        const { filter, materialList } = this.state;
+        const { filter, materialList = [] } = this.state; // Default a array vuoto
         if (filter === "ALL") return materialList;
         return materialList.filter((mat) => mat.tipoMateriale === filter);
     };

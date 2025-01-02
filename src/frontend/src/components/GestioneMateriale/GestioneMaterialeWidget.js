@@ -13,9 +13,19 @@ class GestioneMaterialeWidget extends GestioneMaterialeBase {
 
                 {/* Lista Materiali */}
                 <div className="d-flex flex-wrap" style={{ marginTop: "10px"}}>
-                    {filteredMaterials.map((mat) => (
-                        <MaterialeCard key={mat.id} id={mat.id} nome={mat.nome} onDelete={null} showDelete={false} />
-                    ))}
+                    {Array.isArray(filteredMaterials) && filteredMaterials.length > 0 ? (
+                        filteredMaterials.map((mat) => (
+                            <MaterialeCard
+                                key={mat.id}
+                                id={mat.id}
+                                nome={mat.nome}
+                                onDelete={null}
+                                showDelete={false}
+                            />
+                        ))
+                    ) : (
+                        <p>Nessun materiale disponibile.</p>
+                    )}
                 </div>
             </>
         );

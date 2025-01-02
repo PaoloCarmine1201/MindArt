@@ -70,7 +70,7 @@ public class SessioneControllerBambino {
                     .ok()
                     .body(materialeDTO);
 
-        }catch (IOException e){
+        } catch (IOException e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
 import axiosInstance from "../../config/axiosInstance";
 import {Button} from "react-bootstrap";
 import "../../style/Button.css";
+import EditBambino from "../GestioneInformazioniBambino/EditBambino";
 
 function DettaglioBambinoComponent() {
     const { id } = useParams();
@@ -106,11 +107,7 @@ function DettaglioBambinoComponent() {
 
             <div className="dettaglio-button-container">
                 {/* Pulsante Modifica */}
-                <Link to={`/modifica/${id}`}>
-                    <Button className="btn-all">
-                        Modifica
-                    </Button>
-                </Link>
+                <EditBambino bambino={bambino}/>
 
                 {/* Pulsante Elimina */}
                 <Button
@@ -119,7 +116,7 @@ function DettaglioBambinoComponent() {
                     onClick={handleElimina}
                 >
                     Elimina
-                </Button>
+                </Link>
             </div>
 
             <Link to={'/gestioneBambini'} className="dettaglio-button-link">

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import '../../style/GestioneBambiniStyle.css';
 import BambiniListComponent from "./BambiniListComponent";
-import RegisterBambino from "../RegisterBambino/RegisterBambino";
+import RegisterBambino from "../GestioneInformazioniBambino/RegisterBambino";
 import axiosInstance from "../../config/axiosInstance";
 
 function GestioneBambiniComponent() {

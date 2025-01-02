@@ -29,7 +29,6 @@ public class RegisterBambinoDTO {
     /**
      * Codice univoco del bambino.
      */
-    @NotBlank(message = "Il codice non può essere vuoto")
     private String codice;
 
     /**

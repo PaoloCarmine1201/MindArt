@@ -17,6 +17,7 @@ import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Rappresenta un bambino registrato nel sistema.

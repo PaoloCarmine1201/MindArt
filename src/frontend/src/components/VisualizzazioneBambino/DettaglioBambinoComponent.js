@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import {useParams, Link, useNavigate} from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
 import axiosInstance from "../../config/axiosInstance";
 import {Button} from "react-bootstrap";
@@ -116,7 +116,7 @@ function DettaglioBambinoComponent() {
                     onClick={handleElimina}
                 >
                     Elimina
-                </Link>
+                </Button>
             </div>
 
             <Link to={'/gestioneBambini'} className="dettaglio-button-link">

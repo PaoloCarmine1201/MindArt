@@ -30,6 +30,8 @@ public class OutputMaterialeDTO {
     @NotNull
     private TipoMateriale tipoMateriale;
 
+
+
     /**
      * Costruttore personalizzato per evitare campi nascosti
      * e rispettare le regole di CheckStyle.

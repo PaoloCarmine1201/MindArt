@@ -5,7 +5,9 @@ import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneBambino.model.Sesso;
 import com.is.mindart.gestioneCalendario.model.EventoRespository;
 import com.is.mindart.gestioneCalendario.model.Evento;
+import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
+import com.is.mindart.gestioneDisegno.model.ValutazioneEmotiva;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneMateriale.model.TipoMateriale;
@@ -29,7 +31,6 @@ import java.util.logging.Logger;
  *
  * @author  Gabriele Ristallo
  * Classe per popolare il db all'avvio dell'app
- *
  * Questa classe viene eseguita solo se il profilo "dev" è attivo,
  * @code @Profile("dev")
  * @implements CommandLineRunner
@@ -63,12 +64,6 @@ public class DataLoader implements CommandLineRunner {
     private MaterialeRepository materialeRepository;
 
     /**
-     * Repository per la gestione dei disegni.
-     */
-    @Autowired
-    private DisegnoRepository disegnoRepository;
-
-    /**
      * Repository per la gestione dei terapeuti.
      */
     @Autowired
@@ -87,6 +82,12 @@ public class DataLoader implements CommandLineRunner {
     private PasswordEncoder passwordEncoder;
 
     /**
+     * Repository per la gestione del disegno.
+     */
+    @Autowired
+    private DisegnoRepository disegnoRepository;
+
+    /**
      * Oggetto per la gestione delle date.
      */
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -100,7 +101,7 @@ public class DataLoader implements CommandLineRunner {
      * Ha lo scopo di creare diverse istanze di prova delle entità del sistema
      * e inserirle nel database.
      *
-     * @param args
+     * @param args arguments
      * @throws Exception se si verifica un errore durante l'esecuzione
      */
     @Override
@@ -261,31 +262,31 @@ public class DataLoader implements CommandLineRunner {
             Bambino bambino3T3 = bambiniT3.get(2);
 
             sessioneRepository.saveAll(List.of(
-                new Sessione(null, "Tema di disegno", LocalDateTime.now(),false,
+                new Sessione(null, "Tema di disegno", LocalDateTime.now(),true,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta1,
                         List.of(bambino1T1)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusHours(2),false,
+                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusHours(2),true,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta1,
                         List.of(bambino2T1, bambino3T1)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(1), false,
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(1), true,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta1,
                         List.of(bambino1T1, bambino2T1, bambino3T1)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(1), false,
+                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(1), true,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta2,
                         List.of(bambino1T2, bambino2T2)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(1).plusHours(3), false,
+                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(1).plusHours(3), true,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale2, terapeuta2,
                         List.of(bambino3T2)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(2), false,
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(2), true,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta2,
                         List.of(bambino1T2, bambino3T2)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(3), false,
+                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(3), true,
                         "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta3,
                         List.of(bambino1T3, bambino2T3)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(4), false,
+                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(4), true,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta3,
                         List.of(bambino3T3)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(5), false,
+                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(5), true,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta3,
                         List.of(bambino2T3))
             ));
@@ -297,23 +298,28 @@ public class DataLoader implements CommandLineRunner {
             Sessione sessione4 = sessioni.get(3);
             Sessione sessione5 = sessioni.get(4);
             //TODO: rivedere
-           /* disegnoRepository.saveAll(List.of(
-                new Disegno(null, 7, sessione1.getData(), ValutazioneEmotiva.FELICE,
+           disegnoRepository.saveAll(List.of(
+                new Disegno(null, null, 7, null, sessione1.getData(),
+                        ValutazioneEmotiva.FELICE,
                         sessione1.getTerapeuta(), sessione1,
                         sessione1.getBambini()),
-                new Disegno(null, 9, sessione2.getData(), ValutazioneEmotiva.TRISTE,
+                new Disegno(null, null, 9, null, sessione2.getData(),
+                        ValutazioneEmotiva.TRISTE,
                         sessione2.getTerapeuta(), sessione2,
                         sessione2.getBambini()),
-                new Disegno(null, 9, sessione3.getData(), ValutazioneEmotiva.FELICE,
+                new Disegno(null, null, 9, null, sessione3.getData(),
+                        ValutazioneEmotiva.FELICE,
                         sessione3.getTerapeuta(), sessione3,
                         sessione3.getBambini()),
-                new Disegno(null, 10, sessione4.getData(), ValutazioneEmotiva.SPAVENTATO,
+                new Disegno(null, null, 10, null, sessione4.getData(),
+                        ValutazioneEmotiva.SPAVENTATO,
                         sessione4.getTerapeuta(), sessione4,
                         sessione4.getBambini()),
-                new Disegno(null, 7, sessione5.getData(), ValutazioneEmotiva.ARRABBIATO,
+                new Disegno(null, null, 7, null, sessione5.getData(),
+                        ValutazioneEmotiva.ARRABBIATO,
                         sessione5.getTerapeuta(), sessione5,
                         sessione5.getBambini())
-            ));*/
+            ));
         } catch (Exception e) {
             System.err.println("Exception Message: " + e.getMessage());
 

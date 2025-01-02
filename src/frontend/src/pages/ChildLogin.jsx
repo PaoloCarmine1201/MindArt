@@ -7,9 +7,12 @@ import logo from '../assets/logo_vertical_1024x1024.png';
 import background from '../assets/ChildLoginBackground.jpg';
 import {toast} from "react-toastify";
 import axiosInstance from "../config/axiosInstance";
+import {Link, useNavigate} from 'react-router-dom';
+
 
 // Component definition for the child login form
 function ChildLogin() {
+    const navigate = useNavigate(); // For navigation
     // Validation schema using Yup
     const validationSchema = Yup.object().shape({
         code: Yup.string()
@@ -28,12 +31,9 @@ function ChildLogin() {
 
             // Handle successful login
             console.log("Login successful:", response.data);
-            toast.success('Login effettuato con successo!', {
-                position: 'bottom-right',
-            });
 
-            localStorage.setItem('jwtToken', response.data.token);
-            // window.location.href = '/dashboard';
+            localStorage.setItem('jwtToken', response.data);
+            navigate("/visualizzazioneMateriale");
 
         } catch (error) {
             console.error("Errore durante il login:", error);

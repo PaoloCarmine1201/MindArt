@@ -1,0 +1,41 @@
+/* Heading Styling */
+.app-heading {
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mini-video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 900px; /* Increase the container width */
+    max-width: 90vw; /* Maintain responsiveness for smaller screens */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mini-video-container video {
+    width: 100%; /* Video scales to fit the container width */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Adjustments for Smaller Screens */
+@media (max-width: 768px) {
+    .mini-video-container {
+        width: 90%; /* Adjust width on smaller screens */
+        padding: 15px;
+    }
+
+    .app-heading {
+        font-size: 1.5rem; /* Adjust font size */
+    }
+}

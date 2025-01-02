@@ -1,0 +1,23 @@
+/* Lavagna centrata */
+.lavagna-container {
+    display: grid;
+    justify-content: center; /* Centra orizzontalmente */
+    height: 95vh; /* Altezza del contenitore */
+}
+
+/* Contenitore per il pulsante Consegna */
+.consegna-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 15;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+}

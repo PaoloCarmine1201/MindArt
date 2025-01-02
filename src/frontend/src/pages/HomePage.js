@@ -6,8 +6,8 @@ import "../style/HomaPageStyle.css";
 import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniListComponent";
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
 import axiosInstance from "../config/axiosInstance";
-import TerminaSessione from "../components/TerminaSessione/TerminaSessione";
 import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMaterialeWidget";
+import ToastNotification from "../components/Notification/Notification";
 
 function HomePage() {
     const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
@@ -34,8 +34,10 @@ function HomePage() {
         fetchBambini();
     }, []);
 
+
     return (
         <>
+            <ToastNotification />
             <NavBar name="Dashboard"/>
             <div className="app-container">
 
@@ -56,7 +58,7 @@ function HomePage() {
                         </div>
 
                         <div className="box materiali">
-                            <Link to={"/materiale"} className={"link"}><h2>I tuoi materiali</h2></Link>
+                            <Link to={"/gestioneMateriale"} className={"link"}><h2>I tuoi materiali</h2></Link>
                             <div className={"item-container"}>
                                 <GestioneMaterialeWidget/>
                             </div>
@@ -65,7 +67,6 @@ function HomePage() {
                 </div>
             </div>
             <ToastContainer position="bottom-right"/>
-            <TerminaSessione />
         </>
     );
 }

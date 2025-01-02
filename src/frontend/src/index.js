@@ -18,6 +18,10 @@ import {AuthProvider} from "./auth/AuthProvider";
 import ProtectedRouteChild from "./auth/ProtectedRouteChild";
 import DisegnaBambino from "./pages/DisegnaBambino";
 import GestioneMaterialeFull from "./components/GestioneMateriale/GestioneMaterialeFull";
+import ProfiloTerapeuta from "./pages/ProfiloTerapeuta";
+import VisualizzazioneMateriale from "./pages/VisualizzazioneMateriale";
+import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
+import GestioneListaDisegno from "./components/GestioneListaDisegno/GestioneListaDisegno";
 
 const router = createBrowserRouter([
     {
@@ -41,6 +45,11 @@ const router = createBrowserRouter([
         element: <ProtectedRoute> <DettaglioBambino/> </ProtectedRoute>
     },
     {
+        path: '/dettaglioDisegni/:id',
+        name: 'Dettaglio Disegni Bambino',
+        element: <ProtectedRoute> <GestioneListaDisegno/> </ProtectedRoute>
+    },
+    {
         path: '/calendarioEventi',
         name:'Calendario',
         element: <ProtectedRoute> <EventiTeraputa/> </ProtectedRoute>
@@ -53,7 +62,7 @@ const router = createBrowserRouter([
     {
         path:"/register",
         name: "Registrazione",
-        element :<Registration />
+        element : <Registration />
         },
     {
         path:"/childlogin",
@@ -66,14 +75,29 @@ const router = createBrowserRouter([
         element:<ProtectedRouteChild><DisegnaBambino/></ProtectedRouteChild>
     },
     {
+        path: "terapeuta/draw",
+        name: "Terapeuta Drawing",
+        element:<ProtectedRoute><DisegnoInCorso/></ProtectedRoute>
+    },
+    {
         path:"/home",
         name: "Home",
         element : <ProtectedRoute><HomePage /></ProtectedRoute>
     },
     {
+        path:"/visualizzazioneMateriale",
+        name: "Visualizzazione Materiale",
+        element : <VisualizzazioneMateriale />
+    },
+    {
         path:"/gestioneMateriale",
         name:"GestioneMateriale",
         element: <GestioneMaterialeFull />
+    },
+    {
+        path: "/profilo",
+        name: "Profilo",
+        element: <ProtectedRoute><ProfiloTerapeuta /></ProtectedRoute>
     }
 ])
 

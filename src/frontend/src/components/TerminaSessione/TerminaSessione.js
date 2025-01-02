@@ -1,66 +1,82 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import TerminateModal from "../modal/TerminateModal";
+import axiosInstance from "../../config/axiosInstance";
+import { Button, Modal } from "react-bootstrap";
+import "../../style/Modal.css";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
-const TerminaSessione = () => {
+
+const TerminaSessione = ({ onSessionClosed }) => {
     const [showModal, setShowModal] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
-    const [idSessione, setIdSessione] = useState("");
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        // Imposta idSessione una volta
-        setIdSessione(1); // Sostituisci con l'ID corretto se dinamico
-    }, []);
+    const handleSubmit = async () => {
 
-    const handleLogout = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.patch(`/api/terapeuta/sessione/${idSessione}/termina`); // Chiamata all'API
-            if (response.status === 200) {
-                setMessage("Sessione terminata con successo.");
-            }
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                setMessage("ID della sessione non trovato.");
-            } else {
-                setMessage("Errore nella terminazione della sessione.");
-            }
-        } finally {
-            setLoading(false);
-            setShowModal(false);
-        }
+        axiosInstance.post(`/api/terapeuta/sessione/termina`, {})
+            .then((response) => {
+                if (response && response.status === 200) {
+                    navigate("/home")
+                    onSessionClosed();
+                    toast.success("Sessione terminata!");
+                }
+            })
+            .catch((error) => {
+                toast.error("C'è stato un errore :(");
+                if (error.response && error.response.status === 404) {
+                    console.log("ID della sessione non trovato.");
+                } else if (error.response && error.response.status === 403) {
+                    console.log("Errore nella terminazione della sessione.");
+                } else {
+                    console.error("Errore: ", error);
+                }
+            })
+            .finally(() => {
+                setShowModal(false);
+            });
     };
 
     const handleOpenModal = () => {
-        setMessage(""); // Resetta il messaggio quando si apre il modale
         setShowModal(true);
     };
 
     return (
-        <div className="container text-center mt-5">
-            <button
-                className="btn btn-danger"
-                onClick={handleOpenModal}
-            >
-                Termina Sessione
-            </button>
+        <div className="container text-center">
+            <Button className="btn-conferma"
+                    onMouseOver={() => toast.warning("Terminando la sessione non potrai più accedere ai dati della sessione corrente.")}
+                    onClick={handleOpenModal}>
+                Termina sessione
+            </Button>
 
-            {/*Modal di conferma*/}
-            <TerminateModal
+            {/* Modale di conferma */}
+            <Modal
                 show={showModal}
-                onClose={() => setShowModal(false)}
-                onConfirm={handleLogout}
-                loading={loading}
-            />
-
-            {/*Messaggio di successo o errore*/}
-            {message && (
-                <div className={`alert mt-3 ${message.includes("successo") ? "alert-success" : "alert-danger"}`} role="alert">
-                    {message}
-                </div>
-            )}
+                backdropClassName="custom-backdrop"
+                keyboard={false}
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                dialogClassName="custom-modal"
+            >
+                <Modal.Header>
+                    <Modal.Title>
+                        Sei sicuro di voler terminare la sessione?
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button
+                        className="btn-cancella"
+                        onClick={() => setShowModal(false)}
+                    >
+                        Annulla
+                    </Button>
+                    <Button
+                        className="btn-conferma"
+                        onClick={handleSubmit}
+                    >
+                        Conferma
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

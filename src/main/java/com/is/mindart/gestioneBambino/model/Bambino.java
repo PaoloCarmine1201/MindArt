@@ -2,7 +2,14 @@ package com.is.mindart.gestioneBambino.model;
 
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +17,7 @@ import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Rappresenta un bambino registrato nel sistema.
@@ -56,7 +64,15 @@ public class Bambino {
      * Codice fiscale del bambino.
      */
     private String codiceFiscale;
+
+    /**
+     * Email del genitore.
+     */
     private String emailGenitore;
+
+    /**
+     * Telefono del genitore.
+     */
     private String telefonoGenitore;
 
     /**
@@ -68,7 +84,7 @@ public class Bambino {
     private Terapeuta terapeuta;
 
     /**
-     * Associazione molti a molti Disegno - Bambino
+     * Associazione molti a molti Disegno - Bambino.
      */
     @ToString.Exclude
     @ManyToMany

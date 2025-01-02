@@ -6,6 +6,8 @@ import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
+import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,28 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class SessioneMapper {
     private final ModelMapper modelMapper;
     private final BambinoRepository bambinoRepository;
     private final MaterialeRepository materialeRepository;
 
-    /**
-     * Inject del modelMapper e delle repository necessarie.
-     * Chiama il metodo di configurazione del modelMapper
-     * @param modelMapper - default model mapper
-     * @param bambinoRepository - repository del bambino
-     * @param materialeRepository - repository del materiale
-     */
-    @Autowired
-    public SessioneMapper(final ModelMapper modelMapper,
-                          final BambinoRepository bambinoRepository,
-                          final MaterialeRepository materialeRepository) {
-        this.modelMapper = modelMapper;
-        this.bambinoRepository = bambinoRepository;
-        this.materialeRepository = materialeRepository;
-        configureMappings();
-    }
-
+    //TODO: controllare in caso di errore
+    @PostConstruct
     private void configureMappings() {
         // Configurazione personalizzata per il mapping da SessioneDTO a Sessione
         modelMapper.createTypeMap(SessioneDTO.class, Sessione.class)

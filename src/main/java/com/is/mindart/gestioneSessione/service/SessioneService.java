@@ -1,19 +1,20 @@
 package com.is.mindart.gestioneSessione.service;
 
 import com.is.mindart.configuration.SessioneMapper;
-import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
+import com.is.mindart.gestioneDisegno.model.Disegno;
+import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
+import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
+import com.is.mindart.gestioneSessione.model.TipoSessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +37,10 @@ public class SessioneService {
      * Repository del terapeuta.
      */
     private final TerapeutaRepository terapeutaRepository;
+    /**
+     * Repository del disegno.
+     */
+    private final DisegnoRepository disegnoRepository;
 
     /**
      * Repository del bambino.
@@ -50,33 +55,98 @@ public class SessioneService {
      * @param sessioneDto - proveniente dall'endpoint di creazione
      */
     @Transactional
-    public void creaSessione(final SessioneDTO sessioneDto, final String terapeuta) {
-        Optional<Terapeuta> t = terapeutaRepository.findByEmail(terapeuta);
-        Sessione sessione = sessioneMapper.toEntity(sessioneDto);
-        sessione.setTerapeuta(t.get());
-        if (sessione.getBambini() != null) {
-            sessione.getBambini().forEach(
-                    bambino -> bambino.getSessioni().add(sessione));
+    public void creaSessione(final SessioneDTO sessioneDto,
+                             final String terapeutaEmail) {
+        // Validate no active session exists
+        if (!sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(
+                        terapeutaEmail)
+                .isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Terapeuta ha già una sessione attiva");
         }
-        repository.save(sessione);
+        // Fetch terapeuta
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(terapeutaEmail)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Terapeuta not found"));
+
+        // Map DTO to entity
+        Sessione sessione = sessioneMapper.toEntity(sessioneDto);
+        sessione.setTerapeuta(terapeuta);
+
+        // Persist Bambini if necessary
+        if (sessione.getBambini() != null) {
+            sessione.setBambini(
+                    sessione.getBambini().stream()
+                            .map(bambino ->
+                                bambinoRepository.findById(bambino.getId())
+                                    .orElseThrow(() ->
+                                            new IllegalArgumentException(
+                                                    "Bambino not found")))
+                            .collect(Collectors.toList())
+            );
+        }
+
+
+        // Handle Disegno for DISEGNO sessions
+        if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO)) {
+            Disegno disegno = new Disegno();
+            disegno.setSessione(sessione);
+            disegno.setTerapeuta(terapeuta);
+            disegno.setBambini(sessione.getBambini());
+            disegnoRepository.save(disegno);
+        }
+
+        // Persist Sessione
+        sessioneRepository.save(sessione);
     }
+
 
     /**
      * Terminazione della sessione.
-     * @param id id sessione
+     * @param email email del terapeuta
      * @throws EntityNotFoundException se l'id non viene trovato
      */
     @Transactional
-    public void terminaSessione(final long id, final String codice)
+    public void terminaSessione(final String email)
             throws EntityNotFoundException {
-        Bambino bambino = bambinoRepository.findByCodice(codice)
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Terapeuta con email " + email + " non trovato"));
+        sessioneRepository.terminaSessione(sessione.getId());
+    }
+    /**
+     * Terminazione della sessione.
+     * @param codice codice del bambino
+     * @throws EntityNotFoundException se l'id non viene trovato
+     */
+    @Transactional
+    public void consegnaDisegno(final String codice)
+            throws EntityNotFoundException {
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bambino con codice " + codice + " non trovato"));
-        //se la sessione appartiene al bambino può terminarla
-        if (bambino.getSessioni().stream().noneMatch(sessione -> sessione.getId() == id)) {
-            throw new EntityNotFoundException(
-                    "Sessione con id " + id + " non trovato");
-        }
-        sessioneRepository.terminaSessione(id);
+        sessioneRepository.terminaSessione(sessione.getId());
+    }
+
+    /**
+     * Getter del Materiale
+     * @param id id sessione
+     * @throws EntityNotFoundException se la sessione non viene trovata
+     */
+    @Transactional
+    public Materiale getMaterialeFromSessione(final long id)
+            throws EntityNotFoundException {
+        Sessione sessione = sessioneRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Sessione con codice " + id + " non trovato"));
+        return sessione.getMateriale();
+
     }
 }

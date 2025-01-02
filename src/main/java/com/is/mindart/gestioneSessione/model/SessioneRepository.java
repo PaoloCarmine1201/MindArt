@@ -14,13 +14,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SessioneRepository extends JpaRepository<Sessione, Long> {
-// il teraputa non npuò avviare una sessione se ne ha già una in corso
     /**
      * Restituisce le sessioni non terminate
      * di un bambino ordinate per data.
      * @param codiceBambino codice del bambino
      */
      List<Sessione> findByTerminataFalseAndBambini_CodiceOrderByDataAsc(String codiceBambino);
+
+    /**
+     * Restituisce le sessioni non terminate
+     * di un terapeuta ordinate per data.
+     * @param codiceBambino codice del bambino
+     */
+    List<Sessione> findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(String emailTerapeuta);
     /**
      * Imposta il campo "terminata" della sessione.
      * @param id id della sessione

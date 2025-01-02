@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneTerapeuta.service;
 
+
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.security.jwt.JwtUtil;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @AllArgsConstructor
@@ -46,6 +48,12 @@ public class TerapeutaService {
         terapeutaRepository.save(terapeuta);
     }
 
+    public TerapeutaDTOStat getTerapeuta(final Long id) {
+        Terapeuta terapeuta = terapeutaRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta non trovato"));
+        return modelMapper.map(terapeuta, TerapeutaDTOStat.class);
+    }
+
     /**
      * Provvede a verificare se il terapeuta esiste.
      * @param email Email del terapeuta
@@ -62,6 +70,19 @@ public class TerapeutaService {
         return null;
     }
 
-
-
+    /**
+     * Aggiorna il profile del terapeuta.
+     * @param terapeutaDTO TerapeutaDTO con i nuovi
+     *                     dati del terapeuta da aggiornare
+     * @return TerapeutaDTO con i nuovi dati del terapeuta aggiornato
+     */
+    public TerapeutaDTOSimple updateTerapeuta(final TerapeutaDTOSimple terapeutaDTO) {
+        Terapeuta terapeuta = terapeutaRepository.findById(terapeutaDTO.getId()).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta non trovato"));
+        terapeuta.setNome(terapeutaDTO.getNome());
+        terapeuta.setCognome(terapeutaDTO.getCognome());
+        terapeuta.setEmail(terapeutaDTO.getEmail());
+        terapeutaRepository.save(terapeuta);
+        return modelMapper.map(terapeuta, TerapeutaDTOSimple.class);
+    }
 }

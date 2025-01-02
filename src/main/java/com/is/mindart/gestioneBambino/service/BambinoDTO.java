@@ -76,4 +76,5 @@ public class BambinoDTO {
          */
         @NotBlank(message = "Il terapeuta non può essere vuoto")
         private Terapeuta terapeuta;
+
 }

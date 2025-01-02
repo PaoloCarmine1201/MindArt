@@ -21,8 +21,17 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class SessioneMapper {
+    /**
+     * Istanza iniettata del modelMapper.
+     */
     private final ModelMapper modelMapper;
+    /**
+     * Istanza iniettata del repository dei bambini.
+     */
     private final BambinoRepository bambinoRepository;
+    /**
+     * Istanza iniettata del repository dei materiali.
+     */
     private final MaterialeRepository materialeRepository;
 
     //TODO: controllare in caso di errore

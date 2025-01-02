@@ -59,14 +59,14 @@ public class DisegnoController {
      */
     @GetMapping("terapeuta/sessione/disegno/")
     public ResponseEntity<DisegnoDTO> getDisegnoTerapeutaBySessioneId() {
-       Authentication authentication = SecurityContextHolder
-               .getContext().getAuthentication();
-         String principal = (String) authentication.getPrincipal();
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        String principal = (String) authentication.getPrincipal();
         Long sessioneId = sessioneRepository
                 .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(principal)
                 .getFirst().getId();
-            DisegnoDTO disegnoResponseDTO = disegnoService
-                    .getDisegnoBySessioneId(sessioneId);
+        DisegnoDTO disegnoResponseDTO = disegnoService
+                .getDisegnoBySessioneId(sessioneId);
         return ResponseEntity.ok(disegnoResponseDTO);
     }
 

@@ -17,5 +17,6 @@ public interface DisegnoRepository extends JpaRepository<Disegno, Long> {
      * @param bambinoId id bambino
      * @return disegno
      */
+    @SuppressWarnings("checkstyle:MethodName")
     List<Disegno> findByBambini_Id(Long bambinoId);
 }

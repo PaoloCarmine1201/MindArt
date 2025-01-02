@@ -53,7 +53,10 @@ public class SessioneControllerBambino {
         Authentication authentication = SecurityContextHolder
                 .getContext().getAuthentication();
         String codiceBambino = (String) authentication.getPrincipal();
-        Sessione sessione = sessioneRepository.findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codiceBambino).getFirst();
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(
+                        codiceBambino)
+                .getFirst();
         Materiale materiale = sessione.getMateriale();
 
         String path = materiale.getPath();
@@ -70,7 +73,7 @@ public class SessioneControllerBambino {
                     .ok()
                     .body(materialeDTO);
 
-        }catch (IOException e){
+        } catch (IOException e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);

@@ -27,9 +27,11 @@ public class TerapeutaMapper {
                 .addMappings(mapper -> {
                     mapper.map(Terapeuta::getId, TerapeutaDTOStat::setId);
                     mapper.map(Terapeuta::getNome, TerapeutaDTOStat::setNome);
-                    mapper.map(Terapeuta::getCognome, TerapeutaDTOStat::setCognome);
+                    mapper.map(Terapeuta::getCognome,
+                            TerapeutaDTOStat::setCognome);
                     mapper.map(Terapeuta::getEmail, TerapeutaDTOStat::setEmail);
-                    mapper.map(Terapeuta::getDataDiNascita, TerapeutaDTOStat::setDataDiNascita);
+                    mapper.map(Terapeuta::getDataDiNascita,
+                            TerapeutaDTOStat::setDataDiNascita);
                 });
     }
 }

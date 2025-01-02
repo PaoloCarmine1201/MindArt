@@ -1,0 +1,55 @@
+name: Build and Code Checkstyle
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  backend:
+    name: Backend Build and Checkstyle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build backend
+        run: ./gradlew build
+
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+
+  frontend:
+    name: Frontend Build and Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Cambia se usi una versione diversa
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: frontend # Assicurati che questo corrisponda alla directory del tuo frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+
+      - name: Run Lint
+        run: npm run lint
+        working-directory: frontend

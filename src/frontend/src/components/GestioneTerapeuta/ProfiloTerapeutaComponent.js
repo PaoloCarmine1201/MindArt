@@ -63,7 +63,6 @@ function ProfiloTerapuetaComponent() {
                 terapeuta.email !== formData.email ? setEmailChanged(true) : setEmailChanged(false);
                 setConfirmMessage(emailChanged ? "Modifiche salvate con successo. E' necessario effettuare nuovamente il login." : "Modifiche salvate con successo.");
                 setShowConfirmModal(true);
-                window.location.reload();
             })
             .catch(error => {
                 console.error("Errore durante il salvataggio delle modifiche:", error);
@@ -76,6 +75,8 @@ function ProfiloTerapuetaComponent() {
         setShowConfirmModal(false);
         if (emailChanged) {
             window.location.href = '/login';
+        }else{
+            window.location.reload();
         }
     }
 
@@ -155,21 +156,19 @@ function ProfiloTerapuetaComponent() {
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <div className="btn-container">
-                        <Button
-                            type="button"
-                            className="btn-conferma"
-                            onClick={handleSubmit}
-                        >
-                            Salva
-                        </Button>
-                        <Button
-                            onClick={() => setShowModal(false)}
-                            className="btn-cancella"
-                        >
-                            Annulla
-                        </Button>
-                    </div>
+                    <Button
+                        onClick={() => setShowModal(false)}
+                        className="btn-cancella"
+                    >
+                        Annulla
+                    </Button>
+                    <Button
+                        type="button"
+                        className="btn-conferma"
+                        onClick={handleSubmit}
+                    >
+                        Salva
+                    </Button>
                 </ModalFooter>
             </Modal>
             <h2 className="dettaglio-header">{terapeuta.nome} {terapeuta.cognome}</h2>

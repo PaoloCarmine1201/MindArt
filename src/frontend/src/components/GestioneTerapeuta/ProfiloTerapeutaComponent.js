@@ -63,6 +63,7 @@ function ProfiloTerapuetaComponent() {
                 terapeuta.email !== formData.email ? setEmailChanged(true) : setEmailChanged(false);
                 setConfirmMessage(emailChanged ? "Modifiche salvate con successo. E' necessario effettuare nuovamente il login." : "Modifiche salvate con successo.");
                 setShowConfirmModal(true);
+                window.location.reload();
             })
             .catch(error => {
                 console.error("Errore durante il salvataggio delle modifiche:", error);

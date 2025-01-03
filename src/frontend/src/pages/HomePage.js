@@ -66,7 +66,7 @@ function HomePage() {
                     </div>
                 </div>
             </div>
-            <ToastContainer position="bottom-right"/>
+            <ToastContainer position="bottom-right" limit={2}/>
         </>
     );
 }

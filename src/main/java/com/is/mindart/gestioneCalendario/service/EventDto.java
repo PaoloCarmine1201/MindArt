@@ -40,11 +40,6 @@ public class EventDto {
     @FutureOrPresent(message = "La data di fine non può essere nel passato")
     private Date fine;
 
-    /**
-     * Il terapeuta associato all'evento.
-     */
-    @NotNull(message = "Il terapeuta non può essere nullo")
-    private Long terapeuta;
 
     /**
      * Validazione per assicurarsi che

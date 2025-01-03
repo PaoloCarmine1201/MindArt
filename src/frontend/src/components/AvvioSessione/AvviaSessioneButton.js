@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import AvviaSessioneMultiStepModal from "./AvviaSessioneMultiStepModal";
 import { toast } from 'react-toastify'; // Importa solo il metodo toast

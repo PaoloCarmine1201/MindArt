@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Stage, Layer, Line, Rect } from 'react-konva';
+import { Stage, Layer, Line } from 'react-konva';
 import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css";
 import "../../style/LavagnaVisualizzaDisegni.css"
@@ -24,8 +24,6 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
         maxY: window.innerHeight * 0.6,
     });
 
-    const DRAWING_AREA_OFFSET_X = 20;
-    const DRAWING_AREA_OFFSET_Y = 20;
 
     useEffect(() => {
         const loadActions = async () => {

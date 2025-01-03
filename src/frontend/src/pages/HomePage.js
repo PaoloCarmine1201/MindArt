@@ -10,14 +10,10 @@ import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMat
 import ToastNotification from "../components/Notification/Notification";
 
 function HomePage() {
-    const [idTerapeuta, setIdTerapeuta] = useState(1); // id del terapeuta loggato DA MODIFICARE
     const [bambini, setBambini] = useState([]);
     const [bambiniError, setBambiniError] = useState(null);
 
-    // Store idTerapeuta in localStorage when it changes
-    useEffect(() => {
-        localStorage.setItem("idTerapeuta", idTerapeuta);
-    }, [idTerapeuta]);
+
 
     // Fetch bambini data when the component mounts
     useEffect(() => {

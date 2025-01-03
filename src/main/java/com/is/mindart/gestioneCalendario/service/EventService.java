@@ -129,10 +129,6 @@ public class EventService {
      * @return l'entità corrispondente
      */
     private Evento mapToEvent(final EventDto eventDto) {
-        Evento evento = modelMapper.map(eventDto, Evento.class);
-        evento.setTerapeuta(
-                terapeutaRepository.getReferenceById(eventDto.getTerapeuta())
-        );
-        return evento;
+        return modelMapper.map(eventDto, Evento.class);
     }
 }

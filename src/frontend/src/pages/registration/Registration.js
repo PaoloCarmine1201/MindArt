@@ -13,7 +13,6 @@ const Registration = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [terms, setTerms] = useState(''); //Termini e Condizioni
-    const [error, setError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({}); //check errore per ogni variabile
 
     const validateInputs = () => {
@@ -89,7 +88,6 @@ const Registration = () => {
             setPassword('');
             setTerms(false);
             setFieldErrors({});
-            setError('');
         } catch (err) {
             console.error('Registration error:', err);
 
@@ -102,7 +100,6 @@ const Registration = () => {
                 setFieldErrors(serverErrors);
             } else {
                 // Handle general errors
-                setError('Si è verificato un errore durante la registrazione. Riprova più tardi.');
                 toast.error('Si è verificato un errore durante la registrazione. Riprova più tardi.', {
                     position: 'bottom-right'
                 });

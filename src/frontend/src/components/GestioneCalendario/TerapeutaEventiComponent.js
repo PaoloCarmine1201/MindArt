@@ -30,7 +30,6 @@ function MyCalendar() {
                     title: ev.nome,
                     start: new Date(ev.inizio),
                     end: new Date(ev.fine),
-                    terapeuta: ev.terapeuta
                 }));
                 setEvents(convertedEvents);
                 setError(null);
@@ -51,7 +50,6 @@ function MyCalendar() {
             start: slotInfo.start,
             end: slotInfo.end,
             title: '',
-            terapeuta: parseInt(localStorage.getItem("idTerapeuta"), 10)
         });
         setShowModal(true);
     };
@@ -68,7 +66,6 @@ function MyCalendar() {
             nome: eventData.title,
             inizio: eventData.start.toISOString(),
             fine: eventData.end.toISOString(),
-            terapeuta: eventData.terapeuta
         };
 
         try {
@@ -81,7 +78,6 @@ function MyCalendar() {
                 title: response.data.nome,
                 start: new Date(response.data.inizio),
                 end: new Date(response.data.fine),
-                terapeuta: response.data.terapeuta
             };
             setEvents(prev => [...prev, newEvent]);
             setShowModal(false);
@@ -99,7 +95,6 @@ function MyCalendar() {
             nome: eventData.title,
             inizio: eventData.start.toISOString(),
             fine: eventData.end.toISOString(),
-            terapeuta: eventData.terapeuta || 1
         };
 
         try {
@@ -112,7 +107,6 @@ function MyCalendar() {
                 title: response.data.nome,
                 start: new Date(response.data.inizio),
                 end: new Date(response.data.fine),
-                terapeuta: response.data.terapeuta
             };
             setEvents(prev => prev.map(ev => ev.id === updatedEvent.id ? updatedEvent : ev));
             setShowModal(false);
@@ -132,7 +126,6 @@ function MyCalendar() {
             setSelectedEvent(null);
         } catch (err) {
             console.error('Error deleting event:', err);
-            setError('Si è verificato un errore durante la cancellazione dell\'evento.');
         }
     };
 

@@ -49,6 +49,12 @@ const DrawingBoard = () => {
         return [];
     };
 
+    const exportDrawingToBackend = async () => {
+        const uri = stageRef.current.toDataURL();
+
+        console.log('Exporting drawing to backend:', uri);
+    };
+
     // Effetto per gestire il caricamento iniziale dei dati
     useEffect(() => {
         const loadActions = async () => {
@@ -335,7 +341,7 @@ const DrawingBoard = () => {
 
     return (
         <div className="drawing-container">
-            <ConfermaDisegno/>
+            <ConfermaDisegno valutazioneIA={exportDrawingToBackend}/>
             <Stage
                 width={dimensions.width}
                 height={dimensions.height}

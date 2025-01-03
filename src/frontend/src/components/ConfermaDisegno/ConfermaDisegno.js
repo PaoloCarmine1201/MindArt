@@ -4,16 +4,19 @@ import axiosInstance from "../../config/axiosInstance";
 import {Button, Modal} from "react-bootstrap";
 import "../../style/Modal.css"
 
-const ConfermaDisegno = ({nomeBottone = "Consegna"}) => {
+const ConfermaDisegno = ({nomeBottone = "Consegna",valutazioneIA}) => {
     const [showModal, setShowModal] = useState(false);
 
     const handleSubmit = async () => {
+        if(valutazioneIA){
+            await valutazioneIA();
+        }
         try {
             const response = await axiosInstance.post(`/api/bambino/sessione/consegna`,{});
             if (response && response.status === 200) {
                 console.log("Disegno consegnato con successo.");
-                window.location.href = "/childLogin";
-                localStorage.removeItem("jwtToken");
+                /*window.location.href = "/childLogin";
+                localStorage.removeItem("jwtToken");*/
             }
         } catch (error) {
             if (error.response && error.response.status === 404) {

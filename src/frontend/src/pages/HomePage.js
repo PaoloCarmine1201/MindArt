@@ -11,7 +11,6 @@ import ToastNotification from "../components/Notification/Notification";
 
 function HomePage() {
     const [bambini, setBambini] = useState([]);
-    const [bambiniError, setBambiniError] = useState(null);
 
 
 
@@ -22,7 +21,6 @@ function HomePage() {
                 const response = await axiosInstance.get('/api/terapeuta/bambino/getallbyterapeuta');
                 setBambini(response.data);
             } catch (error) {
-                setBambiniError('Errore nel caricamento dei bambini.');
                 console.error("Error fetching bambini:", error);
             }
         };

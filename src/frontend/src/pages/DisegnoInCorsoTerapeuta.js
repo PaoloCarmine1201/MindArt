@@ -1,6 +1,5 @@
 import NavBar from "../components/HomePageTerapeuta/NavBar";
 import React from "react";
-import BoardDisegno from "../components/Disegno/BoardDisegno";
 import DisegnoTerapeuta from "../components/Disegno/DisegnoTerapeuta";
 
 function DisegnoInCorso() {

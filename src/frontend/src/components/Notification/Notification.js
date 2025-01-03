@@ -1,5 +1,5 @@
 import React from 'react';
-import { Toast, ToastContainer } from 'react-bootstrap';
+import { ToastContainer } from 'react-bootstrap';
 
 const ToastNotification = () => {
     return (

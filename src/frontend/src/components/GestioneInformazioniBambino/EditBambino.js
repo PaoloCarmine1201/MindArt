@@ -23,7 +23,6 @@ function EditBambino({bambino}){
     // Function to open the modal
     const handleShow = () => setShow(true);
 
-
     // Function to handle form submission
     const handleSubmit = async (values) => {
         const id = bambino.id;
@@ -47,8 +46,7 @@ function EditBambino({bambino}){
                         position: 'bottom-right'
                     }
                 );
-                handleClose(); // Close the modal upon success
-                // Optionally, you can reset the form or perform additional actions here
+                handleClose();
             } else {
                 console.log('Errore richiesta:', response);
                 toast.error(
@@ -70,7 +68,6 @@ function EditBambino({bambino}){
             );
         }
     };
-
 
     return (
         <>

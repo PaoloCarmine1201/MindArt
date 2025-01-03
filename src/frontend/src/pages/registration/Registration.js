@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../style/Login.css';
 import '../../style/Registration.css';
-import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {Button, Form, Stack} from "react-bootstrap";
 import {toast} from "react-toastify";
 import axiosInstance from "../../config/axiosInstance";
@@ -14,6 +14,7 @@ const Registration = () => {
     const [password, setPassword] = useState('');
     const [terms, setTerms] = useState(''); //Termini e Condizioni
     const [fieldErrors, setFieldErrors] = useState({}); //check errore per ogni variabile
+    const navigate = useNavigate();
 
     const validateInputs = () => {
         let isValid = true;
@@ -119,47 +120,57 @@ const Registration = () => {
     return (
         <Stack gap={4} className="login-container d-flex justify-content-center align-items-center vh-100" >
             <Form onSubmit={handleRegistration} className="card p-4 shadow-sm login-form">
-                <h2 className="title">Registration</h2>
-                <br/>
+                <h2 className="title">Registrazione</h2>
+
                 <Form.FloatingLabel controlId="registration.name" label="Nome">
-                    <Form.Control type="text" value={nome} placeholder="" onChange={e => setNome(e.target.value)} />
+                    <Form.Control type="text" value={nome} placeholder="" onChange={e => setNome(e.target.value)}/>
                     {fieldErrors.nome && <p className="text-danger">{fieldErrors.nome}</p>}
                 </Form.FloatingLabel>
-                <br />
+
                 <Form.FloatingLabel controlId="registration.surname" label="Cognome">
-                    <Form.Control type="text" value={cognome} placeholder="" onChange={e => setCognome(e.target.value)} />
+                    <Form.Control type="text" value={cognome} placeholder=""
+                                  onChange={e => setCognome(e.target.value)}/>
                     {fieldErrors.cognome && <p className="text-danger">{fieldErrors.cognome}</p>}
                 </Form.FloatingLabel>
-                <br />
+
                 <Form.FloatingLabel controlId="registration.dateOfBirth" label="Data Di Nascita">
-                    <Form.Control type="Date" value={dataDiNascita} placeholder="" onChange={e => setdataDiNascita(e.target.value)}/>
+                    <Form.Control type="Date" value={dataDiNascita} placeholder=""
+                                  onChange={e => setdataDiNascita(e.target.value)}/>
                     {fieldErrors.dataDiNascita && <p className="text-danger">{fieldErrors.dataDiNascita}</p>}
                 </Form.FloatingLabel>
-                <br />
+
                 <Form.FloatingLabel controlId="registration.email" label="Email">
                     <Form.Control type="text" value={email} placeholder="" onChange={e => setEmail(e.target.value)}/>
                     {fieldErrors.email && <p className="text-danger">{fieldErrors.email}</p>}
                 </Form.FloatingLabel>
-                <br />
+
                 <Form.FloatingLabel controlId="registration.password" label="Password">
-                    <Form.Control type="password" value={password} placeholder="" onChange={e => setPassword(e.target.value)} />
+                    <Form.Control type="password" value={password} placeholder=""
+                                  onChange={e => setPassword(e.target.value)}/>
                     {fieldErrors.password && <p className="text-danger">{fieldErrors.password}</p>}
                 </Form.FloatingLabel>
-                <br />
 
-                <Form.Group controlId="login.persistence">
-                    <Form.Check type="checkbox" label="Ho letto Termini e Condizioni" onChange={e => setTerms(e.target.checked)}/>
-                    {fieldErrors.terms && <p className="text-danger">{fieldErrors.terms}</p>}
-                </Form.Group>
-                <br/>
-                <Button variant="primary" type="submit">
-                    Register
-                </Button>
-                <br />
-                <Link to="/login" >Back To Login</Link>
+                <div className="d-flex justify-content-end gap-2">
+                    <Button
+                        variant="primary"
+                        className=" btn-disegno"
+                        onClick={() => {
+                            navigate("/login");
+                        }}
+                    >
+                        Torna al Login
+                    </Button>
+                    <Button
+                        variant="primary"
+                        className="btn-conferma"
+                        type="submit"
+                    >
+                        Registrati
+                    </Button>
+                </div>
             </Form>
         </Stack>
-    );
+);
 };
 
 export default Registration;

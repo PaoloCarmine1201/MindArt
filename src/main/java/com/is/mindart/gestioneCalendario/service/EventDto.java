@@ -30,14 +30,12 @@ public class EventDto {
      * La data di inizio non può essere nel passato.
      */
     @NotNull(message = "La data di inizio non può essere nulla")
-    @FutureOrPresent(message = "La data di inizio non può essere nel passato")
     private Date inizio;
 
     /**
      * Data e ora di fine dell'evento.
      */
     @NotNull(message = "La data di fine non può essere nulla")
-    @FutureOrPresent(message = "La data di fine non può essere nel passato")
     private Date fine;
 
 

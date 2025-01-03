@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
+import {toast} from "react-toastify";
 
 function ProfiloTerapuetaComponent() {
     const [terapeuta, setTerapeuta] = useState(null);
@@ -66,8 +67,7 @@ function ProfiloTerapuetaComponent() {
             })
             .catch(error => {
                 console.error("Errore durante il salvataggio delle modifiche:", error);
-                setConfirmMessage("Errore durante il salvataggio delle modifiche");
-                setShowConfirmModal(true);
+                toast.error("Errore durante il salvataggio delle modifiche.");
             });
     };
 

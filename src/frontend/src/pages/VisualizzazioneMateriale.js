@@ -30,7 +30,7 @@ const App = () => {
         };
 
         fetchMateriale();
-    });
+    },[]);
 
     if (error) return <div>{error}</div>;
 

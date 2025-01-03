@@ -65,7 +65,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
                     setMaterialList(response.data);
                     setLoadingMaterial(false);
                 })
-                .catch(error => {
+                .catch(() => {
                     setMaterialError('Errore nel caricamento dei materiali.');
                     setLoadingMaterial(false);
                 });
@@ -86,7 +86,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
         }
     }, [currentStep]);
 
-    const handleNext = async (validateForm, touched, setTouched, values, errors) => {
+    const handleNext = async (validateForm, touched, setTouched, values) => {
 
         const errs = await validateForm()
 

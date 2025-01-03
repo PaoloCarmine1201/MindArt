@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import BambinoLista from './BambinoLista';
 
 const SelezioneBambino = ({ childrenList, loading, error }) => {
-    const { values, setFieldValue, errors, touched } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
 
     return (
         <FormGroup>

@@ -15,7 +15,7 @@ const FileViewer = ({ fileUrl, fileType }) => {
             return showPdfViewer ? (
                 <PDFViewer
                     file={fileUrl}
-                    //onClose={() => setShowPdfViewer(false)}
+                    onClose={() => setShowPdfViewer(false)}
                 />
             ) : (
                 <p>PDF chiuso</p>

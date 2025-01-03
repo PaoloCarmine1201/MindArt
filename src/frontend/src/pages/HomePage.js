@@ -7,7 +7,6 @@ import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniLi
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
 import axiosInstance from "../config/axiosInstance";
 import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMaterialeWidget";
-import ToastNotification from "../components/Notification/Notification";
 
 function HomePage() {
     const [bambini, setBambini] = useState([]);
@@ -31,7 +30,6 @@ function HomePage() {
 
     return (
         <>
-            <ToastNotification />
             <NavBar name="Dashboard"/>
             <div className="app-container">
 
@@ -60,7 +58,6 @@ function HomePage() {
                     </div>
                 </div>
             </div>
-            <ToastContainer position="bottom-right" limit={2}/>
         </>
     );
 }

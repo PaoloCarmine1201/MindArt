@@ -5,7 +5,8 @@ import "../../style/Lavagna.css";
 import "../../style/LavagnaVisualizzaDisegni.css"
 import "../../style/Button.css";
 import { Button } from "react-bootstrap";
-import ValutazionePopup from "./ValutazionePopup"; // Importa il modal
+import ValutazionePopup from "./ValutazionePopup";
+import {toast} from "react-toastify"; // Importa il modal
 
 const MostraDisegnoBambino = ({ disegnoId }) => {
     const [actions, setActions] = useState([]);
@@ -91,11 +92,12 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
                 }),
             ]);
 
-            alert("Valutazione inviata con successo!");
+            toast.success("Valutazione inviata con successo!");
             setShowValutazione(false);
+            window.location.reload();// Ricarica la pagina per visualizzare la valutazione
         } catch (error) {
             console.error("Errore nell'invio della valutazione:", error);
-            alert("Errore nell'invio della valutazione.");
+            toast.error("Errore nell'invio della valutazione.");
         }
     };
 

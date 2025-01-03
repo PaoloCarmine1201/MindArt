@@ -113,6 +113,9 @@ function EventoForm({ event, onSave, onDelete, onClose}) {
                                 </Form.Group>
                             </Modal.Body>
                             <Modal.Footer>
+                                <Button variant="secondary" onClick={onClose} className="btn-outline-primary btn-annulla">
+                                    Annulla
+                                </Button>
                                 {event.id && (
                                     <Button
                                         onClick={() => setShowConfirmModal(true)}
@@ -121,9 +124,6 @@ function EventoForm({ event, onSave, onDelete, onClose}) {
                                         Elimina
                                     </Button>
                                 )}
-                                <Button variant="secondary" onClick={onClose} className="btn-outline-primary btn-annulla">
-                                    Annulla
-                                </Button>
                                 <Button
                                     variant="primary"
                                     type="submit"

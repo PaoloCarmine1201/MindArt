@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axiosInstance from "../../config/axiosInstance";
 import '../../style/Button.css';
+import {toast} from "react-toastify";
 
 function FileUploader({ onUpload }) {
     const [uploading, setUploading] = useState(false);
@@ -26,9 +27,11 @@ function FileUploader({ onUpload }) {
 
             if (response.status === 200) {
                 onUpload(response.data);
+                toast.success("File caricato con successo!");
             }
         } catch (error) {
             console.error("Errore durante il caricamento del file:", error);
+            toast.error("Errore durante il caricamento del file.");
         } finally {
             setUploading(false); // Fine del caricamento
             event.target.value = ""; // Resetta l'input file per consentire un nuovo upload

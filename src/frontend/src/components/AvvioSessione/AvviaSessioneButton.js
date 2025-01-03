@@ -7,27 +7,21 @@ function AvviaSessioneButton({ onSessionCreated, sessioneAttiva }) {
     const [showModal, setShowModal] = useState(false);
     const target = useRef(null);
 
-    const handleShowModal = () => {
-        if (!sessioneAttiva) {
-            setShowModal(true);
-        }
-    };
-
-
     const handleCloseModal = () => setShowModal(false);
 
-    const handleMouseEnter = () => {
+    const handleClick = () => {
         if (!sessioneAttiva) {
             toast.warning("Avviando la sessione non potrai crearne di altre finché non termini quella corrente.");
+            setShowModal(true);
         }
+
     };
 
     return (
         <>
             <Button
                 ref={target}
-                onClick={handleShowModal}
-                onMouseEnter={handleMouseEnter}
+                onClick={handleClick}
                 className={sessioneAttiva ? "btn-annulla" : "btn-conferma"}
             >
                 Avvia sessione

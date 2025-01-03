@@ -134,39 +134,8 @@ const DrawingBoard = () => {
         };
     }, []);
 
-    // Funzione per ottenere il contesto del canvas
-    const getCanvasContext = () => {
-        const stage = stageRef.current.getStage();
-        const layer = stage.findOne('.drawing-layer'); // Usa il nome corretto
-        if (!layer) {
-            console.error('Layer "drawing-layer" non trovato');
-            return null;
-        }
-        const canvas = layer.getCanvas();
-        const context = canvas.getContext();
-        return context;
-    };
 
-    // Funzione per convertire hex in RGBA
-    const hexToRGBA = (hex) => {
-        // Rimuove il simbolo #
-        hex = hex.replace('#', '');
-        const bigint = parseInt(hex, 16);
-        const r = (bigint >> 16) & 255;
-        const g = (bigint >> 8) & 255;
-        const b = bigint & 255;
-        return [r, g, b, 255];
-    };
 
-    // Funzione per confrontare i colori
-    const colorsMatch = (data, index, targetColor) => {
-        return (
-            data[index] === targetColor[0] &&
-            data[index + 1] === targetColor[1] &&
-            data[index + 2] === targetColor[2] &&
-            data[index + 3] === targetColor[3]
-        );
-    };
 
 
     // Implementazione dello strumento Lasso

@@ -12,7 +12,6 @@ const Registration = () => {
     const [dataDiNascita, setdataDiNascita] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [terms, setTerms] = useState(''); //Termini e Condizioni
     const [fieldErrors, setFieldErrors] = useState({}); //check errore per ogni variabile
     const navigate = useNavigate();
 
@@ -55,12 +54,6 @@ const Registration = () => {
             isValid = false;
         } else if (!passwordRegex.test(password)) {
             errors.password = 'La password deve essere lunga almeno 8 caratteri, contenere almeno una lettera maiuscola, almeno un numero e almeno un carattere speciale (!?_.,:;@#$%^&*)';
-            isValid = false;
-        }
-
-        // Validazione Checkbox Termini e Condizioni
-        if (!terms){
-            errors.terms = "Devi accettare Termini e Condizioni";
             isValid = false;
         }
 

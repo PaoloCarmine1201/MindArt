@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {Form, Button, Stack} from 'react-bootstrap';
 import "../../style/Login.css"
 import axios from "axios";
 import {useAuth} from "../../auth/AuthProvider";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 
 
 const Login = () => {

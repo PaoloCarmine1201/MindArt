@@ -81,13 +81,8 @@ const Registration = () => {
                 position: 'bottom-right'
             });
 
-            // Optionally, reset form fields
-            setNome('');
-            setCognome('');
-            setEmail('');
-            setPassword('');
-            setTerms(false);
-            setFieldErrors({});
+            // Redirect to the login page
+            window.location = '/login';
         } catch (err) {
             console.error('Registration error:', err);
 

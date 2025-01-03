@@ -204,7 +204,7 @@ function ProfiloTerapuetaComponent() {
             </div>
 
             {/* Pulsante Indietro */}
-            <Link to="/home" className="dettaglio-button-link">
+            <Link to="/" className="dettaglio-button-link">
                 <p className="dettaglio-back-button">↩︎ Indietro</p>
             </Link>
         </div>

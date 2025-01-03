@@ -103,9 +103,9 @@ public class DataLoader implements CommandLineRunner {
      * @param args arguments
      * @throws Exception se si verifica un errore durante l'esecuzione
      */
-    @SuppressWarnings("checkstyle:MagicNumber")
+    @SuppressWarnings({"checkstyle:MagicNumber", "checkstyle:MethodLength"})
     @Override
-    public void run(String... args) throws Exception {
+    public void run(final String... args) throws Exception {
         System.out.println("DataLoader.run");
         try {
             clearDatabase(); //commentare per fare in modo che il DB non venga ripristinto all'avvio
@@ -290,32 +290,48 @@ public class DataLoader implements CommandLineRunner {
             Bambino bambino3T3 = bambiniT3.get(2);
 
             sessioneRepository.saveAll(List.of(
-                new Sessione(null, "Tema di disegno", LocalDateTime.now(), true,
-                        "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta1,
+                new Sessione(null, "Tema di disegno",
+                        LocalDateTime.now(), true,
+                        "Nota aggiuntiva sulla sessione",
+                        TipoSessione.DISEGNO, materiale1, terapeuta1,
                           List.of(bambino1T1)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusHours(2), true,
+                new Sessione(null, "Apprendimento motorio",
+                        LocalDateTime.now().plusHours(2), true,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta1,
                         List.of(bambino2T1, bambino3T1)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(1), true,
+                new Sessione(null, "Tecniche di colore",
+                        LocalDateTime.now().plusDays(1), true,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta1,
                         List.of(bambino1T1, bambino2T1, bambino3T1)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(1), true,
-                        "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta2,
+                new Sessione(null, "Tema di disegno",
+                        LocalDateTime.now().plusDays(1), true,
+                        "Nota aggiuntiva sulla sessione",
+                        TipoSessione.DISEGNO, materiale1, terapeuta2,
                         List.of(bambino1T2, bambino2T2)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(1).plusHours(3), true,
-                        "Osservazioni sul progresso", TipoSessione.COLORE, materiale2, terapeuta2,
+                new Sessione(null, "Apprendimento motorio",
+                        LocalDateTime.now().plusDays(1).plusHours(3), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.COLORE, materiale2, terapeuta2,
                         List.of(bambino3T2)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(2), true,
-                        "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta2,
+                new Sessione(null, "Tecniche di colore",
+                        LocalDateTime.now().plusDays(2), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.COLORE, materiale3, terapeuta2,
                         List.of(bambino1T2, bambino3T2)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(3), true,
-                        "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta3,
+                new Sessione(null, "Tema di disegno",
+                        LocalDateTime.now().plusDays(3), true,
+                        "Nota aggiuntiva sulla sessione",
+                        TipoSessione.DISEGNO, materiale1, terapeuta3,
                         List.of(bambino1T3, bambino2T3)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(4), true,
-                        "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta3,
+                new Sessione(null, "Apprendimento motorio",
+                        LocalDateTime.now().plusDays(4), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.APPRENDIMENTO, materiale2, terapeuta3,
                         List.of(bambino3T3)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(5), true,
-                        "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta3,
+                new Sessione(null, "Tecniche di colore",
+                        LocalDateTime.now().plusDays(5), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.COLORE, materiale3, terapeuta3,
                         List.of(bambino2T3))
             ));
 

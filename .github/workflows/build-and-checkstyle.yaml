@@ -27,7 +27,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,9 +37,8 @@ jobs:
           distribution: 'temurin'
           java-version: '22'
 
-      - name: Start MySQL service
-        run: sudo service mysql start
-
+      - name: Wait for MySQL to be ready
+        run: sleep 7
 
       - name: Build backend with Maven
         run: mvn clean install

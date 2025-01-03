@@ -27,6 +27,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -40,14 +41,13 @@ jobs:
       - name: Start MySQL service
         run: sudo service mysql start
 
-      - name: Create test database
-        run: mysql -u root -p root -e 'CREATE DATABASE mindart;'
 
       - name: Build backend with Maven
         run: mvn clean install
 
       - name: Run Checkstyle
         run: mvn checkstyle:check
+
 
   frontend:
     name: Frontend Build

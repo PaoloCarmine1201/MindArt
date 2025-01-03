@@ -46,7 +46,8 @@ function GestioneListaDisegno() {
                             <Col md={1} className="table-header-cell fw-bold">#</Col>
                             <Col md={4} className="table-header-cell fw-bold">Tema Assegnato</Col>
                             <Col md={3} className="table-header-cell fw-bold">Data</Col>
-                            <Col md={2} className="table-header-cell fw-bold">Valutazione</Col>
+                            <Col md={1} className="table-header-cell fw-bold">Valutazione</Col>
+                            <Col md={1} className="table-header-cell fw-bold">Sentimento(IA)</Col>
                             <Col md={2} className="table-header-cell fw-bold"></Col>
                         </Row>
                         {disegni.map((disegno, index) => (
@@ -63,8 +64,11 @@ function GestioneListaDisegno() {
                                 <Col md={3} className="text-muted table-cell">
                                     {formatDate(disegno.data)}
                                 </Col>
-                                <Col md={2} className="text-muted table-cell">
+                                <Col md={1} className="text-muted table-cell">
                                     {disegno.voto ? disegno.voto : "Non valutato"}
+                                </Col>
+                                <Col md={1} className="text-muted table-cell">
+                                    {disegno.valutazioneEmotiva ? disegno.valutazioneEmotiva : "Non specificato"}
                                 </Col>
                                 <Col md={2} className="table-cell">
                                     <Button

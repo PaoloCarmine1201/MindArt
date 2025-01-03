@@ -136,7 +136,8 @@ public class DisegnoService {
         return disegni.stream()
                 .map(disegno -> new DisegnoDTOResponse(disegno.getId(),
                         disegno.getSessione().getTemaAssegnato(),
-                        disegno.getData(), disegno.getVoto()))
+                        disegno.getData(), disegno.getVoto(),
+                        disegno.getValutazioneEmotiva()))
                 .toList();
     }
 

@@ -13,6 +13,7 @@ const Registration = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [terms, setTerms] = useState(''); //Termini e Condizioni
+    const [error, setError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({}); //check errore per ogni variabile
 
     const validateInputs = () => {

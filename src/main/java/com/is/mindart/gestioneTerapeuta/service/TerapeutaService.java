@@ -90,19 +90,15 @@ public class TerapeutaService {
     ) {
         Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
                 .orElseThrow(() ->
-                    new IllegalArgumentException("Terapeuta non trovato")
+                        new IllegalArgumentException("Terapeuta non trovato")
                 );
-
-
-
-
-    public TerapeutaDTOSimple updateTerapeuta(TerapeutaDTOSimple terapeutaDTO) {
-        Terapeuta terapeuta = terapeutaRepository.findById(terapeutaDTO.getId()).orElseThrow(() ->
-                new IllegalArgumentException("Terapeuta non trovato"));
         terapeuta.setNome(terapeutaDTO.getNome());
         terapeuta.setCognome(terapeutaDTO.getCognome());
         terapeuta.setEmail(terapeutaDTO.getEmail());
         terapeutaRepository.save(terapeuta);
         return modelMapper.map(terapeuta, TerapeutaDTOSimple.class);
     }
+
+
+
 }

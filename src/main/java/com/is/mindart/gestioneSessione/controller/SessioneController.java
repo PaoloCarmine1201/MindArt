@@ -34,14 +34,14 @@ public class SessioneController {
      * @return 200 OK
      */
     @PostMapping("/terapeuta/sessione/create")
-    public ResponseEntity<SessioneDTO> create(
+    public ResponseEntity<Void> create(
             @Valid @RequestBody final SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder
                 .getContext().getAuthentication();
         String principal = (String) authentication.getPrincipal();
 
         sessioneService.creaSessione(sessioneDTO, principal);
-        return ResponseEntity.ok(sessioneDTO);
+        return ResponseEntity.ok().build();
     }
 
     /**

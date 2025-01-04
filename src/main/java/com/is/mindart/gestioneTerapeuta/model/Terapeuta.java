@@ -112,19 +112,4 @@ public class Terapeuta{
     @ToString.Exclude
     private List<Bambino> bambini;
 
-    public int getNumeroSessioni() {
-        return sessioni.stream()
-                .map(Sessione::getId)
-                .distinct()
-                .toList()
-                .size();
-    }
-
-    public int getNumeroBambini() {
-        return bambini.stream()
-                .map(Bambino::getId)
-                .distinct()
-                .toList()
-                .size();
-    }
 }

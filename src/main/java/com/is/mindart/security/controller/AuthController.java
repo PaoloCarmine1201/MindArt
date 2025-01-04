@@ -27,7 +27,7 @@ public class AuthController {
      * Il servizio per la gestione dei token JWT expired.
      */
     @Autowired
-    public final FileBasedTokenBlacklist tokenBlacklist;
+    private final FileBasedTokenBlacklist tokenBlacklist;
     /**
      * Il servizio per la gestione dei terapeuti.
      */
@@ -47,13 +47,13 @@ public class AuthController {
     public ResponseEntity<String> loginTerapeuta(
             @RequestBody final TerapeutaLoginRequest request)
             throws AuthenticationException {
-           String token = terapeutaService.loginTerapeuta(
-                   request.getEmail(),
-                   request.getPassword());
-              if (token == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-              }
-                return ResponseEntity.ok(token);
+        String token = terapeutaService.loginTerapeuta(
+                request.getEmail(),
+                request.getPassword());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(token);
     }
 
     /**
@@ -89,6 +89,7 @@ public class AuthController {
      * @param authHeader L'header Authorization
      * @return Il messaggio di logout
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
             @RequestHeader("Authorization") final String authHeader) {

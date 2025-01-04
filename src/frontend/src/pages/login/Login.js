@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {Form, Button, Stack} from 'react-bootstrap';
 import "../../style/Login.css"
 import axios from "axios";
 import {useAuth} from "../../auth/AuthProvider";
+import {toast} from "react-toastify";
 
 
 const Login = () => {
@@ -38,11 +39,12 @@ const Login = () => {
                 throw Error("invalid username or password");
             }
             console.log('Login successful:', data);
+            toast.success("Login effettuato con successo.");
             login(data); // Update authentication state
             navigate("/"); // Redirect to a protected route
         } catch (err) {
             console.log("Errore nella richiesta di login", err)
-            setError(err.message || 'An unexpected error occurred.');
+            toast.error("Credenziali inserite errate, riprovare.");
         }
     };
 
@@ -54,34 +56,45 @@ const Login = () => {
     };
     // <img src={require('../../assets/logo_vertical_1024x1024_white.png')}  width="175" height="175" alt=""/>
     return (
-
+    <>
         <Stack gap={4} className="login-container d-flex justify-content-center align-items-center vh-100" >
             <h1>{error}</h1>
             <Form onSubmit={handleLogin} className="card p-4 shadow-sm login-form">
                 <h2 className="title">Login</h2>
                 <br/>
-                <Form.FloatingLabel controlId="login.email" label="Email address">
-                    <Form.Control required type="email" placeholder="" value={email} onChange={e => setEmail(e.target.value)}/>
+                <Form.FloatingLabel controlId="login.email" label="Email">
+                    <Form.Control required type="email" placeholder="" value={email}
+                                  onChange={e => setEmail(e.target.value)}/>
                 </Form.FloatingLabel>
                 <br/>
                 <Form.FloatingLabel controlId="login.password" label="Password">
-                    <Form.Control required type="password" placeholder="" value={password} onChange={e => setPassword(e.target.value)}/>
+                    <Form.Control required type="password" placeholder="" value={password}
+                                  onChange={e => setPassword(e.target.value)}/>
                 </Form.FloatingLabel>
                 <br/>
-                <Form.Group controlId="login.persistence">
-                    <Form.Check type="checkbox" label="Keep Me Signed In"/>
-                </Form.Group>
-                <br/>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-                <br />
-                <Link to="/register" >Register</Link>
+                <div className="d-flex justify-content-end gap-2">
+                    <Button
+                        variant="primary"
+                        className=" btn-disegno"
+                        onClick={() => {
+                            navigate("/register");
+                        }}
+                    >
+                        Registrati
+                    </Button>
+                    <Button
+                        variant="primary"
+                        className="btn-conferma"
+                        type="submit"
+                    >
+                        Invia
+                    </Button>
+                </div>
             </Form>
-
         </Stack>
-
+    </>
     );
+
 };
 
 export default Login;

@@ -1,6 +1,6 @@
 import NavBar from "../HomePageTerapeuta/NavBar";
 import React from "react";
-import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import GestioneMaterialeBase from "./GestioneMaterialeBase";
 import FileUploader from "./FileUploader";
 import MaterialeCard from "./MaterialeCard";
@@ -79,7 +79,7 @@ class GestioneMaterialeFull extends GestioneMaterialeBase {
                         {/* Footer con pulsanti */}
                         <Row className="mt-4">
                             <Col xs={6} className="text-start">
-                                <Link to={'/home'} className="dettaglio-button-link">
+                                <Link to={'/'} className="dettaglio-button-link">
                                     <p className="dettaglio-back-button">↩︎ Indietro</p>
                                 </Link>
                             </Col>

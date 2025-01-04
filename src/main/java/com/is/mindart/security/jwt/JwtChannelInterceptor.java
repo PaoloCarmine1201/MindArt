@@ -16,9 +16,20 @@ import java.util.Collections;
 @AllArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor {
 
+    /**
+     * JwtUtil
+     */
     private final JwtUtil jwtUtil;
 
 
+    /**
+     * Interceptor che si occupa di estrarre il token JWT
+     * dall'header di una richiesta di connessione e di
+     * autenticare l'utente ad un socket
+     * @param message Il messaggio
+     * @param channel Il canale di comunicazione
+     * @return Il messaggio
+     */
     @Override
     public Message<?> preSend(final Message<?> message, final MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(

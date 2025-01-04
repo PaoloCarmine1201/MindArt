@@ -33,7 +33,6 @@ import java.util.logging.Logger;
  * Classe per popolare il db all'avvio dell'app
  * Questa classe viene eseguita solo se il profilo "dev" è attivo,
  * @code @Profile("dev")
- * @implements CommandLineRunner
  */
 @Component
 @Profile("dev")
@@ -90,11 +89,11 @@ public class DataLoader implements CommandLineRunner {
     /**
      * Oggetto per la gestione delle date.
      */
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     /**
      * Oggetto per la gestione delle date e delle ore.
      */
-    SimpleDateFormat sdfh = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private final SimpleDateFormat sdfh = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     /**
      * Metodo eseguito automaticamente all'avvio dell'applicazione Spring Boot.
@@ -104,21 +103,27 @@ public class DataLoader implements CommandLineRunner {
      * @param args arguments
      * @throws Exception se si verifica un errore durante l'esecuzione
      */
+    @SuppressWarnings({"checkstyle:MagicNumber", "checkstyle:MethodLength"})
     @Override
-    public void run(String... args) throws Exception {
+    public void run(final String... args) throws Exception {
         System.out.println("DataLoader.run");
         try {
             clearDatabase(); //commentare per fare in modo che il DB non venga ripristinto all'avvio
             if (terapeutaRepository.count() == 0) {
                 terapeutaRepository.saveAll(List.of(
-                    new Terapeuta(null, "Mario", "Rossi", "mariorossi@gmail.com",
-                            sdf.parse("1980-01-01"), passwordEncoder.encode("password123"),
+                    new Terapeuta(null, "Mario",
+                            "Rossi", "mariorossi@gmail.com",
+                            sdf.parse("1980-01-01"),
+                            passwordEncoder.encode("password123"),
                             null, null, null, null, null),
                     new Terapeuta(null, "Luca", "Verdi", "lucaverdi@gmail.com",
-                            sdf.parse("1985-01-01"), passwordEncoder.encode("password123"),
+                            sdf.parse("1985-01-01"),
+                            passwordEncoder.encode("password123"),
                             null, null, null, null, null),
-                    new Terapeuta(null, "Giuseppe", "Bianchi", "giuseppebianchi@gmail.com",
-                            sdf.parse("1990-01-01"), passwordEncoder.encode("password123"),
+                    new Terapeuta(null, "Giuseppe", "Bianchi",
+                            "giuseppebianchi@gmail.com",
+                            sdf.parse("1990-01-01"),
+                            passwordEncoder.encode("password123"),
                             null, null, null, null, null)
                 ));
             } else {
@@ -134,118 +139,135 @@ public class DataLoader implements CommandLineRunner {
                 new Bambino(null, "ABC123", "Giovanni", "Rossi", Sesso.MASCHIO,
                         sdf.parse("2015-05-10"),
                         "RSSGNN15A01H501A", "giovanni@example.com",
-                        "123456789", terapeuta1, null),
+                        "123456789", terapeuta1, null, true),
                 new Bambino(null, "DEF456", "Luca", "Bianchi", Sesso.MASCHIO,
                         sdf.parse("2016-11-15"),
                         "BNCLCU16B01H501B", "luca@example.com",
-                        "987654321", terapeuta1, null),
+                        "987654321", terapeuta1, null, true),
                 new Bambino(null, "GHI789", "Martina", "Verdi", Sesso.FEMMINA,
                         sdf.parse("2017-01-20"),
                         "VRDMRT17C01H501C", "martina@example.com",
-                        "1122334455", terapeuta1, null),
+                        "1122334455", terapeuta1, null, true),
                 new Bambino(null, "JKL012", "Alessandro", "Ferrari", Sesso.MASCHIO,
                         sdf.parse("2014-08-25"),
                         "FRRALS14D01H501D", "alessandro@example.com",
-                        "2233445566", terapeuta1, null),
+                        "2233445566", terapeuta1, null, true),
                 new Bambino(null, "MNO345", "Sofia", "Gialli", Sesso.FEMMINA,
                         sdf.parse("2018-03-10"),
                         "GLISFO18E01H501E", "sofia@example.com",
-                        "5566778899", terapeuta1, null),
+                        "5566778899", terapeuta1, null, true),
 
                 new Bambino(null, "PQR678", "Giulia", "Lombardi", Sesso.FEMMINA,
                         sdf.parse("2016-02-17"),
                         "LMBGLI16F01H501F", "giulia@example.com",
-                        "3344556677", terapeuta2, null),
+                        "3344556677", terapeuta2, null, true),
                 new Bambino(null, "STU901", "Marco", "Rossi", Sesso.MASCHIO,
                         sdf.parse("2015-04-22"),
                         "RSSMRK15G01H501G", "marco@example.com",
-                        "6677889900", terapeuta2, null),
+                        "6677889900", terapeuta2, null, true),
                 new Bambino(null, "VWX234", "Francesca", "Negri", Sesso.FEMMINA,
                         sdf.parse("2017-06-12"),
                         "NGRFNC17H01H501H", "francesca@example.com",
-                        "9988776655", terapeuta2, null),
+                        "9988776655", terapeuta2, null, true),
                 new Bambino(null, "YZA567", "Tommaso", "Romano", Sesso.MASCHIO,
                         sdf.parse("2014-09-30"),
                         "RMNTMS14I01H501I", "tommaso@example.com",
-                        "4433221100", terapeuta2, null),
+                        "4433221100", terapeuta2, null, true),
                 new Bambino(null, "BCD890", "Elena", "Bianchi", Sesso.FEMMINA,
                         sdf.parse("2018-11-18"),
                         "BNCELN18J01H501J", "elena@example.com",
-                        "5566771100", terapeuta2, null),
+                        "5566771100", terapeuta2, null, true),
 
                 new Bambino(null, "EFG123", "Carlo", "De Luca", Sesso.MASCHIO,
                         sdf.parse("2015-05-05"),
                         "DLCCRL15K01H501K", "carlo@example.com",
-                        "3344552211", terapeuta3, null),
+                        "3344552211", terapeuta3, null, true),
                 new Bambino(null, "HIJ456", "Alice", "Marino", Sesso.FEMMINA,
                         sdf.parse("2016-12-07"),
                         "MRNLIC16L01H501L", "alice@example.com",
-                        "7788994455", terapeuta3, null),
+                        "7788994455", terapeuta3, null, true),
                 new Bambino(null, "KLM789", "Federico", "Corti", Sesso.MASCHIO,
                         sdf.parse("2017-08-17"),
                         "CRTFRD17M01H501M", "federico@example.com",
-                        "1122334455", terapeuta3, null),
-                new Bambino(null, "NOP012", "Valentina", "Conti", Sesso.FEMMINA,
-                        sdf.parse("2015-03-10"),
-                        "CNTVLN15N01H501N", "valentina@example.com",
-                        "2233445566", terapeuta3, null),
+                        "1122334455", terapeuta3, null, true),
                 new Bambino(null, "QRS345", "Riccardo", "Ferrari", Sesso.MASCHIO,
                         sdf.parse("2018-09-12"),
                         "FRRRCD18O01H501O", "riccardo@example.com",
-                        "6677889900", terapeuta3, null)
+                        "6677889900", terapeuta3, null, true)
             ));
 
             eventRepository.saveAll(List.of(
-                new Evento(null, "Visita di controllo", sdfh.parse("2024-12-20 09:00"),
+                new Evento(null, "Visita di controllo",
+                        sdfh.parse("2024-12-20 09:00"),
                         sdfh.parse("2024-12-20 10:00"), terapeuta1),
-                new Evento(null, "Seduta terapia", sdfh.parse("2024-12-21 14:00"),
+                new Evento(null, "Seduta terapia",
+                        sdfh.parse("2024-12-21 14:00"),
                         sdfh.parse("2024-12-21 15:00"), terapeuta1),
-                new Evento(null, "Colloquio con i genitori", sdfh.parse("2024-12-22 11:00"),
+                new Evento(null, "Colloquio con i genitori",
+                        sdfh.parse("2024-12-22 11:00"),
                         sdfh.parse("2024-12-22 12:00"), terapeuta1),
 
-                new Evento(null, "Visita di controllo", sdfh.parse("2024-01-18 10:00"),
+                new Evento(null, "Visita di controllo",
+                        sdfh.parse("2024-01-18 10:00"),
                         sdfh.parse("2024-01-18 11:00"), terapeuta2),
-                new Evento(null, "Seduta terapia", sdfh.parse("2024-01-19 16:00"),
+                new Evento(null, "Seduta terapia",
+                        sdfh.parse("2024-01-19 16:00"),
                         sdfh.parse("2024-01-19 17:00"), terapeuta2),
-                new Evento(null, "Colloquio con i genitori", sdfh.parse("2024-01-20 09:00"),
+                new Evento(null, "Colloquio con i genitori",
+                        sdfh.parse("2024-01-20 09:00"),
                         sdfh.parse("2024-01-20 10:00"), terapeuta2),
 
-                new Evento(null, "Visita di controllo", sdfh.parse("2024-01-21 09:30"),
+                new Evento(null, "Visita di controllo",
+                        sdfh.parse("2024-01-21 09:30"),
                         sdfh.parse("2024-01-21 10:30"), terapeuta3),
-                new Evento(null, "Seduta terapia", sdfh.parse("2024-01-22 14:30"),
+                new Evento(null, "Seduta terapia",
+                        sdfh.parse("2024-01-22 14:30"),
                         sdfh.parse("2024-01-22 15:30"), terapeuta3),
-                new Evento(null, "Colloquio con i genitori", sdfh.parse("2024-01-23 11:00"),
+                new Evento(null, "Colloquio con i genitori",
+                        sdfh.parse("2024-01-23 11:00"),
                         sdfh.parse("2024-01-23 12:00"), terapeuta3)
             ));
 
             if(materialeRepository.count() == 0) {
                 materialeRepository.saveAll(List.of(
-                        new Materiale(null, "Materiale apprendimento 1", TipoMateriale.IMMAGINE,
+                        new Materiale(null,
+                                "Materiale apprendimento 1",
+                                TipoMateriale.IMMAGINE,
                                 "/path/to/materiale2", terapeuta1, null),
-                        new Materiale(null, "Materiale colore 1", TipoMateriale.VIDEO,
+                        new Materiale(null,
+                                "Materiale colore 1", TipoMateriale.VIDEO,
                                 "/path/to/materiale3", terapeuta1, null),
 
-                        new Materiale(null, "Materiale disegno 2", TipoMateriale.PDF,
+                        new Materiale(null,
+                                "Materiale disegno 2", TipoMateriale.PDF,
                                 "/path/to/materiale4", terapeuta2, null),
-                        new Materiale(null, "Materiale apprendimento 2", TipoMateriale.IMMAGINE,
+                        new Materiale(null, "Materiale apprendimento 2",
+                                TipoMateriale.IMMAGINE,
                                 "/path/to/materiale5", terapeuta2, null),
-                        new Materiale(null, "Materiale colore 2", TipoMateriale.VIDEO,
+                        new Materiale(null, "Materiale colore 2",
+                                TipoMateriale.VIDEO,
                                 "/path/to/materiale6", terapeuta2, null),
 
-                        new Materiale(null, "Materiale disegno 3", TipoMateriale.PDF,
+                        new Materiale(null, "Materiale disegno 3",
+                                TipoMateriale.PDF,
                                 "/path/to/materiale7", terapeuta3, null),
-                        new Materiale(null, "Materiale apprendimento 3", TipoMateriale.IMMAGINE,
+                        new Materiale(null, "Materiale apprendimento 3",
+                                TipoMateriale.IMMAGINE,
                                 "/path/to/materiale8", terapeuta3, null),
-                        new Materiale(null, "Materiale colore 3", TipoMateriale.VIDEO,
+                        new Materiale(null, "Materiale colore 3",
+                                TipoMateriale.VIDEO,
                                 "/path/to/materiale9", terapeuta3, null)
                 ));
             }
 
             List<Materiale> materiali = materialeRepository.findAll();
             List<Terapeuta> terapeuti2 = terapeutaRepository.findAll();
-            List<Bambino> bambiniT1 = bambinoRepository.findAllByTerapeutaId(terapeuti2.get(0).getId());
-            List<Bambino> bambiniT2 = bambinoRepository.findAllByTerapeutaId(terapeuti2.get(1).getId());
-            List<Bambino> bambiniT3 = bambinoRepository.findAllByTerapeutaId(terapeuti2.get(2).getId());
+            List<Bambino> bambiniT1 = bambinoRepository
+                    .findAllByTerapeutaId(terapeuti2.get(0).getId());
+            List<Bambino> bambiniT2 = bambinoRepository
+                    .findAllByTerapeutaId(terapeuti2.get(1).getId());
+            List<Bambino> bambiniT3 = bambinoRepository
+                    .findAllByTerapeutaId(terapeuti2.get(2).getId());
 
             Materiale materiale1 = materiali.get(0);
             Materiale materiale2 = materiali.get(1);
@@ -262,32 +284,48 @@ public class DataLoader implements CommandLineRunner {
             Bambino bambino3T3 = bambiniT3.get(2);
 
             sessioneRepository.saveAll(List.of(
-                new Sessione(null, "Tema di disegno", LocalDateTime.now(),true,
-                        "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta1,
-                        List.of(bambino1T1)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusHours(2),true,
+                new Sessione(null, "Tema di disegno",
+                        LocalDateTime.now(), true,
+                        "Nota aggiuntiva sulla sessione",
+                        TipoSessione.DISEGNO, materiale1, terapeuta1,
+                          List.of(bambino1T1)),
+                new Sessione(null, "Apprendimento motorio",
+                        LocalDateTime.now().plusHours(2), true,
                         "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta1,
                         List.of(bambino2T1, bambino3T1)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(1), true,
+                new Sessione(null, "Tecniche di colore",
+                        LocalDateTime.now().plusDays(1), true,
                         "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta1,
                         List.of(bambino1T1, bambino2T1, bambino3T1)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(1), true,
-                        "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta2,
+                new Sessione(null, "Tema di disegno",
+                        LocalDateTime.now().plusDays(1), true,
+                        "Nota aggiuntiva sulla sessione",
+                        TipoSessione.DISEGNO, materiale1, terapeuta2,
                         List.of(bambino1T2, bambino2T2)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(1).plusHours(3), true,
-                        "Osservazioni sul progresso", TipoSessione.COLORE, materiale2, terapeuta2,
+                new Sessione(null, "Apprendimento motorio",
+                        LocalDateTime.now().plusDays(1).plusHours(3), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.COLORE, materiale2, terapeuta2,
                         List.of(bambino3T2)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(2), true,
-                        "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta2,
+                new Sessione(null, "Tecniche di colore",
+                        LocalDateTime.now().plusDays(2), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.COLORE, materiale3, terapeuta2,
                         List.of(bambino1T2, bambino3T2)),
-                new Sessione(null, "Tema di disegno", LocalDateTime.now().plusDays(3), true,
-                        "Nota aggiuntiva sulla sessione", TipoSessione.DISEGNO, materiale1, terapeuta3,
+                new Sessione(null, "Tema di disegno",
+                        LocalDateTime.now().plusDays(3), true,
+                        "Nota aggiuntiva sulla sessione",
+                        TipoSessione.DISEGNO, materiale1, terapeuta3,
                         List.of(bambino1T3, bambino2T3)),
-                new Sessione(null, "Apprendimento motorio", LocalDateTime.now().plusDays(4), true,
-                        "Osservazioni sul progresso", TipoSessione.APPRENDIMENTO, materiale2, terapeuta3,
+                new Sessione(null, "Apprendimento motorio",
+                        LocalDateTime.now().plusDays(4), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.APPRENDIMENTO, materiale2, terapeuta3,
                         List.of(bambino3T3)),
-                new Sessione(null, "Tecniche di colore", LocalDateTime.now().plusDays(5), true,
-                        "Osservazioni sul progresso", TipoSessione.COLORE, materiale3, terapeuta3,
+                new Sessione(null, "Tecniche di colore",
+                        LocalDateTime.now().plusDays(5), true,
+                        "Osservazioni sul progresso",
+                        TipoSessione.COLORE, materiale3, terapeuta3,
                         List.of(bambino2T3))
             ));
 
@@ -297,28 +335,27 @@ public class DataLoader implements CommandLineRunner {
             Sessione sessione3 = sessioni.get(2);
             Sessione sessione4 = sessioni.get(3);
             Sessione sessione5 = sessioni.get(4);
-            //TODO: rivedere
-           disegnoRepository.saveAll(List.of(
-                new Disegno(null, null, 7, null, sessione1.getData(),
-                        ValutazioneEmotiva.FELICE,
-                        sessione1.getTerapeuta(), sessione1,
-                        sessione1.getBambini()),
-                new Disegno(null, null, 9, null, sessione2.getData(),
-                        ValutazioneEmotiva.TRISTE,
-                        sessione2.getTerapeuta(), sessione2,
-                        sessione2.getBambini()),
-                new Disegno(null, null, 9, null, sessione3.getData(),
-                        ValutazioneEmotiva.FELICE,
-                        sessione3.getTerapeuta(), sessione3,
-                        sessione3.getBambini()),
-                new Disegno(null, null, 10, null, sessione4.getData(),
-                        ValutazioneEmotiva.SPAVENTATO,
-                        sessione4.getTerapeuta(), sessione4,
-                        sessione4.getBambini()),
-                new Disegno(null, null, 7, null, sessione5.getData(),
-                        ValutazioneEmotiva.ARRABBIATO,
-                        sessione5.getTerapeuta(), sessione5,
-                        sessione5.getBambini())
+            disegnoRepository.saveAll(List.of(
+                    new Disegno(null, null, 7, null, sessione1.getData(),
+                            ValutazioneEmotiva.FELICE,
+                            sessione1.getTerapeuta(), sessione1,
+                            sessione1.getBambini()),
+                    new Disegno(null, null, 9, null, sessione2.getData(),
+                            ValutazioneEmotiva.TRISTE,
+                            sessione2.getTerapeuta(), sessione2,
+                            sessione2.getBambini()),
+                    new Disegno(null, null, 9, null, sessione3.getData(),
+                            ValutazioneEmotiva.FELICE,
+                            sessione3.getTerapeuta(), sessione3,
+                            sessione3.getBambini()),
+                    new Disegno(null, null, 10, null, sessione4.getData(),
+                            ValutazioneEmotiva.SPAVENTATO,
+                            sessione4.getTerapeuta(), sessione4,
+                            sessione4.getBambini()),
+                    new Disegno(null, null, 7, null, sessione5.getData(),
+                            ValutazioneEmotiva.ARRABBIATO,
+                            sessione5.getTerapeuta(), sessione5,
+                            sessione5.getBambini())
             ));
         } catch (Exception e) {
             System.err.println("Exception Message: " + e.getMessage());

@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Stage, Layer, Line, Rect } from 'react-konva';
+import { Stage, Layer, Line } from 'react-konva';
 import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css";
-import "../../style/LavagnaVisualizzaDisegni.css"
+import "../../style/LavagnaVisualizzaDisegni.css";
 import "../../style/Button.css";
 import { Button } from "react-bootstrap";
-import ValutazionePopup from "./ValutazionePopup"; // Importa il modal
+import ValutazionePopup from "./ValutazionePopup";
+import { toast } from "react-toastify";
 
-const MostraDisegnoBambino = ({ disegnoId }) => {
+const MostraDisegnoBambino = ({ disegnoId, tema }) => {
     const [actions, setActions] = useState([]);
     const stageRef = useRef(null);
     const [showValutazione, setShowValutazione] = useState(false);
@@ -23,9 +24,6 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
         maxX: window.innerWidth * 0.8,
         maxY: window.innerHeight * 0.6,
     });
-
-    const DRAWING_AREA_OFFSET_X = 20;
-    const DRAWING_AREA_OFFSET_Y = 20;
 
     useEffect(() => {
         const loadActions = async () => {
@@ -87,17 +85,16 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
 
     const handleSubmitValutazione = async () => {
         try {
-            await Promise.all([
-                axiosInstance.post(`/api/terapeuta/disegno/${disegnoId}/valutazione`, {
-                    valutazione,
-                }),
-            ]);
+            await axiosInstance.post(`/api/terapeuta/disegno/${disegnoId}/valutazione`, {
+                valutazione,
+            });
 
-            alert("Valutazione inviata con successo!");
+            toast.success("Valutazione inviata con successo!");
             setShowValutazione(false);
+            window.location.reload(); // Ricarica la pagina per visualizzare la valutazione
         } catch (error) {
             console.error("Errore nell'invio della valutazione:", error);
-            alert("Errore nell'invio della valutazione.");
+            toast.error("Errore nell'invio della valutazione.");
         }
     };
 
@@ -108,88 +105,109 @@ const MostraDisegnoBambino = ({ disegnoId }) => {
 
     return (
         <div
-            className="lavagna-container"
             style={{
-                overflow: 'auto',
-                width: dimensions.width,
-                height: dimensions.height,
-                border: '1px solid black',
-                position: 'relative', // Permette il posizionamento del bottone in posizione assoluta
-                margin: '0 auto', // Centra orizzontalmente l'intera lavagna
+                marginTop: '20px',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                width: dimensions.width, // Imposta la larghezza dinamicamente
             }}
         >
-            {/* Bottone centrato */}
-            <Button
-                variant="primary"
-                className={"btn-vota"}
+            {/* Riga superiore */}
+            <div
                 style={{
-                    position: 'absolute',
-                    left: '50%',
-                    zIndex: 10, // Assicura che il bottone sia sopra tutti gli altri elementi
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px',
+                    backgroundColor: '#f1f1f1',
+                    borderBottom: '1px solid #ccc',
+                    borderRadius: '8px 8px 0 0',
+                    width: '100%', // La larghezza è al 100% del contenitore padre
                 }}
-                onClick={() => setShowValutazione(true)}
             >
-                Vota
-            </Button>
-
-            <div style={{...drawingStyle, position: 'relative'}}>
-                <Stage
-                    width={drawingStyle.width}
-                    height={drawingStyle.height}
-                    ref={stageRef}
+                <h5 style={{ margin: 0 }}>{tema || "Nessun tema assegnato"}</h5>
+                <Button
+                    variant="primary"
+                    className="btn-vota"
+                    onClick={() => setShowValutazione(true)}
                     style={{
-                        backgroundColor: "transparent",
-                        cursor: "default",
+                        padding: '5px 10px',
+                        fontSize: '14px',
                     }}
                 >
-                    <Layer name="drawing-layer">
-
-
-                        {actions.map((action, index) => {
-                            if (action.type === "lasso") {
-                                return (
-                                    <Line
-                                        key={`action-${index}`}
-                                        points={action.points}
-                                        closed={true}
-                                        fill={action.color}
-                                        stroke={action.color}
-                                        strokeWidth={1}
-                                        opacity={0.5}
-                                    />
-                                );
-                            } else if (action.type === "stroke") {
-                                return (
-                                    <Line
-                                        key={`action-${index}`}
-                                        points={action.points}
-                                        stroke={action.color}
-                                        strokeWidth={action.strokeWidth}
-                                        lineCap="round"
-                                        lineJoin="round"
-                                        tension={0.5}
-                                        globalCompositeOperation={action.color === "white" ? 'destination-out' : 'source-over'}
-                                    />
-                                );
-                            } else {
-                                return null;
-                            }
-                        })}
-                    </Layer>
-                </Stage>
+                    Vota
+                </Button>
             </div>
 
-            <ValutazionePopup
-                show={showValutazione}
-                onClose={() => setShowValutazione(false)}
-                onSubmit={handleSubmitValutazione}
-                valutazione={valutazione}
-                setValutazione={setValutazione}
-                commento={commento}
-                setCommento={setCommento}
-            />
-        </div>
+            {/* Board */}
+            <div
+                className="lavagna-container"
+                style={{
+                    overflow: 'auto',
+                    width: dimensions.width,
+                    height: dimensions.height,
+                    position: 'relative',
+                    margin: '0 auto',
+                }}
+            >
+                <div style={{ ...drawingStyle, position: 'relative' }}>
+                    <Stage
+                        width={drawingStyle.width}
+                        height={drawingStyle.height}
+                        ref={stageRef}
+                        style={{
+                            backgroundColor: "transparent",
+                            cursor: "default",
+                        }}
+                    >
+                        <Layer name="drawing-layer">
+                            {actions.map((action, index) => {
+                                if (action.type === "lasso") {
+                                    return (
+                                        <Line
+                                            key={`action-${index}`}
+                                            points={action.points}
+                                            closed={true}
+                                            fill={action.color}
+                                            stroke={action.color}
+                                            strokeWidth={1}
+                                            opacity={0.5}
+                                        />
+                                    );
+                                } else if (action.type === "stroke") {
+                                    return (
+                                        <Line
+                                            key={`action-${index}`}
+                                            points={action.points}
+                                            stroke={action.color}
+                                            strokeWidth={action.strokeWidth}
+                                            lineCap="round"
+                                            lineJoin="round"
+                                            tension={0.5}
+                                            globalCompositeOperation={action.color === "white" ? 'destination-out' : 'source-over'}
+                                        />
+                                    );
+                                } else {
+                                    return null;
+                                }
+                            })}
+                        </Layer>
+                    </Stage>
+                </div>
 
+                <ValutazionePopup
+                    show={showValutazione}
+                    onClose={() => setShowValutazione(false)}
+                    onSubmit={handleSubmitValutazione}
+                    valutazione={valutazione}
+                    setValutazione={setValutazione}
+                    commento={commento}
+                    setCommento={setCommento}
+                />
+            </div>
+        </div>
     );
 };
 

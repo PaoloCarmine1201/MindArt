@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
+import {toast} from "react-toastify";
 
 function ProfiloTerapuetaComponent() {
-    const [idTerapeuta, setIdTerapeuta] = useState(null);
     const [terapeuta, setTerapeuta] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -21,23 +21,14 @@ function ProfiloTerapuetaComponent() {
     });
 
     useEffect(() => {
-        const storedId = localStorage.getItem('idTerapeuta');
-        if (storedId) {
-            setIdTerapeuta(storedId);
-        }
+        axiosInstance.get(`api/terapeuta/get`)
+            .then(response => {
+                setTerapeuta(response.data);
+            })
+            .catch(error => {
+                console.error("Errore durante il recupero dei dati del terapeuta:", error);
+            });
     }, []);
-
-    useEffect(() => {
-        if (idTerapeuta) {
-            axiosInstance.get(`api/terapeuta/get/${idTerapeuta}`)
-                .then(response => {
-                    setTerapeuta(response.data);
-                })
-                .catch(error => {
-                    console.error("Errore durante il recupero dei dati del terapeuta:", error);
-                });
-        }
-    }, [idTerapeuta]);
 
     useEffect(() => {
         if (terapeuta) {
@@ -76,8 +67,7 @@ function ProfiloTerapuetaComponent() {
             })
             .catch(error => {
                 console.error("Errore durante il salvataggio delle modifiche:", error);
-                setConfirmMessage("Errore durante il salvataggio delle modifiche");
-                setShowConfirmModal(true);
+                toast.error("Errore durante il salvataggio delle modifiche.");
             });
     };
 
@@ -85,6 +75,8 @@ function ProfiloTerapuetaComponent() {
         setShowConfirmModal(false);
         if (emailChanged) {
             window.location.href = '/login';
+        }else{
+            window.location.reload();
         }
     }
 
@@ -164,21 +156,19 @@ function ProfiloTerapuetaComponent() {
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <div className="btn-container">
-                        <Button
-                            type="button"
-                            className="btn-conferma"
-                            onClick={handleSubmit}
-                        >
-                            Salva
-                        </Button>
-                        <Button
-                            onClick={() => setShowModal(false)}
-                            className="btn-cancella"
-                        >
-                            Annulla
-                        </Button>
-                    </div>
+                    <Button
+                        onClick={() => setShowModal(false)}
+                        className="btn-cancella"
+                    >
+                        Annulla
+                    </Button>
+                    <Button
+                        type="button"
+                        className="btn-conferma"
+                        onClick={handleSubmit}
+                    >
+                        Salva
+                    </Button>
                 </ModalFooter>
             </Modal>
             <h2 className="dettaglio-header">{terapeuta.nome} {terapeuta.cognome}</h2>
@@ -214,7 +204,7 @@ function ProfiloTerapuetaComponent() {
             </div>
 
             {/* Pulsante Indietro */}
-            <Link to="/home" className="dettaglio-button-link">
+            <Link to="/" className="dettaglio-button-link">
                 <p className="dettaglio-back-button">↩︎ Indietro</p>
             </Link>
         </div>

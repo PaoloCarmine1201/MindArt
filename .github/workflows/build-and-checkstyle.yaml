@@ -1,0 +1,68 @@
+name: Build and Code Checkstyle
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - CICD
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend:
+    name: Backend Build, Checkstyle, and Test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: mindart
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '22'
+
+      - name: Wait for MySQL to be ready
+        run: sleep 7
+
+      - name: Build backend with Maven
+        run: mvn clean install
+
+      - name: Run Checkstyle
+        run: mvn checkstyle:check
+
+
+  frontend:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: src/frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: src/frontend

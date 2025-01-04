@@ -7,7 +7,7 @@ import logo from '../assets/logo_vertical_1024x1024.png';
 import background from '../assets/ChildLoginBackground.jpg';
 import {toast} from "react-toastify";
 import axiosInstance from "../config/axiosInstance";
-import {Link, useNavigate} from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 
 // Component definition for the child login form

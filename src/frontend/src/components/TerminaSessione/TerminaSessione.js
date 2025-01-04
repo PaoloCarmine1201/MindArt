@@ -16,7 +16,7 @@ const TerminaSessione = ({ onSessionClosed }) => {
         axiosInstance.post(`/api/terapeuta/sessione/termina`, {})
             .then((response) => {
                 if (response && response.status === 200) {
-                    navigate("/home")
+                    navigate("/")
                     onSessionClosed();
                     toast.success("Sessione terminata!");
                 }
@@ -37,12 +37,14 @@ const TerminaSessione = ({ onSessionClosed }) => {
     };
 
     const handleOpenModal = () => {
+        toast.warning("Terminando la sessione non potrai più accedere ai dati della sessione corrente.")
         setShowModal(true);
     };
 
     return (
         <div className="container text-center">
-            <Button className="btn-conferma" onClick={handleOpenModal}>
+            <Button className="btn-conferma"
+                    onClick={handleOpenModal}>
                 Termina sessione
             </Button>
 

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {useParams, Link, useNavigate} from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
 import axiosInstance from "../../config/axiosInstance";
 import {Button} from "react-bootstrap";
 import "../../style/Button.css";
+import EditBambino from "../GestioneInformazioniBambino/EditBambino";
+import {toast} from "react-toastify";
 
 function DettaglioBambinoComponent() {
     const { id } = useParams();
@@ -55,11 +57,13 @@ function DettaglioBambinoComponent() {
             .delete(`http://localhost:8080/api/terapeuta/bambino/${bambino.id}`)
             .then((response) => {
                 console.log(response);
+                toast.success("Bambino eliminato con successo!");
                 // Dopo l’eliminazione, torniamo alla pagina precedente
                 navigate(-1);
             })
             .catch((error) => {
                 console.error(error);
+                toast.error("Errore nell'eliminazione del bambino");
             });
     };
 
@@ -106,11 +110,7 @@ function DettaglioBambinoComponent() {
 
             <div className="dettaglio-button-container">
                 {/* Pulsante Modifica */}
-                <Link to={`/modifica/${id}`}>
-                    <Button className="btn-all">
-                        Modifica
-                    </Button>
-                </Link>
+                <EditBambino bambino={bambino}/>
 
                 {/* Pulsante Elimina */}
                 <Button

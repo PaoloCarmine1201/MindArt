@@ -17,7 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/terapeuta")
@@ -26,16 +33,32 @@ import org.springframework.web.bind.annotation.*;
 public class TerapeutaController {
 
     /**
+     * Servizio per la gestione del terapeuta.
+     */
+    /**
      * Il servizio per la gestione dei terapeuti.
      */
     private final TerapeutaService terapeutaService;
 
+    /**
+     * Restituisce le informazioni del terapeuta loggato.
+     * @return TerapeutaDTOStat
+     */
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @GetMapping("/get/{id}")
-    public ResponseEntity<TerapeutaDTOStat> getTerapeuta(@PathVariable Long id) {
-        TerapeutaDTOStat terapeuta = terapeutaService.getTerapeuta(id);
+    @GetMapping("/get")
+    public ResponseEntity<TerapeutaDTOStat> getTerapeuta() {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        String email = authentication.getPrincipal().toString();
+        TerapeutaDTOStat terapeuta = terapeutaService.getTerapeuta(email);
         return ResponseEntity.ok(terapeuta);
     }
+    /**
+     * Aggiorna le informazioni del terapeuta.
+     * @param terapeutaDTO TerapeutaDTOSimple
+     * @return TerapeutaDTOSimple
+     */
     /**
      *  Provvede ad accedere al database per l'entità Terapeuta.
      */
@@ -72,8 +95,15 @@ public class TerapeutaController {
 
     @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping("/update")
-    public ResponseEntity<TerapeutaDTOSimple> updateTerapeuta(@RequestBody TerapeutaDTOSimple terapeutaDTO) {
-        TerapeutaDTOSimple terapeuta = terapeutaService.updateTerapeuta(terapeutaDTO);
+    public ResponseEntity<TerapeutaDTOSimple> updateTerapeuta(
+            @RequestBody final TerapeutaDTOSimple terapeutaDTO
+    ) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        TerapeutaDTOSimple terapeuta =
+                terapeutaService.updateTerapeuta(
+                        terapeutaDTO, (String) authentication.getPrincipal()
+                );
         return ResponseEntity.ok(terapeuta);
     }
 }

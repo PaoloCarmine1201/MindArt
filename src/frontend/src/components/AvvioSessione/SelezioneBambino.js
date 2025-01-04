@@ -1,11 +1,11 @@
 // Step3SelezioneBambino.jsx
 import React from 'react';
-import { FormGroup, FormLabel, Form} from 'react-bootstrap';
+import { FormGroup, Form} from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import BambinoLista from './BambinoLista';
 
 const SelezioneBambino = ({ childrenList, loading, error }) => {
-    const { values, setFieldValue, errors, touched } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
 
     return (
         <FormGroup>

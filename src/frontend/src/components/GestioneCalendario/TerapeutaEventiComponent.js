@@ -6,7 +6,8 @@ import moment from 'moment';
 import 'moment/locale/it';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import EventoForm from "./EventoForm";
-import axiosInstance from "../../config/axiosInstance"; // Ensure correct import path
+import axiosInstance from "../../config/axiosInstance";
+import {toast} from "react-toastify"; // Ensure correct import path
 
 // Initialize moment with Italian locale
 moment.locale('it');
@@ -17,7 +18,6 @@ function MyCalendar() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     // Fetch events when the component mounts
     useEffect(() => {
@@ -30,13 +30,10 @@ function MyCalendar() {
                     title: ev.nome,
                     start: new Date(ev.inizio),
                     end: new Date(ev.fine),
-                    terapeuta: ev.terapeuta
                 }));
                 setEvents(convertedEvents);
-                setError(null);
             } catch (err) {
                 console.error('Error fetching events:', err);
-                setError('Errore nel caricamento degli eventi.');
             } finally {
                 setLoading(false);
             }
@@ -51,7 +48,6 @@ function MyCalendar() {
             start: slotInfo.start,
             end: slotInfo.end,
             title: '',
-            terapeuta: parseInt(localStorage.getItem("idTerapeuta"), 10)
         });
         setShowModal(true);
     };
@@ -68,7 +64,6 @@ function MyCalendar() {
             nome: eventData.title,
             inizio: eventData.start.toISOString(),
             fine: eventData.end.toISOString(),
-            terapeuta: eventData.terapeuta
         };
 
         try {
@@ -81,14 +76,17 @@ function MyCalendar() {
                 title: response.data.nome,
                 start: new Date(response.data.inizio),
                 end: new Date(response.data.fine),
-                terapeuta: response.data.terapeuta
             };
+            if(response && (response.status === 200 || response.status === 201)){
+                toast.success("Evento creato con successo!");
+            }
+
             setEvents(prev => [...prev, newEvent]);
             setShowModal(false);
             setSelectedEvent(null);
         } catch (err) {
             console.error('Error creating event:', err);
-            setError('Si è verificato un errore durante la creazione dell\'evento.');
+            toast.error("Errore nella creazione di un evento.");
         }
     };
 
@@ -99,7 +97,6 @@ function MyCalendar() {
             nome: eventData.title,
             inizio: eventData.start.toISOString(),
             fine: eventData.end.toISOString(),
-            terapeuta: eventData.terapeuta || 1
         };
 
         try {
@@ -112,14 +109,18 @@ function MyCalendar() {
                 title: response.data.nome,
                 start: new Date(response.data.inizio),
                 end: new Date(response.data.fine),
-                terapeuta: response.data.terapeuta
             };
+
+            if(response && (response.status === 200 || response.status === 201)){
+                toast.success("Evento aggiornato con successo!");
+            }
+
             setEvents(prev => prev.map(ev => ev.id === updatedEvent.id ? updatedEvent : ev));
             setShowModal(false);
             setSelectedEvent(null);
         } catch (err) {
             console.error('Error updating event:', err);
-            setError('Si è verificato un errore durante l\'aggiornamento dell\'evento.');
+            toast.error("Errore nell'aggiornamento dell'evento.");
         }
     };
 
@@ -127,12 +128,14 @@ function MyCalendar() {
     const handleDeleteEvent = async (id) => {
         try {
             await axiosInstance.delete(`/api/terapeuta/event/${id}`);
+
+            toast.success("Evento eliminato con successo!");
             setEvents(prev => prev.filter(ev => ev.id !== id));
             setShowModal(false);
             setSelectedEvent(null);
         } catch (err) {
             console.error('Error deleting event:', err);
-            setError('Si è verificato un errore durante la cancellazione dell\'evento.');
+            toast.error("Errore nell'eliminazione dell'evento.");
         }
     };
 
@@ -174,7 +177,6 @@ function MyCalendar() {
                     onSelectEvent={handleSelectEvent}
                 />
                 {loading && <p>Caricamento eventi...</p>}
-                {error && <p className="error-message">{error}</p>}
             </div>
             {showModal && (
                 <EventoForm
@@ -184,7 +186,6 @@ function MyCalendar() {
                     onClose={() => {
                         setShowModal(false);
                         setSelectedEvent(null);
-                        setError(null);
                     }}
                 />
             )}

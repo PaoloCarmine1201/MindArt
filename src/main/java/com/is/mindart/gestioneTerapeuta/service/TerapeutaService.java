@@ -1,6 +1,6 @@
 package com.is.mindart.gestioneTerapeuta.service;
 
-import com.is.mindart.gestioneSessione.model.SessioneRepository;
+
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.security.jwt.JwtUtil;
@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 
 @Service
 @AllArgsConstructor
@@ -49,8 +48,14 @@ public class TerapeutaService {
         terapeutaRepository.save(terapeuta);
     }
 
-    public TerapeutaDTOStat getTerapeuta(Long id) {
-        Terapeuta terapeuta = terapeutaRepository.findById(id).orElseThrow(() ->
+    /**
+     * Provvede a recuperare il terapeuta.
+     * @param email email del terapeuta
+     * @return {@link TerapeutaDTOStat}
+     */
+    public TerapeutaDTOStat getTerapeuta(final String email) {
+        Terapeuta terapeuta = terapeutaRepository
+                .findByEmail(email).orElseThrow(() ->
                 new IllegalArgumentException("Terapeuta non trovato"));
         return modelMapper.map(terapeuta, TerapeutaDTOStat.class);
     }
@@ -58,6 +63,7 @@ public class TerapeutaService {
     /**
      * Provvede a verificare se il terapeuta esiste.
      * @param email Email del terapeuta
+     * @param rawPassword Password in chiaro
      * @return true se il terapeuta esiste, false altrimenti
      */
     public String loginTerapeuta(final String email, final String rawPassword) {
@@ -71,6 +77,21 @@ public class TerapeutaService {
         return null;
     }
 
+    /**
+     * Aggiorna il profile del terapeuta.
+     * @param terapeutaDTO TerapeutaDTO con i nuovi
+     *                     dati del terapeuta da aggiornare
+     * @param email Email del terapeuta
+     * @return TerapeutaDTO con i nuovi dati del terapeuta aggiornato
+     */
+    public TerapeutaDTOSimple updateTerapeuta(
+            final TerapeutaDTOSimple terapeutaDTO,
+            final String email
+    ) {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElseThrow(() ->
+                    new IllegalArgumentException("Terapeuta non trovato")
+                );
 
 
 

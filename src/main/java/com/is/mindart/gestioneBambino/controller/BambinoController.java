@@ -90,7 +90,29 @@ public class BambinoController {
     @PostMapping("/add")
     public ResponseEntity<RegisterBambinoDTO> addBambino(
             @Valid @RequestBody final RegisterBambinoDTO bambinoDto) {
-        bambinoService.addBambino(bambinoDto);
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        bambinoService.addBambino(bambinoDto, (String) authentication.getPrincipal());
+        return ResponseEntity.ok(bambinoDto);
+    }
+    /**
+     * @author mauriliolarocca
+     * Aggiorna le informazioni del bambino al database.
+     *
+     * @param bambinoDto un oggetto {@link RegisterBambinoDTO}
+     *                   contenente i dati del bambino.
+     * @return bambino salvato come {@link RegisterBambinoDTO}
+     */
+    @PostMapping("/update")
+    public ResponseEntity<RegisterBambinoDTO> updateBambino(
+            @Valid @RequestBody final RegisterBambinoDTO bambinoDto) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        bambinoService.updateBambino(bambinoDto, (String) authentication.getPrincipal());
         return ResponseEntity.ok(bambinoDto);
     }
 

@@ -31,7 +31,6 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
     const [childrenError, setChildrenError] = useState(null);
 
      // 'forward' o 'backward'
-    const [errorMessage, setErrorMessage] = useState('');
     const [direction, setDirection] = useState("forward");
 
     const initialValues = {
@@ -66,7 +65,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
                     setMaterialList(response.data);
                     setLoadingMaterial(false);
                 })
-                .catch(error => {
+                .catch(() => {
                     setMaterialError('Errore nel caricamento dei materiali.');
                     setLoadingMaterial(false);
                 });
@@ -87,7 +86,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
         }
     }, [currentStep]);
 
-    const handleNext = async (validateForm, touched, setTouched, values, errors) => {
+    const handleNext = async (validateForm, touched, setTouched, values) => {
 
         const errs = await validateForm()
 
@@ -108,13 +107,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
             } else {
                 setCurrentStep(prev => prev + 1);
             }
-            setErrorMessage('');
         } else {
-            const errorMessages = Object.keys(errs)
-                .map(key => `${errs[key]}`) // Concatena i campi con i messaggi di errore
-                .join(' | '); // Unisci i messaggi con un separatore (es. "|")
-
-            setErrorMessage(errorMessages); // Imposta i messaggi di errore nello stato
+            toast.error('Compila correttamente i campi obbligatori.');
         }
     };
 

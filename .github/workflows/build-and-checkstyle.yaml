@@ -46,6 +46,9 @@ jobs:
       - name: Run Checkstyle
         run: mvn checkstyle:check
 
+      - name: Run Tests
+        run: mvn test
+
 
   frontend:
     name: Frontend Build

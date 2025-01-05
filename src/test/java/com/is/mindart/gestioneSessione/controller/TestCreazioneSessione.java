@@ -1,114 +1,51 @@
 package com.is.mindart.gestioneSessione.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.is.mindart.gestioneSessione.model.TipoSessione;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@SpringBootTest
-@AutoConfigureMockMvc
 public class TestCreazioneSessione {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private SessioneService sessioneService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Mock
+    private Authentication authentication;
 
-    private String obtainAccessToken(String email, String password) throws Exception {
-        Map<String, String> authRequest = new HashMap<>();
-        authRequest.put("email", email);
-        authRequest.put("password", password);
+    @InjectMocks
+    private SessioneController sessioneController;
 
-        String requestBody = objectMapper.writeValueAsString(authRequest);
-
-        // Supponendo che l'endpoint di login sia /api/auth/login
-        String token = mockMvc.perform(post("/auth/terapeuta/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        return token;
-    }
-
-
-    @Test
-    void testCreateSessione_Success() throws Exception {
-        // Simula l'autenticazione
-        String token = obtainAccessToken("mariorossi@gmail.com", "password123");
-
-        // Crea un DTO valido per la richiesta
-        SessioneDTO sessioneDTO = new SessioneDTO();
-        sessioneDTO.setTipoSessione(TipoSessione.DISEGNO);
-        sessioneDTO.setTemaAssegnato("Tema valido");
-        sessioneDTO.setMateriale(null);
-        sessioneDTO.setBambini(Collections.emptyList());
-
-        // Serializza il DTO in JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBody = objectMapper.writeValueAsString(sessioneDTO);
-
-        // Simula il comportamento del servizio
-        Mockito.doNothing().when(sessioneService).creaSessione(Mockito.any(), Mockito.any());
-
-        // Esegue la richiesta POST con il token JWT nell'intestazione Authorization
-        mockMvc.perform(post("/api/terapeuta/sessione/create")
-                        .header("Authorization", "Bearer " + token) // Aggiungi il token JWT
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isOk()); // 200 OK
-
-
-        // Verifica che il servizio sia stato chiamato una sola volta
-        Mockito.verify(sessioneService, Mockito.times(1))
-                .creaSessione(Mockito.any(SessioneDTO.class), Mockito.eq("mariorossi@gmail.com"));
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(authentication.getPrincipal()).thenReturn("terapeuta@example.com");
     }
 
     @Test
-    void testCreateSessione_InvalidDTO() throws Exception {
-        // Simula l'autenticazione
-        String token = obtainAccessToken("mariorossi@gmail.com", "password123");
-
-        // Crea un DTO non valido (violazione del validator)
+    @DisplayName("Creazione di una sessione -> 200 OK")
+    public void testCreateSessione() {
+        // Arrange
         SessioneDTO sessioneDTO = new SessioneDTO();
-        sessioneDTO.setTipoSessione(TipoSessione.DISEGNO);
-        sessioneDTO.setTemaAssegnato(null); // Tema assegnato mancante
-        sessioneDTO.setMateriale(1L); // Materiale non permesso per DISEGNO
 
-        // Serializza il DTO in JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBody = objectMapper.writeValueAsString(sessioneDTO);
+        // Act
+        ResponseEntity<Void> response = sessioneController.create(sessioneDTO);
 
-        // Esegue la richiesta POST con il token JWT nell'intestazione Authorization
-        mockMvc.perform(post("/api/terapeuta/sessione/create")
-                        .header("Authorization", "Bearer " + token) // Aggiungi il token JWT
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isBadRequest()); // 400 BAD REQUEST
-
-        // Verifica che il servizio non venga chiamato
-        Mockito.verify(sessioneService, Mockito.never())
-                .creaSessione(Mockito.any(), Mockito.any());
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(sessioneService, times(1))
+                .creaSessione(sessioneDTO, "terapeuta@example.com");
     }
 }

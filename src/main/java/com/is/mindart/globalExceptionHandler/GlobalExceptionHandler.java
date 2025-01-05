@@ -1,4 +1,4 @@
-package com.is.mindart.GlobalExceptionHandler;
+package com.is.mindart.globalExceptionHandler;
 
 import com.is.mindart.gestioneMateriale.controller.DuplicatedFileException;
 import com.is.mindart.gestioneMateriale.controller.EmptyFileException;
@@ -52,13 +52,10 @@ public class GlobalExceptionHandler {
 
     /**
      * Gestisce l'eccezione generica.
-     * @param ex eccezione generica.
      * @return ResponseEntity con messaggio di errore.
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(
-            final Exception ex
-    ) {
+    public ResponseEntity<String> handleGenericException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Errore interno del server");
     }

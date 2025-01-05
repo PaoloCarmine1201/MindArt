@@ -58,17 +58,12 @@ public class SessioneService {
     public void creaSessione(final SessioneDTO sessioneDto,
                              final String terapeutaEmail) {
         // Validate no active session exists
-        if (!sessioneRepository
-                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(
-                        terapeutaEmail)
-                .isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Terapeuta ha già una sessione attiva");
+        if (!sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail).isEmpty()) {
+            throw new IllegalArgumentException("Terapeuta ha già una sessione attiva");
         }
         // Fetch terapeuta
-        Terapeuta terapeuta = terapeutaRepository.findByEmail(terapeutaEmail)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Terapeuta not found"));
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(terapeutaEmail).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta not found"));
 
         // Map DTO to entity
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
@@ -76,13 +71,9 @@ public class SessioneService {
 
         // Persist Bambini if necessary
         if (sessione.getBambini() != null) {
-            sessione.setBambini(
-                    sessione.getBambini().stream()
-                            .map(bambino ->
-                                bambinoRepository.findById(bambino.getId())
-                                    .orElseThrow(() ->
-                                            new IllegalArgumentException(
-                                                    "Bambino not found")))
+            sessione.setBambini(sessione.getBambini().stream().map(bambino ->
+                            bambinoRepository.findById(bambino.getId()).orElseThrow(() ->
+                                            new IllegalArgumentException("Bambino not found")))
                             .collect(Collectors.toList())
             );
         }

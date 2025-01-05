@@ -49,14 +49,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ex.getMessage());
     }
-
-    /**
-     * Gestisce l'eccezione generica.
-     * @return ResponseEntity con messaggio di errore.
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException() {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Errore interno del server");
-    }
 }

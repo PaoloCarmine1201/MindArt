@@ -107,7 +107,6 @@ class EventServiceTest {
     @Test
     @DisplayName("Eliminazione di un evento -> EventDto")
     void deleteEvent() {
-        // Creazione dei dati
         Terapeuta terapeuta = new Terapeuta(1L, "nome", "cognome", "email", new Date(),
                 "password", null, null, null, null, null);
         Evento evento = new Evento(1L, "Evento", new Date(),

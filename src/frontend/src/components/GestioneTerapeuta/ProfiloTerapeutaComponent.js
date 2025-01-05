@@ -6,6 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {toast} from "react-toastify";
+import ModificaPasswordButton from "./ModificaPasswordButton";
 
 function ProfiloTerapuetaComponent() {
     const [terapeuta, setTerapeuta] = useState(null);
@@ -199,8 +200,11 @@ function ProfiloTerapuetaComponent() {
                     onClick={handleClick}
                     className="btn-all"
                 >
-                    Modifica
+                    Modifica Dati
                 </Button>
+
+                <ModificaPasswordButton/>
+
             </div>
 
             {/* Pulsante Indietro */}

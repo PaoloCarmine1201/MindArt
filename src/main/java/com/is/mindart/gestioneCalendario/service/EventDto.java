@@ -6,11 +6,15 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.util.Date;
 import jakarta.validation.constraints.AssertTrue;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventDto {
     /**
      * Identificativo univoco dell'evento.
@@ -50,6 +54,6 @@ public class EventDto {
         if (inizio != null && fine != null) {
             return inizio.before(fine);
         }
-        return true;
+        return false;
     }
 }

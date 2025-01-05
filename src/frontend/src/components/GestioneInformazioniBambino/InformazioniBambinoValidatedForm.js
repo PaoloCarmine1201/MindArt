@@ -59,7 +59,7 @@ function InformazioniBambinoValidatedForm({handleSubmit , formRef, bambino = nul
             .required('email tutore richiesta'),
         telefonoGenitore: yup
             .string()
-            .matches(/^\+?[0-9\s-]{8,15}$/, 'telefono tutore non valido')
+            .matches(/^(\+\d{1,2}\s?)?1?-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'telefono tutore non valido')
             .required('telefono tutore richiesto')
     });
 

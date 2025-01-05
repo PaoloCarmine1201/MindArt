@@ -183,4 +183,6 @@ class GestioneEventiSettimanali {
         assertNull(eventService.getEventByIdAndTerapeutaEmail(1L, "email"));
     }
 
+
+
 }

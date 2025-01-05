@@ -144,12 +144,14 @@ public class DisegnoService {
      * Metodo che permette di votare un disegno.
      * @param disegnoId id del disegno
      * @param voto voto da assegnare
+     * @return disegno votato
      */
-    public void vota(final Long disegnoId, final int voto) {
+    public Disegno vota(final Long disegnoId, final Integer voto) {
         Disegno disegno = disegnoRepository.findById(disegnoId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Disegno non trovato con id " + disegnoId));
         disegno.setVoto(voto);
         disegnoRepository.save(disegno);
+        return disegno;
     }
 }

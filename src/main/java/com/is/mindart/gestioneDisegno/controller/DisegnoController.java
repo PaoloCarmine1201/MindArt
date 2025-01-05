@@ -79,7 +79,7 @@ public class DisegnoController {
     @PostMapping("terapeuta/disegno/{disegnoId}/valutazione")
     public ResponseEntity<Object> vota(
             @PathVariable final long disegnoId,
-            @RequestBody final @Valid ValutazioneRequest valutazione) {
+            @Valid @RequestBody final ValutazioneRequest valutazione) {
         disegnoService
                 .vota(disegnoId, valutazione.getValutazione());
         return ResponseEntity.ok().build();

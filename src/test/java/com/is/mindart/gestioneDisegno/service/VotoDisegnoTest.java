@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 /**
  * Test di unità per DisegnoController.
  */
-public class VotoDisegnoControllerTest {
+public class VotoDisegnoTest {
 
     @Mock
     private DisegnoService disegnoService;

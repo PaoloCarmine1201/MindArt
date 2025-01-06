@@ -127,7 +127,7 @@ public class DisegnoService {
      */
     public List<DisegnoDTOResponse> getDisegniByBambinoId(
             final Long bambinoId) {
-        List<Disegno> disegni = disegnoRepository.findByBambini_Id(bambinoId);
+        List<Disegno> disegni = disegnoRepository.findByBambiniId(bambinoId);
         if (disegni.isEmpty()) {
             throw new NoSuchElementException(
                     "Nessun disegno trovato per il bambino con id "

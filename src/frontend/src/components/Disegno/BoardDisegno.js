@@ -1,8 +1,7 @@
 // src/components/ColoreBoard.jsx
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Line, Rect, Circle, Image as KonvaImage, Text } from 'react-konva';
-import useImage from 'use-image'; // Hook per caricare immagini
+import { Stage, Layer, Line, Rect, Circle } from 'react-konva';
 import { connectWebSocket, subscribeToDraw } from "../../utils/websocket";
 import axiosInstance from "../../config/axiosInstance";
 import { FaEraser, FaSlash } from "react-icons/fa";
@@ -11,7 +10,7 @@ import ConfermaDisegno from "../ConfermaDisegno/ConfermaDisegno";
 import { useNavigate } from 'react-router-dom'; // Correzione dell'importazione
 
 // Helper function to map file extensions to MIME types
-const getMimeType = (filename) => {
+/*const getMimeType = (filename) => {
     const extension = filename.split('.').pop().toLowerCase();
     const mimeTypes = {
         'png': 'image/png',
@@ -24,7 +23,7 @@ const getMimeType = (filename) => {
         // Aggiungi altre estensioni se necessario
     };
     return mimeTypes[extension] || 'image/png'; // Default MIME type
-};
+};*/
 
 const ColoreBoard = () => {
     const [actions, setActions] = useState([]); // Unico array per tutte le azioni
@@ -77,7 +76,6 @@ const ColoreBoard = () => {
                 console.log('Disegno caricato:', disegno);
 
 
-
                 // Gestisci strokes e filledAreas
                 const initialStrokes = disegno.strokes.map(stroke => ({
                     ...stroke,
@@ -97,7 +95,8 @@ const ColoreBoard = () => {
                 console.log('Actions loaded:', initialActions);
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
-                // Gestisci l'errore come necessario, ad esempio reindirizzando l'utente
+                localStorage.removeItem('jwtToken');
+                navigate('/childlogin')
             }
         };
 

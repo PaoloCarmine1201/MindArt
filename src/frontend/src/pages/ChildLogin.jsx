@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { Form, Button, Container, FloatingLabel } from 'react-bootstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -74,6 +74,7 @@ function ChildLogin() {
                         break;
                     case "APPRENDIMENTO":
                         navigate('/visualizzazioneMateriale');
+                        break;
                     default:
                         throw Error("Invalid session type");
                 }

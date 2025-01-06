@@ -8,22 +8,6 @@ import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css"; // Import del file CSS
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate per navigare
 
-// Funzione helper per mappare le estensioni dei file ai tipi MIME
-const getMimeType = (filename) => {
-    const extension = filename.split('.').pop().toLowerCase();
-    const mimeTypes = {
-        'png': 'image/png',
-        'jpg': 'image/jpeg',
-        'jpeg': 'image/jpeg',
-        'gif': 'image/gif',
-        'svg': 'image/svg+xml',
-        'bmp': 'image/bmp',
-        'webp': 'image/webp',
-        // Aggiungi altre estensioni se necessario
-    };
-    return mimeTypes[extension] || 'image/png'; // Tipo MIME di default
-};
-
 const DrawingBoard = () => {
     const [actions, setActions] = useState([]); // Array unico per tutte le azioni
     const [disegnoId, setDisegnoId] = useState(null); // ID del disegno

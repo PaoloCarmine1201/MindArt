@@ -82,7 +82,8 @@ public class SessioneService {
 
 
         // Handle Disegno for DISEGNO sessions
-        if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO) || sessioneDto.getTipoSessione().equals(TipoSessione.COLORE)) {
+        if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO)
+                || sessioneDto.getTipoSessione().equals(TipoSessione.COLORE)) {
             Disegno disegno = new Disegno();
             disegno.setSessione(sessione);
             disegno.setTerapeuta(terapeuta);

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import NavBar from "../components/HomePageTerapeuta/NavBar";
 import "../style/HomaPageStyle.css";
 import BambiniListComponent from "../components/VisualizzazioneBambino/BambiniListComponent";
 import VisualizzaEventiComponent from "../components/GestioneCalendario/VisualizzaEventiComponent";
 import axiosInstance from "../config/axiosInstance";
 import GestioneMaterialeWidget from "../components/GestioneMateriale/GestioneMaterialeWidget";
-import ToastNotification from "../components/Notification/Notification";
 
 function HomePage() {
     const [bambini, setBambini] = useState([]);
@@ -31,7 +29,6 @@ function HomePage() {
 
     return (
         <>
-            <ToastNotification />
             <NavBar name="Dashboard"/>
             <div className="app-container">
 
@@ -60,7 +57,6 @@ function HomePage() {
                     </div>
                 </div>
             </div>
-            <ToastContainer position="bottom-right"/>
         </>
     );
 }

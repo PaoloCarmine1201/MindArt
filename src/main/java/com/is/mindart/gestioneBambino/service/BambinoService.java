@@ -2,7 +2,6 @@ package com.is.mindart.gestioneBambino.service;
 
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneBambino.model.BambinoRepository;
-import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
@@ -46,12 +45,6 @@ public class BambinoService {
      *  Provvede ad accedere al database per l'entità Sessione.
      */
     private final SessioneRepository sessioneRepository;
-
-    /**
-     *  Provvede ad accedere al database per l'entità Disegno.
-     */
-    private final DisegnoRepository disegnoRepository;
-
 
     /**
      * Questo metodo gestisce la richiesta di login per un bambino.
@@ -128,6 +121,7 @@ public class BambinoService {
                                 .getId()
                 )
                 .stream()
+                .filter(bambino -> bambino.getVisibile() == Boolean.TRUE)
                 .map(this::mapToBambinoDto)
                 .collect(Collectors.toList());
     }
@@ -153,6 +147,7 @@ public class BambinoService {
         Bambino bambino = modelMapper.map(bambinoDto, Bambino.class);
         // Imposta il terapeuta
         bambino.setTerapeuta(terapeuta);
+        bambino.setVisibile(true);
         // Genera un codice univoco per il bambino
         do {
             bambino.setCodice(generateRandomCode());
@@ -214,7 +209,10 @@ public class BambinoService {
      * @param id Il codice del bambino
      */
     public void deleteBambino(final Long id) {
-        bambinoRepository.deleteById(id);
+        Bambino bambino = bambinoRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Bambino non trovato"));
+        bambino.setVisibile(false);
+        bambinoRepository.save(bambino);
     }
 
     private BambinoDTOSimple mapToBambinoDto(final Bambino bambino) {

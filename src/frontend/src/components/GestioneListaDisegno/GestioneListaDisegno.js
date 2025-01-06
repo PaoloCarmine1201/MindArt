@@ -6,11 +6,13 @@ import MostraDisegnoBambino from "./MostraDisegnoBambino";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../config/axiosInstance";
 import NavBar from "../HomePageTerapeuta/NavBar";
+import {FaRegClipboard} from "react-icons/fa";
 
 function GestioneListaDisegno() {
     const { id } = useParams();
     const [disegni, setDisegni] = useState([]);
     const [disegnoId, setDisegnoId] = useState(null);
+    const [tema, setTema] = useState("");
     const [showBoard, setShowBoard] = useState(false);
 
     useEffect(() => {
@@ -77,6 +79,7 @@ function GestioneListaDisegno() {
                                         className="btn-disegno"
                                         onClick={() => {
                                             setDisegnoId(disegno.id);
+                                            setTema(disegno.tema);
                                             setShowBoard(true);
                                         }}
                                     >
@@ -87,12 +90,34 @@ function GestioneListaDisegno() {
                         ))}
                     </>
                 ) : (
-                    <p className="text-center text-muted">Nessun disegno trovato</p>
+                    // Messaggio quando non ci sono disegni
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "50vh", // Centra verticalmente
+                            textAlign: "center",
+                            color: "#6c757d", // Colore del testo
+                        }}
+                    >
+                        <FaRegClipboard size={55} style={{ marginBottom: "10px" }} />
+                        <p style={{ fontSize: "20px", fontWeight: "bold" }}>
+                            Nessun disegno trovato
+                        </p>
+                        <p style={{ fontSize: "14px" }}>
+                            Non ci sono disegni disponibili al momento.
+                        </p>
+                    </div>
                 )}
             </Container>
 
             { showBoard && (
-                <MostraDisegnoBambino disegnoId={disegnoId} />
+                <MostraDisegnoBambino
+                    disegnoId={disegnoId}
+                    tema = {tema}
+                />
             )}
         </>
     );

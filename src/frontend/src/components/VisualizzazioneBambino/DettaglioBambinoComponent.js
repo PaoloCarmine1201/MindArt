@@ -5,6 +5,7 @@ import axiosInstance from "../../config/axiosInstance";
 import {Button} from "react-bootstrap";
 import "../../style/Button.css";
 import EditBambino from "../GestioneInformazioniBambino/EditBambino";
+import {toast} from "react-toastify";
 
 function DettaglioBambinoComponent() {
     const { id } = useParams();
@@ -56,11 +57,13 @@ function DettaglioBambinoComponent() {
             .delete(`http://localhost:8080/api/terapeuta/bambino/${bambino.id}`)
             .then((response) => {
                 console.log(response);
+                toast.success("Bambino eliminato con successo!");
                 // Dopo l’eliminazione, torniamo alla pagina precedente
                 navigate(-1);
             })
             .catch((error) => {
                 console.error(error);
+                toast.error("Errore nell'eliminazione del bambino");
             });
     };
 

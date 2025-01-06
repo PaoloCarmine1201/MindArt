@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 import java.util.Date;
 import java.util.List;
 
@@ -92,4 +91,10 @@ public class Bambino {
             joinColumns = @JoinColumn(name = "bambino_id"),
             inverseJoinColumns = @JoinColumn(name = "sessione_id"))
     private List<Sessione> sessioni;
+
+    /**
+     * Visibilità del bambino.
+     */
+    @ToString.Exclude
+    private Boolean visibile;
 }

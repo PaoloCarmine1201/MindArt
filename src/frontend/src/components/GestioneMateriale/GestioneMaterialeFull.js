@@ -79,7 +79,7 @@ class GestioneMaterialeFull extends GestioneMaterialeBase {
                         {/* Footer con pulsanti */}
                         <Row className="mt-4">
                             <Col xs={6} className="text-start">
-                                <Link to={'/home'} className="dettaglio-button-link">
+                                <Link to={'/'} className="dettaglio-button-link">
                                     <p className="dettaglio-back-button">↩︎ Indietro</p>
                                 </Link>
                             </Col>

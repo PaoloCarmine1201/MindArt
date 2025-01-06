@@ -54,7 +54,7 @@ function NavBar({ name }) {
     return (
         <nav className="navbar">
             <div className="navbar-left">
-                <Link to="/home">
+                <Link to="/">
                     <img src={logo} alt="Logo" className="logo" />
                 </Link>
                 <div className="vertical-bar"></div>

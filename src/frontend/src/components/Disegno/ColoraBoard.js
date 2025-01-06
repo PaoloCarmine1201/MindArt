@@ -1,7 +1,7 @@
 // src/components/ColoreBoard.jsx
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Line, Rect, Circle, Image as KonvaImage, Text } from 'react-konva';
+import { Stage, Layer, Line, Rect, Circle, Image as KonvaImage } from 'react-konva';
 import useImage from 'use-image'; // Hook per caricare immagini
 import { connectWebSocket, subscribeToDraw } from "../../utils/websocket";
 import axiosInstance from "../../config/axiosInstance";
@@ -79,25 +79,7 @@ const ColoreBoard = () => {
 
                 console.log('Disegno caricato:', disegno);
 
-                // Carica l'immagine di sfondo associata alla sessione
-                const materialeResponse = await axiosInstance.get(`/api/bambino/materiale/sessione/`, {
-                    responseType: 'json',
-                });
-                console.log('Materiale caricato:', materialeResponse.data);
 
-                if (materialeResponse.data && materialeResponse.data.file && materialeResponse.data.nome) {
-                    const base64Image = materialeResponse.data.file;
-                    const nomeFile = materialeResponse.data.nome;
-
-                    // Ottieni il tipo MIME basato sull'estensione del nome del file
-                    const mimeType = getMimeType(nomeFile);
-
-                    // Costruisci il data URL
-                    const imageUrl = `data:${mimeType};base64,${base64Image}`;
-                    console.log('URL dell\'immagine di sfondo:', imageUrl);
-
-                    setBackgroundImage(imageUrl);
-                }
 
                 // Gestisci strokes e filledAreas
                 const initialStrokes = disegno.strokes.map(stroke => ({
@@ -118,11 +100,30 @@ const ColoreBoard = () => {
                 console.log('Actions loaded:', initialActions);
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
-                // Gestisci l'errore come necessario, ad esempio reindirizzando l'utente
+                localStorage.removeItem('jwtToken');
+                navigate(-1)
             }
         };
 
+        const loadBackgroundImage = async () => {
+            try {
+                const response = await axiosInstance.get(`/api/bambino/sessione/disegno/background/`, {
+                    responseType: 'blob',
+                });
+                const blob = response.data;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setBackgroundImage(reader.result);
+                };
+                reader.readAsDataURL(blob);
+            } catch (error) {
+                console.error('Errore nel caricamento dell\'immagine di sfondo:', error);
+                setImageError(true);
+            }
+        }
+
         loadActions();
+        loadBackgroundImage();
     }, []);
 
     // Effetto per gestire la connessione WebSocket

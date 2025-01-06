@@ -1,11 +1,8 @@
 package com.is.mindart.gestioneSessione.service;
 
 import com.is.mindart.configuration.SessioneMapper;
-import com.is.mindart.gestioneBambino.model.Bambino;
-import com.is.mindart.gestioneBambino.model.BambinoRepository;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
-import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneSessione.model.TipoSessione;
@@ -21,35 +18,62 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
+
 
 class SessioneServiceTest {
 
+    /**
+     * Mock del repository delle sessioni.
+     */
     @Mock
     private SessioneRepository sessioneRepository;
 
+    /**
+     * Mock del mapper delle sessioni.
+     */
     @Mock
     private SessioneMapper sessioneMapper;
 
+    /**
+     * Mock del repository dei terapeuti.
+     */
     @Mock
     private TerapeutaRepository terapeutaRepository;
 
+    /**
+     * Mock del repository dei disegni.
+     */
     @Mock
     private DisegnoRepository disegnoRepository;
 
+    /**
+     * Service da testare.
+     */
     @InjectMocks
     private SessioneService sessioneService;
 
+    /**
+     * Inizializza i mock.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Test per il metodo.
+     * {@link SessioneService#creaSessione(SessioneDTO, String)}.
+     */
     @Test
     @DisplayName("Creazione di una sessione valida -> Successo")
-    void testCreaSessione_Success() {
+    void testCreaSessioneSuccess() {
         // Inizializzazione dati di test
         String terapeutaEmail = "terapeuta@example.com";
         SessioneDTO sessioneDTO = new SessioneDTO();
@@ -61,7 +85,8 @@ class SessioneServiceTest {
         Sessione sessione = new Sessione();
 
         // Definizione comportamento dei mock
-        when(sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail))
+        when(sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail))
                 .thenReturn(Collections.emptyList()); // No sessioni attive
         when(terapeutaRepository.findByEmail(terapeutaEmail))
                 .thenReturn(Optional.of(terapeuta));
@@ -79,43 +104,51 @@ class SessioneServiceTest {
     }
 
     @Test
-    @DisplayName("Creazione di una sessione con sessione attiva esistente -> Errore")
-    void testCreaSessione_SessioneAttivaEsistente() {
+    @DisplayName("Creazione di una sessione con"
+            + "sessione attiva esistente -> Errore")
+    void testCreaSessioneSessioneAttivaEsistente() {
         // Inizializzazione dati di test
         String terapeutaEmail = "terapeuta@example.com";
         SessioneDTO sessioneDTO = new SessioneDTO();
 
         // Definizione comportamento dei mock
-        when(sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail))
+        when(sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail))
                 .thenReturn(Collections.singletonList(new Sessione()));
 
         // Inizio test e verifica
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException exception =
+                assertThrows(IllegalArgumentException.class, () ->
                 sessioneService.creaSessione(sessioneDTO, terapeutaEmail));
-        assertEquals("Terapeuta ha già una sessione attiva", exception.getMessage());
+        assertEquals("Terapeuta ha già una sessione attiva",
+                exception.getMessage());
 
         verify(sessioneRepository, times(1))
                 .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail);
-        verify(terapeutaRepository, never()).findByEmail(anyString());
+        verify(terapeutaRepository, never()).findByEmail(terapeutaEmail);
         verify(sessioneMapper, never()).toEntity(any(SessioneDTO.class));
         verify(disegnoRepository, never()).save(any(Disegno.class));
         verify(sessioneRepository, never()).save(any(Sessione.class));
     }
 
     @Test
-    @DisplayName("Creazione di una sessione con terapeuta non trovato -> Errore")
-    void testCreaSessione_TerapeutaNonTrovato() {
+    @DisplayName("Creazione di una sessione con"
+            + "terapeuta non trovato -> Errore")
+    void testCreaSessioneTerapeutaNonTrovato() {
         // Inizializzazione dati di test
         String terapeutaEmail = "terapeuta@example.com";
         SessioneDTO sessioneDTO = new SessioneDTO();
 
         // Definizione comportamento dei mock
-        when(sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail))
+        when(sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail))
                 .thenReturn(Collections.emptyList());
-        when(terapeutaRepository.findByEmail(terapeutaEmail)).thenReturn(Optional.empty());
+        when(terapeutaRepository
+                .findByEmail(terapeutaEmail)).thenReturn(Optional.empty());
 
         // Inizio test e verifica
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException exception =
+                assertThrows(IllegalArgumentException.class, () ->
                 sessioneService.creaSessione(sessioneDTO, terapeutaEmail));
         assertEquals("Terapeuta not found", exception.getMessage());
 

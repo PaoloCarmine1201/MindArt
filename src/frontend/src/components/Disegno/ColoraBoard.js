@@ -64,7 +64,10 @@ const ColoreBoard = () => {
         return [];
     };
 
-
+    // Stato per l'immagine di sfondo in base64
+    const [backgroundImage, setBackgroundImage] = useState(null);
+    const [bgImage] = useImage(backgroundImage);
+    const [imageError, setImageError] = useState(false); // Stato per gestire errori nel caricamento dell'immagine
 
     // Effetto per caricare il disegno e l'immagine di sfondo
     useEffect(() => {
@@ -76,7 +79,25 @@ const ColoreBoard = () => {
 
                 console.log('Disegno caricato:', disegno);
 
+                // Carica l'immagine di sfondo associata alla sessione
+                const materialeResponse = await axiosInstance.get(`/api/bambino/materiale/sessione/`, {
+                    responseType: 'json',
+                });
+                console.log('Materiale caricato:', materialeResponse.data);
 
+                if (materialeResponse.data && materialeResponse.data.file && materialeResponse.data.nome) {
+                    const base64Image = materialeResponse.data.file;
+                    const nomeFile = materialeResponse.data.nome;
+
+                    // Ottieni il tipo MIME basato sull'estensione del nome del file
+                    const mimeType = getMimeType(nomeFile);
+
+                    // Costruisci il data URL
+                    const imageUrl = `data:${mimeType};base64,${base64Image}`;
+                    console.log('URL dell\'immagine di sfondo:', imageUrl);
+
+                    setBackgroundImage(imageUrl);
+                }
 
                 // Gestisci strokes e filledAreas
                 const initialStrokes = disegno.strokes.map(stroke => ({
@@ -137,6 +158,25 @@ const ColoreBoard = () => {
         };
     }, [disegnoId]);
 
+    // Cleanup per revocare l'URL dell'immagine di sfondo quando il componente si smonta
+    useEffect(() => {
+        return () => {
+            // Non revocare data URLs
+            if (backgroundImage && backgroundImage.startsWith('blob:')) {
+                URL.revokeObjectURL(backgroundImage);
+                console.log('Blob URL revocato:', backgroundImage);
+            }
+        };
+    }, [backgroundImage]);
+
+    // Log per verificare il caricamento dell'immagine
+    useEffect(() => {
+        if (bgImage) {
+            console.log('Immagine di sfondo caricata:', bgImage);
+        } else {
+            console.log('Immagine di sfondo non caricata');
+        }
+    }, [bgImage]);
 
     // Funzione per completare il lasso
     const handleLassoComplete = (forceClosure = false) => {
@@ -208,17 +248,16 @@ const ColoreBoard = () => {
             return;
         }
 
-        if (selectedTool === "draw" || selectedTool === "eraser") {
+        if (selectedTool === "eraser") {
             const newStroke = {
-                color: selectedTool === "eraser" ? "white" : selectedColor,
-                points: [Math.round(pos.x), Math.round(pos.y)], // Arrotonda le coordinate
-                strokeWidth: selectedTool === "eraser" ? ERASER_STROKE : 2,
-                type: "stroke", // Aggiungi il tipo "stroke"
+                color: "white",
+                points: [Math.round(pos.x), Math.round(pos.y)],
+                strokeWidth: ERASER_STROKE,
+                type: "stroke",
             };
             setCurrentStroke(newStroke);
             setActions((prevActions) => [...prevActions, newStroke]);
         }
-
 
         if (selectedTool === "lasso") {
             if (!currentLasso) {
@@ -323,7 +362,12 @@ const ColoreBoard = () => {
 
     return (
         <>
-
+            {/* Feedback per errori nel caricamento dell'immagine */}
+            {imageError && (
+                <div style={{color: 'red', position: 'absolute', top: 10, left: 10}}>
+                    Errore nel caricamento dell'immagine di sfondo.
+                </div>
+            )}
 
             <div className="drawing-container">
                 <ConfermaDisegno/>
@@ -366,7 +410,23 @@ const ColoreBoard = () => {
                         />
                     </Layer>
 
-
+                    {/* Layer 2: Immagine di sfondo */}
+                    {bgImage && (
+                        <Layer name="background-layer">
+                            <KonvaImage
+                                image={bgImage}
+                                x={DRAWING_AREA_OFFSET_X}
+                                y={DRAWING_AREA_OFFSET_Y}
+                                width={DRAWING_AREA_WIDTH}
+                                height={DRAWING_AREA_HEIGHT}
+                                listening={false} // Disabilita gli eventi per il layer di sfondo
+                                onError={() => {
+                                    console.error('Errore nel caricamento dell\'immagine di sfondo');
+                                    setImageError(true);
+                                }}
+                            />
+                        </Layer>
+                    )}
 
                     {/* Layer 3: Tratti e Lasso */}
                     <Layer name="drawing-layer">

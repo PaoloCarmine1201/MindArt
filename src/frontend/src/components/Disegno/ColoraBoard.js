@@ -129,7 +129,7 @@ const ColoreBoard = () => {
 
         loadActions();
         loadBackgroundImage();
-    }, []);
+    }, [navigate]);
 
     // Effetto per gestire la connessione WebSocket
     useEffect(() => {

@@ -48,12 +48,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     final HttpServletResponse response,
                                     final FilterChain filterChain)
             throws ServletException, IOException {
-
+        final int bearerLength = 7;
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
 
-            String token = header.substring(7);
+            String token = header.substring(bearerLength);
 
             if (jwtUtil.validateToken(token)) {
                 if (tokenBlacklist.isTokenBlacklisted(token)) {

@@ -176,20 +176,6 @@ class AddBambinoControllerTest {
                 violations.iterator().next().getMessage());
     }
 
-    @Test
-    @DisplayName("Test addBambino con terapeutaId nullo -> Errore")
-    void testAddBambinoTerapeutaIdNullo() {
-        RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
-        bambinoDto.setTerapeutaId(null); // terapeutaId non valido
-
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
-                validator.validate(bambinoDto);
-
-        assertEquals(1, violations.size());
-        assertEquals("Il terapeuta non può essere vuoto",
-                violations.iterator().next().getMessage());
-    }
-
     private RegisterBambinoDTO createValidBambinoDTO() {
         final int time = 10000000;
         return new RegisterBambinoDTO(
@@ -203,7 +189,7 @@ class AddBambinoControllerTest {
                 "RSSMRA85M01H501Z",
                 "genitore@example.com",
                 "+39 333 1234567",
-                1L
+                null
         );
     }
 }

@@ -13,8 +13,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.anyString;
+
+
 
 /**
  * @author mauriliolarocca
@@ -22,24 +31,36 @@ import static org.mockito.Mockito.*;
  * del Terapeuta nel service TerapeutaService.
  */
 class LoginTerapeutaServiceTest {
-
+    /**
+     * Repository per l'entità Terapeuta.
+     */
     @Mock
     private TerapeutaRepository terapeutaRepository;
-
+    /**
+     * Servizio per la criptazione della password.
+     */
     @Mock
     private PasswordEncoder passwordEncoder;
-
+    /**
+     * Servizio per la generazione del token JWT.
+     */
     @Mock
     private JwtUtil jwtUtil;
-
+    /**
+     * Servizio per la gestione del terapeuta.
+     */
     @InjectMocks
     private TerapeutaService terapeutaService;
-
+    /**
+     * Metodo di setup dell'ambiente di testing.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
+    /**
+     * Test per il login del terapeuta con successo.
+     */
     @Test
     @DisplayName("Login con credenziali valide -> Token JWT generato")
     void shouldReturnTokenWhenCredentialsAreValid() {
@@ -53,9 +74,18 @@ class LoginTerapeutaServiceTest {
         terapeuta.setEmail(email);
         terapeuta.setPassword(encodedPassword);
 
-        when(terapeutaRepository.findByEmail(email)).thenReturn(Optional.of(terapeuta));
-        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
-        when(jwtUtil.generateToken(email, "TERAPEUTA")).thenReturn(expectedToken);
+        when(
+                terapeutaRepository.findByEmail(email)
+        )
+                .thenReturn(Optional.of(terapeuta));
+        when(
+                passwordEncoder.matches(rawPassword, encodedPassword)
+        )
+                .thenReturn(true);
+        when(
+                jwtUtil.generateToken(email, "TERAPEUTA")
+        )
+                .thenReturn(expectedToken);
 
         // Act
         String token = terapeutaService.loginTerapeuta(email, rawPassword);
@@ -67,7 +97,9 @@ class LoginTerapeutaServiceTest {
         verify(passwordEncoder, times(1)).matches(rawPassword, encodedPassword);
         verify(jwtUtil, times(1)).generateToken(email, "TERAPEUTA");
     }
-
+    /**
+     * Test per il login del terapeuta con password errata.
+     */
     @Test
     @DisplayName("Login con password errata -> Token non generato")
     void shouldReturnNullWhenPasswordIsInvalid() {
@@ -80,8 +112,14 @@ class LoginTerapeutaServiceTest {
         terapeuta.setEmail(email);
         terapeuta.setPassword(encodedPassword);
 
-        when(terapeutaRepository.findByEmail(email)).thenReturn(Optional.of(terapeuta));
-        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(false);
+        when(
+                terapeutaRepository.findByEmail(email)
+        )
+                .thenReturn(Optional.of(terapeuta));
+        when(
+                passwordEncoder.matches(rawPassword, encodedPassword)
+        )
+                .thenReturn(false);
 
         // Act
         String token = terapeutaService.loginTerapeuta(email, rawPassword);
@@ -92,7 +130,9 @@ class LoginTerapeutaServiceTest {
         verify(passwordEncoder, times(1)).matches(rawPassword, encodedPassword);
         verify(jwtUtil, never()).generateToken(anyString(), anyString());
     }
-
+    /**
+     * Test per il login del terapeuta con email inesistente.
+     */
     @Test
     @DisplayName("Login con email inesistente -> Token non generato")
     void shouldReturnNullWhenEmailIsNotFound() {
@@ -100,7 +140,10 @@ class LoginTerapeutaServiceTest {
         String email = "unknown@example.com";
         String rawPassword = "password123";
 
-        when(terapeutaRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(
+                terapeutaRepository.findByEmail(email)
+        )
+                .thenReturn(Optional.empty());
 
         // Act
         String token = terapeutaService.loginTerapeuta(email, rawPassword);

@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 /**
  * @author mauriliolarocca
@@ -22,34 +24,51 @@ import static org.mockito.Mockito.*;
  * del Terapeuta nel controller AuthController.
  */
 public class LoginTerapeutaControllerTest {
-
+    /**
+     * Servizio per la gestione del terapeuta.
+     */
     @Mock
     private TerapeutaService terapeutaService;
-
+    /**
+     * Servizio per la gestione del token blacklist.
+     */
     @Mock
     private FileBasedTokenBlacklist tokenBlacklist;
-
+    /**
+     * Controller per la gestione dell'autenticazione.
+     */
     @InjectMocks
     private AuthController authController;
-
+    /**
+     * Metodo di setup dell'ambiente di testing.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
+    /**
+     * Test per il login del terapeuta con successo.
+     * @throws AuthenticationException
+     */
     @Test
-    public void testLoginTerapeuta_Success() throws AuthenticationException {
+    public void testLoginTerapeutaSuccess() throws AuthenticationException {
         // Arrange
         TerapeutaLoginRequest request = new TerapeutaLoginRequest();
         request.setEmail("terapeuta@example.com");
         request.setPassword("password123");
         String expectedToken = "mocked-jwt-token";
 
-        when(terapeutaService.loginTerapeuta("terapeuta@example.com", "password123"))
+        when(
+                terapeutaService.loginTerapeuta(
+                        "terapeuta@example.com",
+                        "password123"
+                )
+        )
                 .thenReturn(expectedToken);
 
         // Act
-        ResponseEntity<String> response = authController.loginTerapeuta(request);
+        ResponseEntity<String> response =
+                authController.loginTerapeuta(request);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -57,19 +76,28 @@ public class LoginTerapeutaControllerTest {
         verify(terapeutaService, times(1))
                 .loginTerapeuta("terapeuta@example.com", "password123");
     }
-
+    /**
+     * Test per il login del terapeuta con credenziali errate.
+     * @throws AuthenticationException
+     */
     @Test
-    public void testLoginTerapeuta_Unauthorized() throws AuthenticationException {
+    public void testLoginTerapeutaUnauthorized()
+            throws AuthenticationException {
         // Arrange
         TerapeutaLoginRequest request = new TerapeutaLoginRequest();
         request.setEmail("terapeuta@example.com");
         request.setPassword("wrong-password");
 
-        when(terapeutaService.loginTerapeuta("terapeuta@example.com", "wrong-password"))
+        when(
+                terapeutaService.loginTerapeuta(
+                        "terapeuta@example.com",
+                        "wrong-password")
+        )
                 .thenReturn(null);
 
         // Act
-        ResponseEntity<String> response = authController.loginTerapeuta(request);
+        ResponseEntity<String> response =
+                authController.loginTerapeuta(request);
 
         // Assert
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());

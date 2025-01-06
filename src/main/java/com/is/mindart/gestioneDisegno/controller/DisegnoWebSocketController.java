@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 @AllArgsConstructor
 public class DisegnoWebSocketController {
     /**
-     * Servizio per la gestione dei Disegni
+     * Servizio per la gestione dei Disegni.
      */
     private final DisegnoService disegnoService;
 

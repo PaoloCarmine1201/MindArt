@@ -22,43 +22,35 @@ import static org.mockito.Mockito.times;
  * Classe di testing per la funzione di login
  * del Terapeuta nel controller AuthController.
  */
-public final class LoginTerapeutaControllerTest {
-
+public class LoginTerapeutaControllerTest {
     /**
-     * Mock del servizio per la gestione dei terapeuti.
+     * Servizio per la gestione del terapeuta.
      */
     @Mock
     private TerapeutaService terapeutaService;
-
     /**
-     * Mock della blacklist dei token JWT.
+     * Servizio per la gestione del token blacklist.
      */
     @Mock
     private FileBasedTokenBlacklist tokenBlacklist;
-
     /**
-     * Controller di autenticazione, iniettato con i mock.
+     * Controller per la gestione dell'autenticazione.
      */
     @InjectMocks
     private AuthController authController;
-
     /**
-     * Inizializza i mock prima di ogni test.
+     * Metodo di setup dell'ambiente di testing.
      */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
     /**
-     * Test per verificare il login del terapeuta con credenziali corrette.
-     * Deve ritornare 200 OK e il token atteso.
-     *
+     * Test per il login del terapeuta con successo.
      * @throws AuthenticationException
-     * se si verifica un errore di autenticazione
      */
     @Test
-    public void loginTerapeutaSuccessTest() throws AuthenticationException {
+    public void testLoginTerapeutaSuccess() throws AuthenticationException {
         // Arrange
         final String email = "terapeuta@example.com";
         final String password = "password123";

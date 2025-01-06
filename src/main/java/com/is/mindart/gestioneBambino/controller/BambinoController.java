@@ -94,7 +94,8 @@ public class BambinoController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        bambinoService.addBambino(bambinoDto, (String) authentication.getPrincipal());
+        bambinoService
+                .addBambino(bambinoDto, (String) authentication.getPrincipal());
         return ResponseEntity.ok(bambinoDto);
     }
     /**
@@ -112,7 +113,10 @@ public class BambinoController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        bambinoService.updateBambino(bambinoDto, (String) authentication.getPrincipal());
+        bambinoService.updateBambino(
+                        bambinoDto,
+                        (String) authentication.getPrincipal()
+                );
         return ResponseEntity.ok(bambinoDto);
     }
 

@@ -3,13 +3,15 @@ package com.is.mindart.gestioneSessione.model;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
+
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -113,6 +115,10 @@ public class Sessione {
      * Bambini associati alla sessione.
      */
     @ToString.Exclude
-    @ManyToMany(mappedBy = "sessioni")
+    @ManyToMany
+    @JoinTable(
+            name = "bambino_sessione", // Nome esplicito per la tabella di join
+            joinColumns = @JoinColumn(name = "sessione_id"),
+            inverseJoinColumns = @JoinColumn(name = "bambino_id"))
     private List<Bambino> bambini;
 }

@@ -101,7 +101,6 @@ const ColoreBoard = () => {
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
                 localStorage.removeItem('jwtToken');
-                navigate(-1);
             }
         };
 

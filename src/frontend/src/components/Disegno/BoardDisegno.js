@@ -25,7 +25,7 @@ import { useNavigate } from 'react-router-dom'; // Correzione dell'importazione
     return mimeTypes[extension] || 'image/png'; // Default MIME type
 };*/
 
-const ColoreBoard = () => {
+const BoardDisegno = () => {
     const [actions, setActions] = useState([]); // Unico array per tutte le azioni
     const [disegnoId, setDisegnoId] = useState(null); // ID del disegno
     const stageRef = useRef(null);
@@ -70,6 +70,7 @@ const ColoreBoard = () => {
         const loadActions = async () => {
             try {
                 const disegnoResponse = await axiosInstance.get(`/api/bambino/sessione/disegno/`);
+
                 const disegno = disegnoResponse.data;
                 setDisegnoId(disegno.id);
 
@@ -96,7 +97,6 @@ const ColoreBoard = () => {
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
                 localStorage.removeItem('jwtToken');
-                navigate(-1)
             }
         };
 
@@ -500,4 +500,4 @@ const ColoreBoard = () => {
         </>
     );
 };
-export default ColoreBoard;
+export default BoardDisegno;

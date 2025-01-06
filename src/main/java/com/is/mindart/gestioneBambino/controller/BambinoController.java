@@ -116,7 +116,7 @@ public class BambinoController {
         bambinoService.updateBambino(
                         bambinoDto,
                         (String) authentication.getPrincipal()
-                );
+        );
         return ResponseEntity.ok(bambinoDto);
     }
 

@@ -16,19 +16,33 @@ import org.springframework.security.test.context.support.WithMockUser;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 public class EventoControllerTest {
 
+    /**
+     * Mock del servizio per la gestione degli eventi.
+     */
     @Mock
     private EventService eventService;
 
+    /**
+     * Controller per la gestione degli eventi,
+     * iniettato con il mock del servizio.
+     */
     @InjectMocks
     private EventoController eventoController;
 
+    /**
+     * Mock dell'oggetto di autenticazione.
+     */
     @Mock
     private Authentication authentication;
 
+    /**
+     * Inizializza i mock e il controller prima di ogni test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -36,23 +50,33 @@ public class EventoControllerTest {
         when(authentication.getPrincipal()).thenReturn("terapeuta@example.com");
     }
 
+    /**
+     * Test per il metodo {@link EventoController#getAllEvents()}.
+     */
     @Test
     @WithMockUser(roles = "TERAPEUTA")
     public void testGetAllEvents() {
         List<EventDto> events = List.of(new EventDto());
-        when(eventService.getAllEvents("terapeuta@example.com")).thenReturn(events);
+        when(eventService
+                .getAllEvents("terapeuta@example.com")).thenReturn(events);
 
-        ResponseEntity<List<EventDto>> response = eventoController.getAllEvents();
+        ResponseEntity<List<EventDto>> response =
+                eventoController.getAllEvents();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(events, response.getBody());
     }
 
+    /**
+     * Test per il metodo {@link EventoController#getEventById(Long)}.
+     */
     @Test
     @WithMockUser(roles = "TERAPEUTA")
     public void testGetEventById() {
         EventDto event = new EventDto();
-        when(eventService.getEventByIdAndTerapeutaEmail(1L, "terapeuta@example.com")).thenReturn(event);
+        when(eventService
+                .getEventByIdAndTerapeutaEmail(1L, "terapeuta@example.com"))
+                .thenReturn(event);
 
         ResponseEntity<EventDto> response = eventoController.getEventById(1L);
 
@@ -60,11 +84,15 @@ public class EventoControllerTest {
         assertEquals(event, response.getBody());
     }
 
+    /**
+     * Test per il metodo {@link EventoController#updateEvent(EventDto)}.
+     */
     @Test
     @WithMockUser(roles = "TERAPEUTA")
     public void testUpdateEvent() {
         EventDto event = new EventDto();
-        when(eventService.updateEvent(event, "terapeuta@example.com")).thenReturn(event);
+        when(eventService
+                .updateEvent(event, "terapeuta@example.com")).thenReturn(event);
 
         ResponseEntity<EventDto> response = eventoController.updateEvent(event);
 
@@ -72,6 +100,9 @@ public class EventoControllerTest {
         assertEquals(event, response.getBody());
     }
 
+    /**
+     * Test per il metodo {@link EventoController#deleteEvent(Long)}.
+     */
     @Test
     @WithMockUser(roles = "TERAPEUTA")
     public void testDeleteEvent() {
@@ -82,11 +113,15 @@ public class EventoControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    /**
+     * Test per il metodo {@link EventoController#addEvent(EventDto)}.
+     */
     @Test
     @WithMockUser(roles = "TERAPEUTA")
     public void testAddEvent() {
         EventDto event = new EventDto();
-        when(eventService.addEvent(event, "terapeuta@example.com")).thenReturn(event);
+        when(eventService
+                .addEvent(event, "terapeuta@example.com")).thenReturn(event);
 
         ResponseEntity<EventDto> response = eventoController.addEvent(event);
 

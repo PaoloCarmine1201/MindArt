@@ -262,7 +262,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2015-05-10"),
                         "RSSGNN15A01H501A",
                         "giovanni@example.com",
-                        "123456789",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -276,7 +276,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2016-11-15"),
                         "BNCLCU16B01H501B",
                         "luca@example.com",
-                        "987654321",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -290,7 +290,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2017-01-20"),
                         "VRDMRT17C01H501C",
                         "martina@example.com",
-                        "1122334455",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -304,7 +304,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2014-08-25"),
                         "FRRALS14D01H501D",
                         "alessandro@example.com",
-                        "2233445566",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -318,7 +318,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2018-03-10"),
                         "GLISFO18E01H501E",
                         "sofia@example.com",
-                        "5566778899",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -345,7 +345,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2016-02-17"),
                         "LMBGLI16F01H501F",
                         "giulia@example.com",
-                        "3344556677",
+                        "+39 667 788 9900",
                         terapeuta,
                         null,
                         true
@@ -359,7 +359,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2015-04-22"),
                         "RSSMRK15G01H501G",
                         "marco@example.com",
-                        "6677889900",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -373,7 +373,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2017-06-12"),
                         "NGRFNC17H01H501H",
                         "francesca@example.com",
-                        "9988776655",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -387,7 +387,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2014-09-30"),
                         "RMNTMS14I01H501I",
                         "tommaso@example.com",
-                        "4433221100",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -401,7 +401,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2018-11-18"),
                         "BNCELN18J01H501J",
                         "elena@example.com",
-                        "5566771100",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -428,7 +428,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2015-05-05"),
                         "DLCCRL15K01H501K",
                         "carlo@example.com",
-                        "3344552211",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -442,7 +442,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2016-12-07"),
                         "MRNLIC16L01H501L",
                         "alice@example.com",
-                        "7788994455",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -456,7 +456,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2017-08-17"),
                         "CRTFRD17M01H501M",
                         "federico@example.com",
-                        "1122334455",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true
@@ -470,7 +470,7 @@ public class DataLoader implements CommandLineRunner {
                         sdf.parse("2018-09-12"),
                         "FRRRCD18O01H501O",
                         "riccardo@example.com",
-                        "6677889900",
+                        "+39 333 445 6677",
                         terapeuta,
                         null,
                         true

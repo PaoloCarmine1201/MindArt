@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneSessione.controller;
 
+import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
@@ -34,14 +35,14 @@ public class SessioneController {
      * @return 200 OK
      */
     @PostMapping("/terapeuta/sessione/create")
-    public ResponseEntity<SessioneDTO> create(
+    public ResponseEntity<Void> create(
             @Valid @RequestBody final SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder
                 .getContext().getAuthentication();
         String principal = (String) authentication.getPrincipal();
 
         sessioneService.creaSessione(sessioneDTO, principal);
-        return ResponseEntity.ok(sessioneDTO);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -93,5 +94,18 @@ public class SessioneController {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Terapeuta con email " + principal + " non trovato"));
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Endpoint che restiuisce la descrizione della sessione del bambino.
+     * @return 200 OK
+     */
+    @GetMapping("/bambino/sessione/")
+    public ResponseEntity<SessioneDTO> getSessioneBambino() {
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        String principal = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(sessioneService.getSessioneBambino(principal));
+
     }
 }

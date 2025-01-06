@@ -9,18 +9,17 @@ import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class SessioneMapper {
+
     /**
      * Istanza iniettata del modelMapper.
      */
@@ -34,10 +33,9 @@ public class SessioneMapper {
      */
     private final MaterialeRepository materialeRepository;
 
-    //TODO: controllare in caso di errore
     @PostConstruct
     private void configureMappings() {
-        // Configurazione personalizzata per il mapping da SessioneDTO a Sessione
+        // =============== Mapping da SessioneDTO a Sessione ===============
         modelMapper.createTypeMap(SessioneDTO.class, Sessione.class)
                 .addMappings(mapper -> {
                     // Mappa i campi diretti
@@ -52,8 +50,12 @@ public class SessioneMapper {
                     mapper.using(ctx -> mapMateriale((Long) ctx.getSource()))
                             .map(SessioneDTO::getMateriale, Sessione::setMateriale);
                 });
+
     }
 
+    /**
+     * Converte la lista di id di bambini in lista di entità {@link Bambino}.
+     */
     private List<Bambino> mapBambini(List<Long> bambiniIds) {
         if (bambiniIds == null || bambiniIds.isEmpty()) {
             return Collections.emptyList();
@@ -64,6 +66,9 @@ public class SessioneMapper {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Converte un id di materiale nell'entità {@link Materiale}.
+     */
     private Materiale mapMateriale(Long materialeId) {
         if (materialeId == null) {
             return null;
@@ -72,6 +77,21 @@ public class SessioneMapper {
                 .orElseThrow(() -> new IllegalArgumentException("Materiale con ID " + materialeId + " non trovato"));
     }
 
+    /**
+     * Converte una lista di entità {@link Bambino} in lista di id.
+     */
+    private List<Long> mapBambiniIds(List<Bambino> bambini) {
+        if (bambini == null || bambini.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return bambini.stream()
+                .map(Bambino::getId)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Metodo per convertire da DTO a Entity (Sessione).
+     */
     public Sessione toEntity(SessioneDTO sessioneDTO) {
         Sessione sessione = modelMapper.map(sessioneDTO, Sessione.class);
         sessione.setData(LocalDateTime.now());
@@ -79,5 +99,5 @@ public class SessioneMapper {
         sessione.setTerminata(false);
         return sessione;
     }
-}
 
+}

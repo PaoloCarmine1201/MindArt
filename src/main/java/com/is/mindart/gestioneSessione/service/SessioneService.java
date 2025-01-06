@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
+import com.is.mindart.gestioneBambino.model.Bambino;
+
 
 @Service
 @AllArgsConstructor
@@ -58,17 +60,12 @@ public class SessioneService {
     public void creaSessione(final SessioneDTO sessioneDto,
                              final String terapeutaEmail) {
         // Validate no active session exists
-        if (!sessioneRepository
-                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(
-                        terapeutaEmail)
-                .isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Terapeuta ha già una sessione attiva");
+        if (!sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(terapeutaEmail).isEmpty()) {
+            throw new IllegalArgumentException("Terapeuta ha già una sessione attiva");
         }
         // Fetch terapeuta
-        Terapeuta terapeuta = terapeutaRepository.findByEmail(terapeutaEmail)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Terapeuta not found"));
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(terapeutaEmail).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta not found"));
 
         // Map DTO to entity
         Sessione sessione = sessioneMapper.toEntity(sessioneDto);
@@ -76,20 +73,17 @@ public class SessioneService {
 
         // Persist Bambini if necessary
         if (sessione.getBambini() != null) {
-            sessione.setBambini(
-                    sessione.getBambini().stream()
-                            .map(bambino ->
-                                bambinoRepository.findById(bambino.getId())
-                                    .orElseThrow(() ->
-                                            new IllegalArgumentException(
-                                                    "Bambino not found")))
+            sessione.setBambini(sessione.getBambini().stream().map(bambino ->
+                            bambinoRepository.findById(bambino.getId()).orElseThrow(() ->
+                                            new IllegalArgumentException("Bambino not found")))
                             .collect(Collectors.toList())
             );
         }
 
 
         // Handle Disegno for DISEGNO sessions
-        if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO)) {
+        if (sessioneDto.getTipoSessione().equals(TipoSessione.DISEGNO)
+                || sessioneDto.getTipoSessione().equals(TipoSessione.COLORE)) {
             Disegno disegno = new Disegno();
             disegno.setSessione(sessione);
             disegno.setTerapeuta(terapeuta);
@@ -133,6 +127,29 @@ public class SessioneService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bambino con codice " + codice + " non trovato"));
         sessioneRepository.terminaSessione(sessione.getId());
+    }
+
+    /**
+     * Getter della sessione attiva del bambino
+     * @param codice codice del bambino
+     * @throws EntityNotFoundException se l'id non viene trovato
+     */
+    public SessioneDTO getSessioneBambino(final String codice)
+            throws EntityNotFoundException {
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Bambino con codice " + codice + " non trovato"));
+        return new SessioneDTO(
+                sessione.getId(),
+                sessione.getTipo(),
+                sessione.getTerapeuta().getId(),
+                sessione.getTemaAssegnato(),
+                sessione.getMateriale() != null ? sessione.getMateriale().getId() : null,
+                sessione.getBambini().stream().map(Bambino::getId).toList()
+        );
     }
 
     /**

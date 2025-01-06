@@ -20,6 +20,31 @@ function ChildLogin() {
             .matches(/^\w{6}$/, "Invalid code format!"), // Must be exactly 6 alphanumeric characters
     });
 
+/*    useEffect(async () => {
+        const jwtToken = localStorage.getItem('jwtToken');
+        if(jwtToken){
+            const sessione = await axiosInstance.get('/api/bambino/sessione/');
+
+            if(sessione.data === ""){
+                throw Error("No session found");
+            }
+            else{
+                switch (sessione.data.tipoSessione) {
+                    case "DISEGNO":
+                        navigate('/child/draw');
+                        break;
+                    case "COLORE":
+                        navigate('/child/colore');
+                        break;
+                    case "APPRENDIMENTO":
+                        navigate('/visualizzazioneMateriale');
+                    default:
+                        throw Error("Invalid session type");
+                }
+            }
+        }
+    }, []);*/
+
     // Submit handler for the form
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
@@ -33,7 +58,27 @@ function ChildLogin() {
             console.log("Login successful:", response.data);
 
             localStorage.setItem('jwtToken', response.data);
-            navigate("/visualizzazioneMateriale");
+
+            const sessione = await axiosInstance.get('/api/bambino/sessione/');
+            console.log(sessione.data.tipoSessione)
+            if(sessione.data === ""){
+                throw Error("No session found");
+            }
+            else{
+                switch (sessione.data.tipoSessione) {
+                    case "DISEGNO":
+                        navigate('/child/draw');
+                        break;
+                    case "COLORE":
+                        navigate('/child/colore');
+                        break;
+                    case "APPRENDIMENTO":
+                        navigate('/visualizzazioneMateriale');
+                        break;
+                    default:
+                        throw Error("Invalid session type");
+                }
+            }
 
         } catch (error) {
             console.error("Errore durante il login:", error);

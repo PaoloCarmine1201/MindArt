@@ -4,7 +4,9 @@ package com.is.mindart.gestioneDisegno.controller;
 import com.is.mindart.gestioneDisegno.service.DisegnoDTO;
 import com.is.mindart.gestioneDisegno.service.DisegnoDTOResponse;
 import com.is.mindart.gestioneDisegno.service.DisegnoService;
+import com.is.mindart.gestioneDisegno.service.ValutazioneRequest;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,9 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * Controller per gestire le operazioni relative ai Disegni.
@@ -77,12 +77,11 @@ public class DisegnoController {
      * @return 200 OK
      */
     @PostMapping("terapeuta/disegno/{disegnoId}/valutazione")
-    public ResponseEntity<Void> vota(
+    public ResponseEntity<Object> vota(
             @PathVariable final long disegnoId,
-            @RequestBody final Map<String, String> valutazione) {
+            @Valid @RequestBody final ValutazioneRequest valutazione) {
         disegnoService
-                .vota(disegnoId, Integer
-                        .parseInt(valutazione.get("valutazione")));
+                .vota(disegnoId, valutazione.getValutazione());
         return ResponseEntity.ok().build();
     }
 
@@ -95,9 +94,6 @@ public class DisegnoController {
     @GetMapping("terapeuta/bambino/{id}/disegni/")
     public ResponseEntity<List<DisegnoDTOResponse>> getDisegniByBambinoId(
             @PathVariable final Long id) {
-        Authentication authentication = SecurityContextHolder
-                .getContext().getAuthentication();
-        String principal = (String) authentication.getPrincipal();
 
         List<DisegnoDTOResponse> disegnoResponseDTO = disegnoService
                 .getDisegniByBambinoId(id);
@@ -118,4 +114,6 @@ public class DisegnoController {
         DisegnoDTO disegnoResponseDTO = disegnoService.getDisegnoById(id);
         return ResponseEntity.ok(disegnoResponseDTO);
     }
+
+
 }

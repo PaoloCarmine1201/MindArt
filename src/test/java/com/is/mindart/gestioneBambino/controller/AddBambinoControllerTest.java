@@ -23,19 +23,29 @@ import java.util.Date;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class AddBambinoControllerTest {
-
+    /**
+     * Service per la gestione dei bambini.
+     */
     @Mock
     private BambinoService bambinoService;
-
+    /**
+     * Oggetto per la gestione dell'autenticazione.
+     */
     @Mock
     private Authentication authentication;
-
+    /**
+     * Controller per la gestione dei bambini.
+     */
     @InjectMocks
     private BambinoController bambinoController;
-
+    /**
+     * Validatore per i parametri del bambino.
+     */
     private Validator validator;
 
     @BeforeEach
@@ -55,12 +65,14 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
 
         // Act
-        ResponseEntity<RegisterBambinoDTO> response = bambinoController.addBambino(bambinoDto);
+        ResponseEntity<RegisterBambinoDTO> response =
+                bambinoController.addBambino(bambinoDto);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(bambinoDto, response.getBody());
-        verify(bambinoService, times(1)).addBambino(bambinoDto, "terapeuta@example.com");
+        verify(bambinoService, times(1))
+                .addBambino(bambinoDto, "terapeuta@example.com");
     }
 
     @Test
@@ -69,10 +81,12 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
         bambinoDto.setNome("M1"); // Nome non valido
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
-        assertEquals("Il nome deve contenere solo lettere e spazi e deve essere lungo tra i 2 e i 50 caratteri.",
+        assertEquals("Il nome deve contenere solo lettere e spazi e "
+                        + "deve essere lungo tra i 2 e i 50 caratteri.",
                 violations.iterator().next().getMessage());
     }
 
@@ -82,10 +96,12 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
         bambinoDto.setCognome("R1"); // Cognome non valido
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
-        assertEquals("Il cognome deve contenere solo lettere e spazi e deve essere lungo tra i 2 e i 50 caratteri.",
+        assertEquals("Il cognome deve contenere solo lettere e spazi e "
+                        + "deve essere lungo tra i 2 e i 50 caratteri.",
                 violations.iterator().next().getMessage());
     }
 
@@ -95,18 +111,23 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
         bambinoDto.setSesso(null); // Sesso non valido
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
-        assertEquals(0, violations.size()); // Nessun vincolo specifico per il sesso
+        assertEquals(0, violations.size());
     }
 
     @Test
     @DisplayName("Test addBambino con data di nascita futura -> Errore")
     void testAddBambinoDataDiNascitaFutura() {
+        final int time = 100000;
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
-        bambinoDto.setDataDiNascita(new Date(System.currentTimeMillis() + 100000)); // Data futura
+        bambinoDto
+                // Data di nascita futura
+                .setDataDiNascita(new Date(System.currentTimeMillis() + time));
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
         assertEquals("La data di nascita deve essere nel passato.",
@@ -119,7 +140,8 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
         bambinoDto.setCodiceFiscale("12345"); // Codice fiscale non valido
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
         assertEquals("Il codice fiscale deve essere composto da 16 caratteri.",
@@ -132,7 +154,8 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
         bambinoDto.setEmailGenitore("email-invalid"); // Email non valida
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
         assertEquals("L'email deve essere valida.",
@@ -145,7 +168,8 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
         bambinoDto.setTelefonoGenitore("123"); // Telefono non valido
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
         assertEquals("Il numero di telefono deve essere valido.",
@@ -158,7 +182,8 @@ class AddBambinoControllerTest {
         RegisterBambinoDTO bambinoDto = createValidBambinoDTO();
         bambinoDto.setTerapeutaId(null); // terapeutaId non valido
 
-        Set<ConstraintViolation<RegisterBambinoDTO>> violations = validator.validate(bambinoDto);
+        Set<ConstraintViolation<RegisterBambinoDTO>> violations =
+                validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
         assertEquals("Il terapeuta non può essere vuoto",
@@ -166,13 +191,15 @@ class AddBambinoControllerTest {
     }
 
     private RegisterBambinoDTO createValidBambinoDTO() {
+        final int time = 10000000;
         return new RegisterBambinoDTO(
                 null,
                 "CODICE123",
                 "Mario",
                 "Rossi",
                 Sesso.MASCHIO,
-                new Date(System.currentTimeMillis() - 100000), // Data di nascita passata
+                // Data di nascita passata
+                new Date(System.currentTimeMillis() - time),
                 "RSSMRA85M01H501Z",
                 "genitore@example.com",
                 "+39 333 1234567",

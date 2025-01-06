@@ -87,7 +87,7 @@ public class Bambino {
     @Pattern(regexp =
             "^(\\+\\d{1,2}\\s?)?1?-?\\.?\\s?\\("
                     + "?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$",
-        message = "Il numero di telefono deve essere valido.")
+            message = "Il numero di telefono deve essere valido.")
     private String telefonoGenitore;
 
     /**

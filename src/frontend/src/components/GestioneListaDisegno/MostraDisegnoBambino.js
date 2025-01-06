@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Stage, Layer, Line } from 'react-konva';
+import { Stage, Layer, Line, Image as KonvaImage } from 'react-konva';
 import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css";
 import "../../style/LavagnaVisualizzaDisegni.css";
@@ -7,6 +7,23 @@ import "../../style/Button.css";
 import { Button } from "react-bootstrap";
 import ValutazionePopup from "./ValutazionePopup";
 import { toast } from "react-toastify";
+import useImage from "use-image";
+
+// Helper function to map file extensions to MIME types
+const getMimeType = (filename) => {
+    const extension = filename.split('.').pop().toLowerCase();
+    const mimeTypes = {
+        'png': 'image/png',
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'gif': 'image/gif',
+        'svg': 'image/svg+xml',
+        'bmp': 'image/bmp',
+        'webp': 'image/webp',
+        // Aggiungi altre estensioni se necessario
+    };
+    return mimeTypes[extension] || 'image/png'; // Default MIME type
+};
 
 const MostraDisegnoBambino = ({ disegnoId, tema }) => {
     const [actions, setActions] = useState([]);
@@ -14,16 +31,23 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
     const [showValutazione, setShowValutazione] = useState(false);
     const [valutazione, setValutazione] = useState("");
     const [commento, setCommento] = useState("");
-    const [dimensions, setDimensions] = useState({
-        width: window.innerWidth * 0.8,
-        height: window.innerHeight * 0.6,
+
+    // Imposta le dimensioni fisse a 1920x1080
+    const [dimensions] = useState({
+        width: 1920,
+        height: 1080,
     });
+
     const [drawingBounds, setDrawingBounds] = useState({
         minX: 0,
         minY: 0,
-        maxX: window.innerWidth * 0.8,
-        maxY: window.innerHeight * 0.6,
+        maxX: 1920, // Aggiorna in base alle dimensioni fisse
+        maxY: 1080,
     });
+
+    // Stato per l'immagine di sfondo in base64
+    const [backgroundImage, setBackgroundImage] = useState(null);
+    const [bgImage] = useImage(backgroundImage);
 
     useEffect(() => {
         const loadActions = async () => {
@@ -56,32 +80,43 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
                 setDrawingBounds({
                     minX: Math.min(minX, 0),
                     minY: Math.min(minY, 0),
-                    maxX: Math.max(maxX, dimensions.width),
-                    maxY: Math.max(maxY, dimensions.height),
+                    maxX: Math.max(maxX, 1920),
+                    maxY: Math.max(maxY, 1080),
                 });
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
             }
         };
 
+        const loadBackground = async () => {
+            // Carica l'immagine di sfondo associata alla sessione
+            const materialeResponse = await axiosInstance.get(`/api/terapeuta/materiale/disegno/${disegnoId}`, {
+                responseType: 'json',
+            });
+            console.log('Materiale caricato:', materialeResponse.data);
+
+            if (materialeResponse.data && materialeResponse.data.file && materialeResponse.data.nome) {
+                const base64Image = materialeResponse.data.file;
+                const nomeFile = materialeResponse.data.nome;
+
+                // Ottieni il tipo MIME basato sull'estensione del nome del file
+                const mimeType = getMimeType(nomeFile);
+
+                // Costruisci il data URL
+                const imageUrl = `data:${mimeType};base64,${base64Image}`;
+                console.log('URL dell\'immagine di sfondo:', imageUrl);
+
+                setBackgroundImage(imageUrl);
+            }
+        }
+
         if (disegnoId) {
             loadActions();
+            loadBackground();
         }
-    }, [disegnoId, dimensions.width, dimensions.height]);
+    }, [disegnoId]); // Rimosso dimensions.width e dimensions.height dalle dipendenze
 
-    useEffect(() => {
-        const handleResize = () => {
-            setDimensions({
-                width: window.innerWidth * 0.8,
-                height: window.innerHeight * 0.6,
-            });
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    // Rimosso l'useEffect per il ridimensionamento della finestra
 
     const handleSubmitValutazione = async () => {
         try {
@@ -111,7 +146,8 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
                 marginRight: 'auto',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
-                width: dimensions.width, // Imposta la larghezza dinamicamente
+                width: dimensions.width, // Imposta la larghezza fissa
+                height: dimensions.height, // Imposta l'altezza fissa
             }}
         >
             {/* Riga superiore */}
@@ -162,6 +198,22 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
                             cursor: "default",
                         }}
                     >
+                        {/* Layer 2: Immagine di sfondo */}
+                        {bgImage && (
+                            <Layer name="background-layer">
+                                <KonvaImage
+                                    image={bgImage}
+                                    x={0} // Imposta le coordinate x fisse o personalizzate
+                                    y={0} // Imposta le coordinate y fisse o personalizzate
+                                    width={1920} // Imposta la larghezza fissa
+                                    height={1080} // Imposta l'altezza fissa
+                                    listening={false} // Disabilita gli eventi per il layer di sfondo
+                                    onError={() => {
+                                        console.error('Errore nel caricamento dell\'immagine di sfondo');
+                                    }}
+                                />
+                            </Layer>
+                        )}
                         <Layer name="drawing-layer">
                             {actions.map((action, index) => {
                                 if (action.type === "lasso") {

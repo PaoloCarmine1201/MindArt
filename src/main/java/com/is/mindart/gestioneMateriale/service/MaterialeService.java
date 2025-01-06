@@ -1,18 +1,21 @@
 package com.is.mindart.gestioneMateriale.service;
 
 import com.is.mindart.configuration.MaterialeMapper;
+import com.is.mindart.gestioneDisegno.model.Disegno;
+import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
-import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +32,7 @@ import java.util.stream.Collectors;
  * i materiali associati ai terapeuti.
  */
 @Service
-public final class MaterialeService {
+public class MaterialeService {
 
     /**
      * Repository relativa al materiale.
@@ -47,11 +50,6 @@ public final class MaterialeService {
     private final MaterialeMapper materialeMapperInjected;
 
     /**
-     * Repository relativa alle sessioni.
-     */
-    private final SessioneRepository sessioneRepositoryInjected;
-
-    /**
      * Directory di base dove salvare i file.
      */
     private static final String BASE_DIRECTORY = "src/materiali/";
@@ -62,26 +60,31 @@ public final class MaterialeService {
     private final Logger logger = Logger.getLogger(
             MaterialeService.class.getName()
     );
+    private final SessioneRepository sessioneRepository;
+    private final DisegnoRepository disegnoRepository;
 
     /**
      * Costruttore principale per l'iniezione delle dipendenze.
      *
-     * @param materialeRepository  Repository per gestire l'entità Materiale
-     * @param materialeMapper      Mapper per convertire tra entità e DTO
-     * @param terapeutaRepository  Repository per gestire l'entità Terapeuta
-     * @param sessioneRepository   Repository per gestire l'entità Sessione
+     * @param paramMaterialeRepository  Repository per gestire
+     *                                  l'entità Materiale
+     * @param paramMaterialeMapper      Mapper per convertire tra
+     *                                  entità e DTO
+     * @param paramTerapeutaRepository  Repository per gestire
+     *                                  l'entità Terapeuta
      */
     @Autowired
     public MaterialeService(
-            final MaterialeRepository materialeRepository,
-            final MaterialeMapper materialeMapper,
-            final TerapeutaRepository terapeutaRepository,
-            final SessioneRepository sessioneRepository
-    ) {
-        this.materialeRepositoryInjected = materialeRepository;
-        this.materialeMapperInjected = materialeMapper;
-        this.terapeutaRepositoryInjected = terapeutaRepository;
-        this.sessioneRepositoryInjected = sessioneRepository;
+            final MaterialeRepository paramMaterialeRepository,
+            final MaterialeMapper paramMaterialeMapper,
+            final TerapeutaRepository paramTerapeutaRepository,
+            SessioneRepository sessioneRepository, DisegnoRepository disegnoRepository) {
+        // Assegniamo alle variabili di istanza per evitare campi nascosti
+        this.materialeRepositoryInjected = paramMaterialeRepository;
+        this.materialeMapperInjected = paramMaterialeMapper;
+        this.terapeutaRepositoryInjected = paramTerapeutaRepository;
+        this.sessioneRepository = sessioneRepository;
+        this.disegnoRepository = disegnoRepository;
     }
 
     /**
@@ -91,7 +94,9 @@ public final class MaterialeService {
      * @param terapeutaId ID del terapeuta loggato
      * @return Lista di {@link OutputMaterialeDTO}
      */
-    public List<OutputMaterialeDTO> getClientMateriali(final long terapeutaId) {
+    public List<OutputMaterialeDTO> getClientMateriali(
+            final long terapeutaId
+    ) {
         return this.materialeRepositoryInjected
                 .findByTerapeutaId(terapeutaId)
                 .stream()
@@ -106,17 +111,19 @@ public final class MaterialeService {
      * @param inputMaterialeDTO DTO contenente i dati del materiale
      * @return true se il materiale esiste già, false altrimenti
      */
-    public boolean existsMateriale(final InputMaterialeDTO inputMaterialeDTO) {
-        Terapeuta terapeuta = this.terapeutaRepositoryInjected.findById(
-                inputMaterialeDTO.getTerapeutaId()
-        ).orElseThrow(
-                () -> new EntityNotFoundException("Terapeuta non trovato")
-        );
-
+    public boolean existsMateriale(
+            final InputMaterialeDTO inputMaterialeDTO
+    ) {
         return this.materialeRepositoryInjected.existsByNomeAndTipoAndTerapeuta(
                 inputMaterialeDTO.getNome(),
                 inputMaterialeDTO.getTipoMateriale(),
-                terapeuta
+                this.terapeutaRepositoryInjected.findById(
+                        inputMaterialeDTO.getTerapeutaId()
+                ).orElseThrow(
+                        () -> new EntityNotFoundException(
+                                "Terapeuta non trovato"
+                        )
+                )
         );
     }
 
@@ -128,7 +135,8 @@ public final class MaterialeService {
      * @return {@link OutputMaterialeDTO} del materiale salvato
      */
     public OutputMaterialeDTO addMateriale(
-            final InputMaterialeDTO materialeDTO) {
+            final InputMaterialeDTO materialeDTO
+    ) {
         // Percorso della cartella basato sul terapeutaId
         Path directoryPath = Paths.get(
                 BASE_DIRECTORY,
@@ -145,8 +153,6 @@ public final class MaterialeService {
                         "Errore nella creazione della directory: {0}",
                         e.getMessage()
                 );
-                throw new RuntimeException(
-                        "Errore nella creazione della directory", e);
             }
         }
 
@@ -159,11 +165,9 @@ public final class MaterialeService {
         } catch (IOException e) {
             this.logger.log(
                     Level.SEVERE,
-                    "Errore durante la scrittura del file: {0}",
+                    "Errore durante la scrittura del file : {0}",
                     e.getMessage()
             );
-            throw new RuntimeException(
-                    "Errore durante la scrittura del file", e);
         }
 
         // Converte il DTO in entità e salva nel database
@@ -178,21 +182,17 @@ public final class MaterialeService {
         return this.materialeMapperInjected.toDTO(materiale);
     }
 
-    /**
-     * Recupera il contenuto di un file come ByteArrayResource.
-     *
-     * @param path percorso del file
-     * @return {@link ByteArrayResource} contenente i byte del file
-     * @throws IOException se si verifica un errore durante la lettura del file
-     */
-    public ByteArrayResource getByteArray(
-            final String path) throws IOException {
+    public ByteArrayResource getByteArray(final String path) throws IOException {
         // Creazione del file dal percorso
-        Path filePath = Paths.get(path);
-        byte[] fileBytes = Files.readAllBytes(filePath);
+        File file = new File(path);
+        // Lettura del contenuto del file
+        FileInputStream fis = new FileInputStream(file);
+        byte[] fileBytes = fis.readAllBytes();
+        fis.close();
         // Converte il file in una risorsa
         return new ByteArrayResource(fileBytes);
     }
+
 
     /**
      * Rimuove un materiale cancellando il file dal filesystem
@@ -201,9 +201,10 @@ public final class MaterialeService {
      * @param id id del materiale da rimuovere
      */
     public void removeMaterial(final long id) {
+        // Percorso della cartella basato sul terapeutaId
+
         Materiale materiale = materialeRepositoryInjected.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Materiale non trovato"));
+                .orElseThrow();
 
         Path filePath = Path.of(materiale.getPath());
         try {
@@ -218,11 +219,9 @@ public final class MaterialeService {
         } catch (IOException e) {
             this.logger.log(
                     Level.SEVERE,
-                    "Errore durante la cancellazione del file: {0}",
+                    "Errore durante la cancellazione del file : {0}",
                     e.getMessage()
             );
-            throw new RuntimeException(
-                    "Errore durante la cancellazione del file", e);
         }
 
         // Elimina il record dal database
@@ -275,8 +274,6 @@ public final class MaterialeService {
                                 "Errore durante l'aggiornamento del file: {0}",
                                 e.getMessage()
                         );
-                        throw new RuntimeException(
-                                "Errore durante l'aggiornamento del file", e);
                     }
                 });
     }
@@ -286,21 +283,18 @@ public final class MaterialeService {
      *
      * @param codice codice del bambino associato alla sessione.
      * @return MaterialeDTO contenente i dettagli del materiale.
-     * @throws EntityNotFoundException se la sessione
-     * o il materiale non esistono.
+     * @throws EntityNotFoundException se la sessione o il materiale non esistono.
      */
     public MaterialeDTOResponse getMaterialeByCodice(final String codice) {
-        Sessione sessione = sessioneRepositoryInjected
+        Sessione sessione = sessioneRepository
                 .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
                 .stream()
                 .findFirst()
-                .orElseThrow(()
-                        -> new EntityNotFoundException("Sessione non trovata"));
+                .orElseThrow(() -> new EntityNotFoundException("Sessione non trovata"));
 
         Materiale materiale = sessione.getMateriale();
         if (materiale == null) {
-            throw new EntityNotFoundException(
-                    "Materiale associato alla sessione non trovato");
+            throw new EntityNotFoundException("Materiale associato alla sessione non trovato");
         }
 
         // Legge il contenuto del file
@@ -308,11 +302,10 @@ public final class MaterialeService {
         try {
             fileBytes = getByteArray(materiale.getPath()).getByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(
-                    "Errore nella lettura del file: " + e.getMessage(), e);
+            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
         }
 
-        // Mappa l'entità Materiale a MaterialeDTOResponse
+        // Mappa l'entità Materiale a MaterialeDTO
         return new MaterialeDTOResponse(
                 materiale.getId(),
                 materiale.getNome(),
@@ -326,21 +319,18 @@ public final class MaterialeService {
      *
      * @param email email del terapeuta associato alla sessione.
      * @return MaterialeDTO contenente i dettagli del materiale.
-     * @throws EntityNotFoundException se la sessione
-     * o il materiale non esistono.
+     * @throws EntityNotFoundException se la sessione o il materiale non esistono.
      */
     public MaterialeDTOResponse getMaterialeByEmail(final String email) {
-        Sessione sessione = sessioneRepositoryInjected
+        Sessione sessione = sessioneRepository
                 .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email)
                 .stream()
                 .findFirst()
-                .orElseThrow(()
-                        -> new EntityNotFoundException("Sessione non trovata"));
+                .orElseThrow(() -> new EntityNotFoundException("Sessione non trovata"));
 
         Materiale materiale = sessione.getMateriale();
         if (materiale == null) {
-            throw new EntityNotFoundException(
-                    "Materiale associato alla sessione non trovato");
+            throw new EntityNotFoundException("Materiale associato alla sessione non trovato");
         }
 
         // Legge il contenuto del file
@@ -348,11 +338,42 @@ public final class MaterialeService {
         try {
             fileBytes = getByteArray(materiale.getPath()).getByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("Errore nella lettura del file: "
-                    + e.getMessage(), e);
+            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
         }
 
-        // Mappa l'entità Materiale a MaterialeDTOResponse
+        // Mappa l'entità Materiale a MaterialeDTO
+        return new MaterialeDTOResponse(
+                materiale.getId(),
+                materiale.getNome(),
+                materiale.getTipo(),
+                Base64.getEncoder().encodeToString(fileBytes)
+        );
+    }
+
+    /**
+     * Recupera il materiale associato a un disegno.
+     * @param disegnoId id del disegno
+     * @return MaterialeDTO contenente i dettagli del materiale.
+     */
+    public MaterialeDTOResponse getMaterialeByDisegnoId(final long disegnoId) {
+        Disegno disegno = disegnoRepository.findById(disegnoId)
+                .orElseThrow(() -> new EntityNotFoundException("Disegno non trovato"));
+
+        Materiale materiale = disegno.getSessione().getMateriale();
+
+        if (materiale == null) {
+            throw new EntityNotFoundException("Materiale associato al disegno non trovato");
+        }
+
+        // Legge il contenuto del file
+        byte[] fileBytes;
+        try {
+            fileBytes = getByteArray(materiale.getPath()).getByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+        }
+
+        // Mappa l'entità Materiale a MaterialeDTO
         return new MaterialeDTOResponse(
                 materiale.getId(),
                 materiale.getNome(),

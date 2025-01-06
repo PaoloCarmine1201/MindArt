@@ -1,6 +1,8 @@
 package com.is.mindart.gestioneMateriale.service;
 
 import com.is.mindart.configuration.MaterialeMapper;
+import com.is.mindart.gestioneDisegno.model.Disegno;
+import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
 import com.is.mindart.gestioneSessione.model.Sessione;
@@ -59,6 +61,7 @@ public class MaterialeService {
             MaterialeService.class.getName()
     );
     private final SessioneRepository sessioneRepository;
+    private final DisegnoRepository disegnoRepository;
 
     /**
      * Costruttore principale per l'iniezione delle dipendenze.
@@ -75,12 +78,13 @@ public class MaterialeService {
             final MaterialeRepository paramMaterialeRepository,
             final MaterialeMapper paramMaterialeMapper,
             final TerapeutaRepository paramTerapeutaRepository,
-            SessioneRepository sessioneRepository) {
+            SessioneRepository sessioneRepository, DisegnoRepository disegnoRepository) {
         // Assegniamo alle variabili di istanza per evitare campi nascosti
         this.materialeRepositoryInjected = paramMaterialeRepository;
         this.materialeMapperInjected = paramMaterialeMapper;
         this.terapeutaRepositoryInjected = paramTerapeutaRepository;
         this.sessioneRepository = sessioneRepository;
+        this.disegnoRepository = disegnoRepository;
     }
 
     /**
@@ -327,6 +331,38 @@ public class MaterialeService {
         Materiale materiale = sessione.getMateriale();
         if (materiale == null) {
             throw new EntityNotFoundException("Materiale associato alla sessione non trovato");
+        }
+
+        // Legge il contenuto del file
+        byte[] fileBytes;
+        try {
+            fileBytes = getByteArray(materiale.getPath()).getByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+        }
+
+        // Mappa l'entità Materiale a MaterialeDTO
+        return new MaterialeDTOResponse(
+                materiale.getId(),
+                materiale.getNome(),
+                materiale.getTipo(),
+                Base64.getEncoder().encodeToString(fileBytes)
+        );
+    }
+
+    /**
+     * Recupera il materiale associato a un disegno.
+     * @param disegnoId id del disegno
+     * @return MaterialeDTO contenente i dettagli del materiale.
+     */
+    public MaterialeDTOResponse getMaterialeByDisegnoId(final long disegnoId) {
+        Disegno disegno = disegnoRepository.findById(disegnoId)
+                .orElseThrow(() -> new EntityNotFoundException("Disegno non trovato"));
+
+        Materiale materiale = disegno.getSessione().getMateriale();
+
+        if (materiale == null) {
+            throw new EntityNotFoundException("Materiale associato al disegno non trovato");
         }
 
         // Legge il contenuto del file

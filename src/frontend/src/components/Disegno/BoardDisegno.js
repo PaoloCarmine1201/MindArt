@@ -96,7 +96,7 @@ const ColoreBoard = () => {
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
                 localStorage.removeItem('jwtToken');
-                navigate('/childlogin')
+                navigate(-1)
             }
         };
 
@@ -123,7 +123,6 @@ const ColoreBoard = () => {
 
         client.onStompError = (frame) => {
             console.error('Errore STOMP:', frame.headers['message']);
-            // Puoi gestire errori STOMP qui, ad esempio mostrando un messaggio all'utente
         };
 
         client.activate();

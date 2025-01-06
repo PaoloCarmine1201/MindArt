@@ -7,6 +7,21 @@ import { connectWebSocket, subscribeToDraw } from "../../utils/websocket";
 import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css"; // Import del file CSS
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate per navigare
+// Helper function to map file extensions to MIME types
+const getMimeType = (filename) => {
+    const extension = filename.split('.').pop().toLowerCase();
+    const mimeTypes = {
+        'png': 'image/png',
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'gif': 'image/gif',
+        'svg': 'image/svg+xml',
+        'bmp': 'image/bmp',
+        'webp': 'image/webp',
+        // Aggiungi altre estensioni se necessario
+    };
+    return mimeTypes[extension] || 'image/png'; // Default MIME type
+};
 
 const DrawingBoard = () => {
     const [actions, setActions] = useState([]); // Array unico per tutte le azioni
@@ -39,7 +54,6 @@ const DrawingBoard = () => {
     // Stato per l'immagine di sfondo in base64
     const [backgroundImage, setBackgroundImage] = useState(null);
     const [bgImage] = useImage(backgroundImage);
-    const [imageError, setImageError] = useState(false); // Stato per gestire errori nel caricamento dell'immagine
 
     // Effetto per caricare il disegno e l'immagine di sfondo
     useEffect(() => {
@@ -71,24 +85,34 @@ const DrawingBoard = () => {
 
                 console.log('Actions loaded:', initialActions);
             } catch (error) {
-                console.error('Errore nel caricamento del disegno:', error);
+                console.error('Errore nel caricamento delle azioni:', error);
+                navigate('/'); // Reindirizza alla home page in caso di errore
             }
         };
 
         const loadBackgroundImage = async () => {
             try {
-                const response = await axiosInstance.get(`/api/terapeuta/sessione/disegno/background/`, {
-                    responseType: 'blob',
+                // Carica l'immagine di sfondo associata alla sessione
+                const materialeResponse = await axiosInstance.get(`/api/terapeuta/materiale/sessione/`, {
+                    responseType: 'json',
                 });
-                const blob = response.data;
-                const reader = new FileReader();
-                reader.onload = () => {
-                    setBackgroundImage(reader.result);
-                };
-                reader.readAsDataURL(blob);
+                console.log('Materiale caricato:', materialeResponse.data);
+
+                if (materialeResponse.data && materialeResponse.data.file && materialeResponse.data.nome) {
+                    const base64Image = materialeResponse.data.file;
+                    const nomeFile = materialeResponse.data.nome;
+
+                    // Ottieni il tipo MIME basato sull'estensione del nome del file
+                    const mimeType = getMimeType(nomeFile);
+
+                    // Costruisci il data URL
+                    const imageUrl = `data:${mimeType};base64,${base64Image}`;
+                    console.log('URL dell\'immagine di sfondo:', imageUrl);
+
+                    setBackgroundImage(imageUrl);
+                }
             } catch (error) {
                 console.error('Errore nel caricamento dell\'immagine di sfondo:', error);
-                setImageError(true);
             }
         }
 
@@ -138,12 +162,6 @@ const DrawingBoard = () => {
 
     return (
         <>
-            {/* Feedback per errori nel caricamento dell'immagine */}
-            {imageError && (
-                <div style={{ color: 'red', position: 'absolute', top: 10, left: 10 }}>
-                    Errore nel caricamento dell'immagine di sfondo.
-                </div>
-            )}
 
             <div className="drawing-container">
                 <Stage
@@ -185,7 +203,6 @@ const DrawingBoard = () => {
                                 listening={false} // Disabilita gli eventi per il layer di sfondo
                                 onError={() => {
                                     console.error('Errore nel caricamento dell\'immagine di sfondo');
-                                    setImageError(true);
                                 }}
                             />
                         </Layer>

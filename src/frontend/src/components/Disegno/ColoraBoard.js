@@ -101,24 +101,29 @@ const ColoreBoard = () => {
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
                 localStorage.removeItem('jwtToken');
-                navigate(-1)
+                navigate(-1);
             }
         };
 
         const loadBackgroundImage = async () => {
-            try {
-                const response = await axiosInstance.get(`/api/bambino/sessione/disegno/background/`, {
-                    responseType: 'blob',
-                });
-                const blob = response.data;
-                const reader = new FileReader();
-                reader.onload = () => {
-                    setBackgroundImage(reader.result);
-                };
-                reader.readAsDataURL(blob);
-            } catch (error) {
-                console.error('Errore nel caricamento dell\'immagine di sfondo:', error);
-                setImageError(true);
+            // Carica l'immagine di sfondo associata alla sessione
+            const materialeResponse = await axiosInstance.get(`/api/bambino/materiale/sessione/`, {
+                responseType: 'json',
+            });
+            console.log('Materiale caricato:', materialeResponse.data);
+
+            if (materialeResponse.data && materialeResponse.data.file && materialeResponse.data.nome) {
+                const base64Image = materialeResponse.data.file;
+                const nomeFile = materialeResponse.data.nome;
+
+                // Ottieni il tipo MIME basato sull'estensione del nome del file
+                const mimeType = getMimeType(nomeFile);
+
+                // Costruisci il data URL
+                const imageUrl = `data:${mimeType};base64,${base64Image}`;
+                console.log('URL dell\'immagine di sfondo:', imageUrl);
+
+                setBackgroundImage(imageUrl);
             }
         }
 

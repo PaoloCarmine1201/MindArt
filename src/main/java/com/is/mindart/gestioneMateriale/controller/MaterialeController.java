@@ -1,7 +1,10 @@
 package com.is.mindart.gestioneMateriale.controller;
 
 import com.is.mindart.gestioneMateriale.model.TipoMateriale;
-import com.is.mindart.gestioneMateriale.service.*;
+import com.is.mindart.gestioneMateriale.service.MaterialeDTOResponse;
+import com.is.mindart.gestioneMateriale.service.MaterialeService;
+import com.is.mindart.gestioneMateriale.service.InputMaterialeDTO;
+import com.is.mindart.gestioneMateriale.service.OutputMaterialeDTO;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -44,12 +47,15 @@ public class MaterialeController {
      * Costruttore.
      *
      * @param materialeService {@link MaterialeService}
+     * @param terapeutaRepositoryParam {@link TerapeutaRepository}
      */
     @Autowired
-    public MaterialeController(final MaterialeService materialeService, TerapeutaRepository terapeutaRepository) {
+    public MaterialeController(
+            final MaterialeService materialeService,
+            final TerapeutaRepository terapeutaRepositoryParam) {
         // Assegna il service al campo della classe
         this.materialeServiceInjected = materialeService;
-        this.terapeutaRepository = terapeutaRepository;
+        this.terapeutaRepository = terapeutaRepositoryParam;
     }
 
     /**
@@ -220,7 +226,8 @@ public class MaterialeController {
      */
     @PreAuthorize("hasRole('BAMBINO')")
     @GetMapping("/bambino/materiale/sessione/")
-    public ResponseEntity<MaterialeDTOResponse> getMaterialeBySessioneBambino() {
+    public ResponseEntity<MaterialeDTOResponse>
+                        getMaterialeBySessioneBambino() {
         Authentication authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
@@ -247,7 +254,8 @@ public class MaterialeController {
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/terapeuta/materiale/sessione/")
-    public ResponseEntity<MaterialeDTOResponse> getMaterialeBySessioneTerapeuta() {
+    public ResponseEntity<MaterialeDTOResponse>
+                        getMaterialeBySessioneTerapeuta() {
         Authentication authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();

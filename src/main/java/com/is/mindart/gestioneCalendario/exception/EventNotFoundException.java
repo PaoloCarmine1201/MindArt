@@ -1,7 +1,10 @@
 package com.is.mindart.gestioneCalendario.exception;
 
 public class EventNotFoundException extends RuntimeException {
-    public EventNotFoundException(String message) {
+    /**
+     * @param message messaggio
+     */
+    public EventNotFoundException(final String message) {
         super(message);
     }
 }

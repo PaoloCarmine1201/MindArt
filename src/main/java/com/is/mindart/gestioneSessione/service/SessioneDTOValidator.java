@@ -4,10 +4,23 @@ import com.is.mindart.gestioneSessione.model.TipoSessione;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class SessioneDTOValidator implements ConstraintValidator<ValidSessioneDTO, SessioneDTO> {
+/**
+ * Classe per validare i campi di {@link SessioneDTO}.
+ */
+public class SessioneDTOValidator
+        implements ConstraintValidator<ValidSessioneDTO, SessioneDTO> {
 
+    /**
+     * Metodo per validare i campi di {@link SessioneDTO}.
+     *
+     * @param sessioneDTO {@link SessioneDTO} da validare
+     * @param constraintValidatorContext contesto del validatore
+     * @return true se i campi sono validi, false altrimenti
+     */
     @Override
-    public boolean isValid(SessioneDTO sessioneDTO, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(
+            final SessioneDTO sessioneDTO,
+            final ConstraintValidatorContext constraintValidatorContext) {
         if (sessioneDTO.getTipoSessione().equals(TipoSessione.DISEGNO)) {
             if (sessioneDTO.getMateriale() != null) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
@@ -17,7 +30,8 @@ public class SessioneDTOValidator implements ConstraintValidator<ValidSessioneDT
                         .addConstraintViolation();
                 return false;
             }
-            if (sessioneDTO.getTemaAssegnato() == null || sessioneDTO.getTemaAssegnato().isEmpty()) {
+            if (sessioneDTO.getTemaAssegnato() == null
+                    || sessioneDTO.getTemaAssegnato().isEmpty()) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 constraintValidatorContext.buildConstraintViolationWithTemplate(
                         "Sessione di Tipo DISEGNO deve avere un tema assegnato")
@@ -29,7 +43,8 @@ public class SessioneDTOValidator implements ConstraintValidator<ValidSessioneDT
             if (sessioneDTO.getBambini().size() != 1) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 constraintValidatorContext.buildConstraintViolationWithTemplate(
-                        "Sessione di Tipo COLORE deve avere esattamente un bambino")
+                        "Sessione di Tipo COLORE deve avere "
+                                + "esattamente un bambino")
                         .addPropertyNode("bambini")
                         .addConstraintViolation();
                 return false;
@@ -42,10 +57,12 @@ public class SessioneDTOValidator implements ConstraintValidator<ValidSessioneDT
                         .addConstraintViolation();
                 return false;
             }
-            if (sessioneDTO.getTemaAssegnato() != null && !sessioneDTO.getTemaAssegnato().isEmpty()) {
+            if (sessioneDTO.getTemaAssegnato() != null
+                    && !sessioneDTO.getTemaAssegnato().isEmpty()) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 constraintValidatorContext.buildConstraintViolationWithTemplate(
-                        "Sessione di Tipo DISEGNO non può avere un tema assegnato")
+                        "Sessione di Tipo DISEGNO non "
+                                + "può avere un tema assegnato")
                         .addPropertyNode("temaAssegnato")
                         .addConstraintViolation();
                 return false;
@@ -54,15 +71,18 @@ public class SessioneDTOValidator implements ConstraintValidator<ValidSessioneDT
             if (sessioneDTO.getMateriale() == null) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 constraintValidatorContext.buildConstraintViolationWithTemplate(
-                        "Sessione di Tipo APPRENDIMENTO deve avere un materiale")
+                        "Sessione di Tipo APPRENDIMENTO "
+                                + "deve avere un materiale")
                         .addPropertyNode("materiale")
                         .addConstraintViolation();
                 return false;
             }
-            if (sessioneDTO.getTemaAssegnato() != null && !sessioneDTO.getTemaAssegnato().isEmpty()) {
+            if (sessioneDTO.getTemaAssegnato() != null
+                    && !sessioneDTO.getTemaAssegnato().isEmpty()) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 constraintValidatorContext.buildConstraintViolationWithTemplate(
-                        "Sessione di Tipo DISEGNO non può avere un tema assegnato")
+                        "Sessione di Tipo DISEGNO "
+                                + "non può avere un tema assegnato")
                         .addPropertyNode("temaAssegnato")
                         .addConstraintViolation();
                 return false;

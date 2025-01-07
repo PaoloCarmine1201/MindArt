@@ -4,7 +4,7 @@ import { FormGroup, Form} from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import BambinoLista from './BambinoLista';
 
-const SelezioneBambino = ({ childrenList, loading, error }) => {
+const SelezioneBambino = ({childrenList, loading, errorState}) => {
     const { values, setFieldValue, errors } = useFormikContext();
 
     return (
@@ -12,12 +12,13 @@ const SelezioneBambino = ({ childrenList, loading, error }) => {
             <BambinoLista
                 childrenList={childrenList}
                 loading={loading}
-                error={error}
+                error={errorState}
                 selectedChildren={values.bambini}
                 setFieldValue={setFieldValue}
+                isInvalid={!!errors.bambini}
             />
             <Form.Control.Feedback type="invalid">
-                {typeof errors.bambini === 'string'? errors.bambini : ''}
+                {(typeof errors.bambini) === 'string'? errors.bambini : ''}
             </Form.Control.Feedback>
         </FormGroup>
     );

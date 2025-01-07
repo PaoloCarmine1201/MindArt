@@ -158,7 +158,7 @@ class AddBambinoControllerTest {
                 validator.validate(bambinoDto);
 
         assertEquals(1, violations.size());
-        assertEquals("L'email deve essere valida.",
+        assertEquals("Devi inserire un'email valida",
                 violations.iterator().next().getMessage());
     }
 

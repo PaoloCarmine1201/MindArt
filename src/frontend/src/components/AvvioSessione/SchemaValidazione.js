@@ -14,10 +14,18 @@ export const stepTwoSchema = yup.object().shape({
     //todo regex path materiale
 });
 
-export const stepThreeSchema = yup.object().shape({
+export const stepThreeSchemaMult = yup.object().shape({
     bambini: yup
         .array()
         .min(1, 'Devi selezionare almeno un bambino')
+        .required('Requisito')
+});
+
+export const stepThreeSchemaSingle = yup.object().shape({
+    bambini: yup
+        .array()
+        .min(1, 'Devi selezionare almeno un bambino')
+        .max(1, 'Puoi selezionare al massimo un bambino')
         .required('Requisito')
 });
 

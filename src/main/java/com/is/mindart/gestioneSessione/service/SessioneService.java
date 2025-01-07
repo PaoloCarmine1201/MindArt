@@ -14,6 +14,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import com.is.mindart.gestioneBambino.model.Bambino;
 
@@ -115,10 +117,11 @@ public class SessioneService {
     /**
      * Terminazione della sessione.
      * @param codice codice del bambino
+     * @param immagine immmagine che verrà valutat da IA
      * @throws EntityNotFoundException se l'id non viene trovato
      */
     @Transactional
-    public void consegnaDisegno(final String codice)
+    public void consegnaDisegno(final String codice, final byte[] immagine)
             throws EntityNotFoundException {
         Sessione sessione = sessioneRepository
                 .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
@@ -126,6 +129,11 @@ public class SessioneService {
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Bambino con codice " + codice + " non trovato"));
+        Disegno disegno = disegnoRepository.findBySessioneId(sessione.getId())
+                .orElseThrow(NoSuchElementException::new);
+
+        disegno.setImmagine(immagine);
+
         sessioneRepository.terminaSessione(sessione.getId());
     }
 
@@ -141,8 +149,8 @@ public class SessioneService {
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Bambino con codice " + codice + " non trovato " +
-                                "o sessione non valida"));
+                        "Bambino con codice " + codice + " non trovato "
+                                   + "o sessione non valida"));
         return new SessioneDTO(
                 sessione.getId(),
                 sessione.getTipo(),

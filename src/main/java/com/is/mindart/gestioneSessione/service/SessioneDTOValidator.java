@@ -45,101 +45,101 @@ public class SessioneDTOValidator
 
         // Validazione per tipi di sessione specifici
         switch (sessioneDTO.getTipoSessione()) {
-            case DISEGNO:
+                case DISEGNO:
                 // Controllo che il tema sia obbligatorio
                 // Test Case: TC_4.1_3, TC_4.1_4
-                if (sessioneDTO.getTemaAssegnato() == null || sessioneDTO.getTemaAssegnato().isEmpty()) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Disegno richiede un tema assegnato")
-                            .addPropertyNode("temaAssegnato")
-                            .addConstraintViolation();
-                    return false;
-                }
-                break;
+                    if (sessioneDTO.getTemaAssegnato() == null || sessioneDTO.getTemaAssegnato().isEmpty()) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Disegno richiede un tema assegnato")
+                                .addPropertyNode("temaAssegnato")
+                                .addConstraintViolation();
+                        return false;
+                    }
+                    break;
 
-            case APPRENDIMENTO:
+                case APPRENDIMENTO:
                 // Controllo che il materiale sia obbligatorio
                 // Test Case: TC_4.1_8, TC_4.1_12
-                if (sessioneDTO.getMateriale() == null) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Apprendimento richiede un materiale allegato")
-                            .addPropertyNode("materiale")
-                            .addConstraintViolation();
-                    return false;
-                }
+                    if (sessioneDTO.getMateriale() == null) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Apprendimento richiede un materiale allegato")
+                                .addPropertyNode("materiale")
+                                .addConstraintViolation();
+                        return false;
+                    }
 
-                if (materiale == null) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Apprendimento richiede un materiale allegato")
-                            .addPropertyNode("materiale")
-                            .addConstraintViolation();
-                    return false;
-                }
+                    if (materiale == null) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Apprendimento richiede un materiale allegato")
+                                .addPropertyNode("materiale")
+                                .addConstraintViolation();
+                        return false;
+                    }
 
-                // Controllo che il materiale sia supportato
-                // Test Case: TC_4.1_5, TC_4.1_9
-                if (materiale.getTipo().equals(TipoMateriale.IMMAGINE)) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Apprendimento supporta solo materiali di tipo PDF o Video")
-                            .addPropertyNode("materiale")
-                            .addConstraintViolation();
-                    return false;
-                }
-                break;
+                    // Controllo che il materiale sia supportato
+                    // Test Case: TC_4.1_5, TC_4.1_9
+                    if (materiale.getTipo().equals(TipoMateriale.IMMAGINE)) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Apprendimento supporta solo materiali di tipo PDF o Video")
+                                .addPropertyNode("materiale")
+                                .addConstraintViolation();
+                        return false;
+                    }
+                    break;
 
-            case COLORE:
-                // Controllo che ci sia un solo partecipante
-                // Test Case: TC_4.1_13
-                if (sessioneDTO.getBambini().size() > 1) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Colore può avere un solo partecipante")
-                            .addPropertyNode("bambini")
-                            .addConstraintViolation();
-                    return false;
-                }
-                // Controllo che il materiale sia obbligatorio
-                // Test Case: TC_4.1_17
-                if (sessioneDTO.getMateriale() == null) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Colore richiede un materiale allegato")
-                            .addPropertyNode("materiale")
-                            .addConstraintViolation();
-                    return false;
-                }
+                case COLORE:
+                    // Controllo che ci sia un solo partecipante
+                    // Test Case: TC_4.1_13
+                    if (sessioneDTO.getBambini().size() > 1) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Colore può avere un solo partecipante")
+                                .addPropertyNode("bambini")
+                                .addConstraintViolation();
+                        return false;
+                    }
+                    // Controllo che il materiale sia obbligatorio
+                    // Test Case: TC_4.1_17
+                    if (sessioneDTO.getMateriale() == null) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Colore richiede un materiale allegato")
+                                .addPropertyNode("materiale")
+                                .addConstraintViolation();
+                        return false;
+                    }
 
-                if (materiale == null) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Apprendimento richiede un materiale allegato")
-                            .addPropertyNode("materiale")
-                            .addConstraintViolation();
-                    return false;
-                }
-                // Controllo che il materiale sia di tipo Immagine
-                // Test Case: TC_4.1_14, TC_4.1_16
-                if (!materiale.getTipo().equals(TipoMateriale.IMMAGINE)) {
-                    constraintValidatorContext.disableDefaultConstraintViolation();
-                    constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                    "La sessione di tipo Colore supporta solo materiali di tipo Immagine")
-                            .addPropertyNode("materiale")
-                            .addConstraintViolation();
-                    return false;
-                }
-                break;
+                    if (materiale == null) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Apprendimento richiede un materiale allegato")
+                                .addPropertyNode("materiale")
+                                .addConstraintViolation();
+                        return false;
+                    }
+                    // Controllo che il materiale sia di tipo Immagine
+                    // Test Case: TC_4.1_14, TC_4.1_16
+                    if (!materiale.getTipo().equals(TipoMateriale.IMMAGINE)) {
+                        constraintValidatorContext.disableDefaultConstraintViolation();
+                        constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                        "La sessione di tipo Colore supporta solo materiali di tipo Immagine")
+                                .addPropertyNode("materiale")
+                                .addConstraintViolation();
+                        return false;
+                    }
+                    break;
 
-            default:
-                constraintValidatorContext.disableDefaultConstraintViolation();
-                constraintValidatorContext.buildConstraintViolationWithTemplate(
-                                "Tipo di sessione non riconosciuto")
-                        .addPropertyNode("tipoSessione")
-                        .addConstraintViolation();
-                return false;
+                default:
+                    constraintValidatorContext.disableDefaultConstraintViolation();
+                    constraintValidatorContext.buildConstraintViolationWithTemplate(
+                                    "Tipo di sessione non riconosciuto")
+                            .addPropertyNode("tipoSessione")
+                            .addConstraintViolation();
+                    return false;
         }
 
         return true;

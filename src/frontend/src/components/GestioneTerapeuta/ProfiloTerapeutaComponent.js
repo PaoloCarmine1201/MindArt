@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../config/axiosInstance";
 import '../../style/ProfiloTerapeutaStyle.css';
+import '../../style/Modal.css';
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
@@ -87,28 +88,6 @@ function ProfiloTerapuetaComponent() {
     return (
         <div className="dettaglio-container">
             <Modal
-                show={showConfirmModal}
-                backdropClassName="custom-backdrop"
-                keyboard={false}
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                dialogClassName="custom-modal"
-            >
-                <ModalBody>
-                    <ModalTitle>
-                        {confirmMessage}
-                    </ModalTitle>
-                    <ModalFooter>
-                        <Button
-                            onClick={() => handleChiudi()}
-                            className={"btn-conferma btn-conferma-in"}
-                        >
-                            {emailChanged ? "Effettua il login" : "Chiudi"}
-                        </Button>
-                    </ModalFooter>
-                </ModalBody>
-            </Modal>
-            <Modal
                 show={showModal}
                 backdropClassName="custom-backdrop"
                 keyboard={false}
@@ -185,13 +164,13 @@ function ProfiloTerapuetaComponent() {
                 </div>
             </div>
 
-            <div className="dettaglio-button-container">
+            <div className="dettaglio-button-container text-end justify-content-end">
                 {/* Pulsante Modifica */}
                 <Button
                     onClick={handleClick}
                     className="btn-all"
                 >
-                    Modifica
+                    Modifica i tuoi dati
                 </Button>
             </div>
 

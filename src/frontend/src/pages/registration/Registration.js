@@ -94,11 +94,16 @@ const Registration = () => {
             const payload = { nome, cognome, dataDiNascita, email, password };
             const response = await axiosInstance.post('/auth/terapeuta/register', payload);
 
-            // Successo
-            toast.success('Registrazione effettuata con successo!', {
-                position: 'bottom-right'
-            });
-            window.location = '/login';
+            if(response && response.status === 200) {
+                // Successo
+                toast.success('Registrazione effettuata con successo!', {
+                    position: 'bottom-right'
+                });
+
+                window.location = '/login';
+            }else{
+                toast.error('Si è verificato un errore durante la registrazione.');
+            }
         } catch (err) {
             console.error('Registration error:', err);
 

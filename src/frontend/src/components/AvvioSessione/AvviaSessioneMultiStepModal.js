@@ -17,7 +17,6 @@ import '../../style/Transition.css';
 import axiosInstance from "../../config/axiosInstance";
 import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le animazioni
 import { toast } from 'react-toastify';
-import {value} from "lodash/seq";
 
 
 const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {

@@ -52,5 +52,4 @@ public class SessioneDTO {
     @NotNull(message = "La lista di bambini non può essere nulla")
     private List<Long> bambini;
 
-
 }

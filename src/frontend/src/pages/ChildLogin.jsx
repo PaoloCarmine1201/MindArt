@@ -8,17 +8,44 @@ import background from '../assets/ChildLoginBackground.jpg';
 import {toast} from "react-toastify";
 import axiosInstance from "../config/axiosInstance";
 import { useNavigate} from 'react-router-dom';
+import {useAuth} from "../auth/AuthProvider";
 
 
 // Component definition for the child login form
 function ChildLogin() {
+    const { login } = useAuth();
     const navigate = useNavigate(); // For navigation
     // Validation schema using Yup
     const validationSchema = Yup.object().shape({
         code: Yup.string()
-            .required("Please enter the code!") // Field is required
-            .matches(/^\w{6}$/, "Invalid code format!"), // Must be exactly 6 alphanumeric characters
+            .required("Per favore, inserisci il codice") // Field is required
+            .matches(/^\w{6}$/, "Formato del codice non valido"), // Must be exactly 6 alphanumeric characters
     });
+
+/*    useEffect(async () => {
+        const jwtToken = localStorage.getItem('jwtToken');
+        if(jwtToken){
+            const sessione = await axiosInstance.get('/api/bambino/sessione/');
+
+            if(sessione.data === ""){
+                throw Error("No session found");
+            }
+            else{
+                switch (sessione.data.tipoSessione) {
+                    case "DISEGNO":
+                        navigate('/child/draw');
+                        break;
+                    case "COLORE":
+                        navigate('/child/colore');
+                        break;
+                    case "APPRENDIMENTO":
+                        navigate('/visualizzazioneMateriale');
+                    default:
+                        throw Error("Invalid session type");
+                }
+            }
+        }
+    }, []);*/
 
     // Submit handler for the form
     const handleSubmit = async (values, { setSubmitting }) => {
@@ -32,8 +59,28 @@ function ChildLogin() {
             // Handle successful login
             console.log("Login successful:", response.data);
 
-            localStorage.setItem('jwtToken', response.data);
-            navigate("/visualizzazioneMateriale");
+            login(response.data);
+
+            const sessione = await axiosInstance.get('/api/bambino/sessione/');
+            console.log(sessione.data.tipoSessione)
+            if(sessione.data === ""){
+                throw Error("No session found");
+            }
+            else{
+                switch (sessione.data.tipoSessione) {
+                    case "DISEGNO":
+                        navigate('/child/draw');
+                        break;
+                    case "COLORE":
+                        navigate('/child/colore');
+                        break;
+                    case "APPRENDIMENTO":
+                        navigate('/visualizzazioneMateriale');
+                        break;
+                    default:
+                        throw Error("Invalid session type");
+                }
+            }
 
         } catch (error) {
             console.error("Errore durante il login:", error);
@@ -101,7 +148,7 @@ function ChildLogin() {
                         zIndex: '10',
                     }}
                 />
-                <h1 className="text-center mb-4">Join the session!</h1> {/* Title of the form */}
+                <h1 className="text-center mb-4">Partecipa alla sessione!</h1> {/* Title of the form */}
 
                 {/* Formik for form handling with validation */}
                 <Formik
@@ -122,7 +169,7 @@ function ChildLogin() {
                         <Form className="w-100 mx-auto" onSubmit={handleSubmit}>
                             {/* Code input field */}
                             <Form.Group className="mb-3 text-center m-bot m-2">
-                                <FloatingLabel label={'Code'}>
+                                <FloatingLabel label={'Codice'}>
                                     <Form.Control
                                         type="text"
                                         name="code"
@@ -162,7 +209,7 @@ function ChildLogin() {
                                         maxWidth: '300px', // Maximum width for the button
                                     }}
                                 >
-                                    Join
+                                    Partecipa
                                 </Button>
                             </Form.Group>
                         </Form>

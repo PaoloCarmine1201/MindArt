@@ -52,8 +52,10 @@ public class EventService {
      * @param email l'email del terapeuta
      * @return un oggetto {@link EventDto} rappresentante l'evento
      */
-    public EventDto getEventByIdAndTerapeutaEmail(final Long idEvento, final String email) {
-        Evento event = eventRepository.findByIdAndTerapeutaEmail(idEvento, email)
+    public EventDto getEventByIdAndTerapeutaEmail(
+            final Long idEvento, final String email) {
+        Evento event = eventRepository
+                .findByIdAndTerapeutaEmail(idEvento, email)
                 .orElseThrow(() ->
                         new EventNotFoundException("Event not found"));
         return mapToEventDto(event);
@@ -64,12 +66,15 @@ public class EventService {
      *
      * @param eventDto un oggetto {@link EventDto}
      *                 rappresentante i dati dell'evento
+     * @param email l'email del terapeuta
      * @return l'evento salvato come {@link EventDto}
      */
-    public EventDto addEvent(final EventDto eventDto, final String email) {
+    public EventDto addEvent(
+            final EventDto eventDto, final String email) {
         Evento event = mapToEvent(eventDto);
         event.setTerapeuta(terapeutaRepository.findByEmail(email)
-                .orElseThrow(() -> new EventNotFoundException("Terapeuta not found")));
+                .orElseThrow(()
+                        -> new EventNotFoundException("Terapeuta not found")));
         Evento savedEvent = eventRepository.save(event);
         return mapToEventDto(savedEvent);
     }
@@ -78,6 +83,7 @@ public class EventService {
      *
      * @param eventDto un oggetto {@link EventDto}
      *                 con i dati aggiornati dell'evento
+     * @param email l'email del terapeuta
      * @return l'evento aggiornato come {@link EventDto}
      * @throws EventNotFoundException se l'evento non esiste
      */

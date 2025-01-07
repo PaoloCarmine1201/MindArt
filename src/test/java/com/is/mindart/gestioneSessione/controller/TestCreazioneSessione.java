@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -48,4 +50,6 @@ public class TestCreazioneSessione {
         verify(sessioneService, times(1))
                 .creaSessione(sessioneDTO, "terapeuta@example.com");
     }
+
+
 }

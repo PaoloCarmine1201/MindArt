@@ -14,68 +14,97 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 /**
- * @author mauriliolarocca
  * Classe di testing per la funzione di login
  * del Terapeuta nel controller AuthController.
  */
 public class LoginTerapeutaControllerTest {
-
+    /**
+     * Servizio per la gestione del terapeuta.
+     */
     @Mock
     private TerapeutaService terapeutaService;
-
+    /**
+     * Servizio per la gestione del token blacklist.
+     */
     @Mock
     private FileBasedTokenBlacklist tokenBlacklist;
-
+    /**
+     * Controller per la gestione dell'autenticazione.
+     */
     @InjectMocks
     private AuthController authController;
-
+    /**
+     * Metodo di setup dell'ambiente di testing.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
+    /**
+     * Test per il login del terapeuta con successo.
+     * @throws AuthenticationException
+     */
     @Test
-    public void testLoginTerapeuta_Success() throws AuthenticationException {
+    public void testLoginTerapeutaSuccess() throws AuthenticationException {
         // Arrange
-        TerapeutaLoginRequest request = new TerapeutaLoginRequest();
-        request.setEmail("terapeuta@example.com");
-        request.setPassword("password123");
-        String expectedToken = "mocked-jwt-token";
+        final String email = "terapeuta@example.com";
+        final String password = "password123";
+        final String expectedToken = "mocked-jwt-token";
 
-        when(terapeutaService.loginTerapeuta("terapeuta@example.com", "password123"))
+        TerapeutaLoginRequest request = new TerapeutaLoginRequest();
+        request.setEmail(email);
+        request.setPassword(password);
+
+        when(terapeutaService.loginTerapeuta(email, password))
                 .thenReturn(expectedToken);
 
         // Act
-        ResponseEntity<String> response = authController.loginTerapeuta(request);
+        ResponseEntity<String> response =
+                authController.loginTerapeuta(request);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedToken, response.getBody());
+
         verify(terapeutaService, times(1))
-                .loginTerapeuta("terapeuta@example.com", "password123");
+                .loginTerapeuta(email, password);
     }
 
+    /**
+     * Test per verificare il login del terapeuta con credenziali errate.
+     * Deve ritornare 401 UNAUTHORIZED e il corpo della risposta nullo.
+     *
+     * @throws AuthenticationException
+     * se si verifica un errore di autenticazione
+     */
     @Test
-    public void testLoginTerapeuta_Unauthorized() throws AuthenticationException {
+    public void loginTerapeutaUnauthorizedTest()
+            throws AuthenticationException {
         // Arrange
-        TerapeutaLoginRequest request = new TerapeutaLoginRequest();
-        request.setEmail("terapeuta@example.com");
-        request.setPassword("wrong-password");
+        final String email = "terapeuta@example.com";
+        final String wrongPassword = "wrong-password";
 
-        when(terapeutaService.loginTerapeuta("terapeuta@example.com", "wrong-password"))
+        TerapeutaLoginRequest request = new TerapeutaLoginRequest();
+        request.setEmail(email);
+        request.setPassword(wrongPassword);
+
+        when(terapeutaService.loginTerapeuta(email, wrongPassword))
                 .thenReturn(null);
 
         // Act
-        ResponseEntity<String> response = authController.loginTerapeuta(request);
+        ResponseEntity<String> response =
+                authController.loginTerapeuta(request);
 
         // Assert
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals(null, response.getBody());
+
         verify(terapeutaService, times(1))
-                .loginTerapeuta("terapeuta@example.com", "wrong-password");
+                .loginTerapeuta(email, wrongPassword);
     }
 }
-

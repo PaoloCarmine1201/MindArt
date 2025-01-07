@@ -94,4 +94,17 @@ public class SessioneController {
                         "Terapeuta con email " + principal + " non trovato"));
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * Endpoint che restiuisce la descrizione della sessione del bambino.
+     * @return 200 OK
+     */
+    @GetMapping("/bambino/sessione/")
+    public ResponseEntity<SessioneDTO> getSessioneBambino() {
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        String principal = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(sessioneService.getSessioneBambino(principal));
+
+    }
 }

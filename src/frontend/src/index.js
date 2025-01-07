@@ -22,6 +22,7 @@ import ProfiloTerapeuta from "./pages/ProfiloTerapeuta";
 import VisualizzazioneMateriale from "./pages/VisualizzazioneMateriale";
 import DisegnoInCorso from "./pages/DisegnoInCorsoTerapeuta";
 import GestioneListaDisegno from "./components/GestioneListaDisegno/GestioneListaDisegno";
+import ColoraBambino from "./pages/ColoraBambino";
 
 const router = createBrowserRouter([
     {
@@ -114,6 +115,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRouteChild>
                         <DisegnaBambino />
+                    </ProtectedRouteChild>
+                )
+            },
+            {
+              path: "/child/colore",
+                element: (
+                    <ProtectedRouteChild>
+                        <ColoraBambino />
                     </ProtectedRouteChild>
                 )
             },

@@ -1,12 +1,15 @@
 package com.is.mindart.gestioneMateriale.controller;
 
 import com.is.mindart.gestioneMateriale.model.TipoMateriale;
-import com.is.mindart.gestioneMateriale.service.InputMaterialeDTO;
+import com.is.mindart.gestioneMateriale.service.MaterialeDTOResponse;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
+import com.is.mindart.gestioneMateriale.service.InputMaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.OutputMaterialeDTO;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +31,7 @@ import java.util.List;
  * Controller per la gestione del materiale.
  */
 @RestController
-@RequestMapping("/api/terapeuta/materiale")
+@RequestMapping("/api")
 public class MaterialeController {
 
     /**
@@ -44,12 +47,15 @@ public class MaterialeController {
      * Costruttore.
      *
      * @param materialeService {@link MaterialeService}
+     * @param terapeutaRepositoryParam {@link TerapeutaRepository}
      */
     @Autowired
-    public MaterialeController(final MaterialeService materialeService, TerapeutaRepository terapeutaRepository) {
+    public MaterialeController(
+            final MaterialeService materialeService,
+            final TerapeutaRepository terapeutaRepositoryParam) {
         // Assegna il service al campo della classe
         this.materialeServiceInjected = materialeService;
-        this.terapeutaRepository = terapeutaRepository;
+        this.terapeutaRepository = terapeutaRepositoryParam;
     }
 
     /**
@@ -58,7 +64,7 @@ public class MaterialeController {
      * @return ResponseEntity con il messaggio di successo.
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/terapeuta/materiale/{id}")
     public ResponseEntity<String> removeMaterial(
             final @PathVariable long id) {
         // Rimuove il materiale specificato
@@ -76,7 +82,7 @@ public class MaterialeController {
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
     @PutMapping(
-            value = "/update",
+            value = "/terapeuta/materiale/update",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<String> updateMaterial(
@@ -117,7 +123,7 @@ public class MaterialeController {
      *         o No Content se non ne esistono.
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @GetMapping("/")
+    @GetMapping("/terapeuta/materiale/")
     public ResponseEntity<List<OutputMaterialeDTO>> getMateriali() {
         // Estrae l'autenticazione dall'oggetto SecurityContextHolder
         Authentication authentication = SecurityContextHolder
@@ -151,7 +157,7 @@ public class MaterialeController {
      *         o un errore.
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
-    @PostMapping(value = "/",
+    @PostMapping(value = "/terapeuta/materiale/",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<OutputMaterialeDTO> addMaterial(
             final @RequestParam("file") MultipartFile file) {
@@ -211,5 +217,87 @@ public class MaterialeController {
 
         // Restituisce l'oggetto creato
         return ResponseEntity.ok(outputMaterialeDTO);
+    }
+
+    /**
+     * Ottiene il materiale associato a una specifica sessione.
+     *
+     * @return ResponseEntity con il MaterialeDTO o un errore.
+     */
+    @PreAuthorize("hasRole('BAMBINO')")
+    @GetMapping("/bambino/materiale/sessione/")
+    public ResponseEntity<MaterialeDTOResponse>
+                        getMaterialeBySessioneBambino() {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        String principal = (String) authentication.getPrincipal();
+        try {
+            MaterialeDTOResponse materialeDTO = materialeServiceInjected
+                    .getMaterialeByCodice(principal);
+            return ResponseEntity.ok(materialeDTO);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    /**
+     * Ottiene il materiale associato a una specifica sessione.
+     *
+     * @return ResponseEntity con il MaterialeDTO o un errore.
+     */
+    @PreAuthorize("hasRole('TERAPEUTA')")
+    @GetMapping("/terapeuta/materiale/sessione/")
+    public ResponseEntity<MaterialeDTOResponse>
+                        getMaterialeBySessioneTerapeuta() {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        String principal = (String) authentication.getPrincipal();
+        try {
+            MaterialeDTOResponse materialeDTO = materialeServiceInjected
+                    .getMaterialeByEmail(principal);
+            return ResponseEntity.ok(materialeDTO);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    /**
+     * Ottiene il materiale associato a una specifica sessione.
+     *
+     * @param id id del disegno.
+     * @return ResponseEntity con il MaterialeDTO o un errore.
+     */
+    @PreAuthorize("hasRole('TERAPEUTA')")
+    @GetMapping("/terapeuta/materiale/disegno/{id}")
+    public ResponseEntity<MaterialeDTOResponse> getMaterialeBySessioneTerapeuta(
+            @PathVariable final long id) {
+
+        try {
+            MaterialeDTOResponse materialeDTO = materialeServiceInjected
+                    .getMaterialeByDisegnoId(id);
+            return ResponseEntity
+                    .ok(materialeDTO);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity
+                    .ok(null);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 }

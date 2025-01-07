@@ -71,7 +71,7 @@ function EditBambino({bambino}){
 
     return (
         <>
-            <Button variant="btn-outline-primary btn-conferma" onClick={handleShow}>Modifica</Button>
+            <Button variant="btn-outline-primary btn-all" onClick={handleShow}>Modifica dati</Button>
             <Modal show={show}
                    onHide={handleClose}
                    backdropClassName="custom-backdrop"

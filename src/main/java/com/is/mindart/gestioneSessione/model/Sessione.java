@@ -3,8 +3,20 @@ package com.is.mindart.gestioneSessione.model;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import jakarta.persistence.*;
-import lombok.*;
+
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
@@ -20,22 +32,34 @@ import java.util.List;
 @NoArgsConstructor
 public class Sessione {
 
-    public Sessione(Long id,
-                    String temaAssegnato,
-                    LocalDateTime data,
-                    String nota,
-                    TipoSessione tipo,
-                    Materiale materiale,
-                    Terapeuta terapeuta,
-                    List<Bambino> bambini) {
-        this.id = id;
-        this.temaAssegnato = temaAssegnato;
-        this.data = data;
-        this.nota = nota;
-        this.tipo = tipo;
-        this.materiale = materiale;
-        this.terapeuta = terapeuta;
-        this.bambini = bambini;
+    /**
+     * Costruttore della classe Sessione.
+     *
+     * @param idParam            Identificativo univoco della sessione.
+     * @param temaAssegnatoParam Tema assegnato alla sessione terapeutica.
+     * @param dataParam          Data in cui si svolge la sessione.
+     * @param notaParam          Nota aggiuntiva relativa alla sessione.
+     * @param tipoParam          Tipo della sessione.
+     * @param materialeParam     Materiale utilizzato durante la sessione.
+     * @param terapeutaParam     Terapeuta associato alla sessione.
+     * @param bambiniParam       Bambini associati alla sessione.
+     */
+    public Sessione(final Long idParam,
+                    final String temaAssegnatoParam,
+                    final LocalDateTime dataParam,
+                    final String notaParam,
+                    final TipoSessione tipoParam,
+                    final Materiale materialeParam,
+                    final Terapeuta terapeutaParam,
+                    final List<Bambino> bambiniParam) {
+        this.id = idParam;
+        this.temaAssegnato = temaAssegnatoParam;
+        this.data = dataParam;
+        this.nota = notaParam;
+        this.tipo = tipoParam;
+        this.materiale = materialeParam;
+        this.terapeuta = terapeutaParam;
+        this.bambini = bambiniParam;
     }
 
     /**
@@ -56,7 +80,7 @@ public class Sessione {
     private LocalDateTime data;
 
     /**
-     * Indica se la sessione è terminata
+     * Indica se la sessione è terminata.
      */
     @ColumnDefault("false")
     private Boolean terminata;
@@ -88,9 +112,13 @@ public class Sessione {
     private Terapeuta terapeuta;
 
     /**
-     * Bambini associati alla sessione
+     * Bambini associati alla sessione.
      */
     @ToString.Exclude
-    @ManyToMany(mappedBy = "sessioni")
+    @ManyToMany
+    @JoinTable(
+            name = "bambino_sessione", // Nome esplicito per la tabella di join
+            joinColumns = @JoinColumn(name = "sessione_id"),
+            inverseJoinColumns = @JoinColumn(name = "bambino_id"))
     private List<Bambino> bambini;
 }

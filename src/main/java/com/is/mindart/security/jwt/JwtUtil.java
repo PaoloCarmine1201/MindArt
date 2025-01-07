@@ -15,18 +15,24 @@ import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 @Component
 public class JwtUtil {
     /**
-     *  Chiave segreta, salt
+     *  Chiave segreta, salt.
      */
     @Value("${jwt.secret}")
     private String secret;
 
     /**
      *  Tempo prima che scada
-     *  la sessione del terapeuta
+     *  la sessione del terapeuta.
      */
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    /**
+     * Metodo per generare il token.
+     * @param username L'username
+     * @param role Il ruolo
+     * @return Il token
+     */
     public String generateToken(final String username, final String role) {
         Date now = new Date();
 
@@ -40,7 +46,7 @@ public class JwtUtil {
     }
 
     /**
-     * Metodo per ottenere l'username dal token
+     * Metodo per ottenere l'username dal token.
      * @param token Il token
      * @return L'username
      */
@@ -55,7 +61,7 @@ public class JwtUtil {
 
     /**
      * Metodo per ottenere il ruolo dal
-     * token
+     * token.
      * @param token Il token da validare
      * @return se il token è valido o meno
      */
@@ -73,7 +79,7 @@ public class JwtUtil {
 
     /**
      * Metodo per estrarre tutti i claim
-     * dal token
+     * dal token.
      * @param token Il token
      * @return I claim
      */
@@ -87,7 +93,7 @@ public class JwtUtil {
 
     /**
      * Metodo per estrarre un claim specifico
-     * dal token
+     * dal token.
      * @param token Il token
      * @param claimKey La chiave del claim
      * @return Il claim

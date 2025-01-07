@@ -6,13 +6,15 @@ import com.is.mindart.gestioneCalendario.model.Evento;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneSessione.model.Sessione;
-import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOStat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Terapeuta{
+public class Terapeuta {
 
     /**
      * Identificativo univoco del terapeuta.
@@ -40,21 +42,29 @@ public class Terapeuta{
     /**
      * Nome del terapeuta.
      */
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s'-]{2,50}$",
+            message = "Il nome deve contenere solo lettere e spazi e "
+                    + "deve essere lungo tra i 2 e i 50 caratteri.")
     private String nome;
 
     /**
      * Cognome del terapeuta.
      */
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s'-]{2,50}$",
+            message = "Il cognome deve contenere solo lettere e spazi e "
+                    + "deve essere lungo tra i 2 e i 50 caratteri.")
     private String cognome;
 
     /**
      * Email del terapeuta.
      */
+    @Email(message = "L'email deve essere valida.")
     private String email;
 
     /**
      * Data di nascita del terapeuta.
      */
+    @Past(message = "La data di nascita deve essere nel passato")
     private Date dataDiNascita;
 
     /**
@@ -111,5 +121,4 @@ public class Terapeuta{
     @JsonBackReference
     @ToString.Exclude
     private List<Bambino> bambini;
-
 }

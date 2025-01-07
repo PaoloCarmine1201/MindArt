@@ -1,23 +1,26 @@
 package com.is.mindart.gestioneMateriale.service;
 
 import com.is.mindart.configuration.MaterialeMapper;
+import com.is.mindart.gestioneDisegno.model.Disegno;
+import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.model.MaterialeRepository;
+import com.is.mindart.gestioneSessione.model.Sessione;
+import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,6 +60,8 @@ public class MaterialeService {
     private final Logger logger = Logger.getLogger(
             MaterialeService.class.getName()
     );
+    private final SessioneRepository sessioneRepository;
+    private final DisegnoRepository disegnoRepository;
 
     /**
      * Costruttore principale per l'iniezione delle dipendenze.
@@ -72,12 +77,14 @@ public class MaterialeService {
     public MaterialeService(
             final MaterialeRepository paramMaterialeRepository,
             final MaterialeMapper paramMaterialeMapper,
-            final TerapeutaRepository paramTerapeutaRepository
-    ) {
+            final TerapeutaRepository paramTerapeutaRepository,
+            SessioneRepository sessioneRepository, DisegnoRepository disegnoRepository) {
         // Assegniamo alle variabili di istanza per evitare campi nascosti
         this.materialeRepositoryInjected = paramMaterialeRepository;
         this.materialeMapperInjected = paramMaterialeMapper;
         this.terapeutaRepositoryInjected = paramTerapeutaRepository;
+        this.sessioneRepository = sessioneRepository;
+        this.disegnoRepository = disegnoRepository;
     }
 
     /**
@@ -269,5 +276,109 @@ public class MaterialeService {
                         );
                     }
                 });
+    }
+
+    /**
+     * Recupera il materiale associato a una specifica sessione.
+     *
+     * @param codice codice del bambino associato alla sessione.
+     * @return MaterialeDTO contenente i dettagli del materiale.
+     * @throws EntityNotFoundException se la sessione o il materiale non esistono.
+     */
+    public MaterialeDTOResponse getMaterialeByCodice(final String codice) {
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Sessione non trovata"));
+
+        Materiale materiale = sessione.getMateriale();
+        if (materiale == null) {
+            throw new EntityNotFoundException("Materiale associato alla sessione non trovato");
+        }
+
+        // Legge il contenuto del file
+        byte[] fileBytes;
+        try {
+            fileBytes = getByteArray(materiale.getPath()).getByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+        }
+
+        // Mappa l'entità Materiale a MaterialeDTO
+        return new MaterialeDTOResponse(
+                materiale.getId(),
+                materiale.getNome(),
+                materiale.getTipo(),
+                Base64.getEncoder().encodeToString(fileBytes)
+        );
+    }
+
+    /**
+     * Recupera il materiale associato a una specifica sessione.
+     *
+     * @param email email del terapeuta associato alla sessione.
+     * @return MaterialeDTO contenente i dettagli del materiale.
+     * @throws EntityNotFoundException se la sessione o il materiale non esistono.
+     */
+    public MaterialeDTOResponse getMaterialeByEmail(final String email) {
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Sessione non trovata"));
+
+        Materiale materiale = sessione.getMateriale();
+        if (materiale == null) {
+            throw new EntityNotFoundException("Materiale associato alla sessione non trovato");
+        }
+
+        // Legge il contenuto del file
+        byte[] fileBytes;
+        try {
+            fileBytes = getByteArray(materiale.getPath()).getByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+        }
+
+        // Mappa l'entità Materiale a MaterialeDTO
+        return new MaterialeDTOResponse(
+                materiale.getId(),
+                materiale.getNome(),
+                materiale.getTipo(),
+                Base64.getEncoder().encodeToString(fileBytes)
+        );
+    }
+
+    /**
+     * Recupera il materiale associato a un disegno.
+     * @param disegnoId id del disegno
+     * @return MaterialeDTO contenente i dettagli del materiale.
+     */
+    public MaterialeDTOResponse getMaterialeByDisegnoId(final long disegnoId) {
+        Disegno disegno = disegnoRepository.findById(disegnoId)
+                .orElseThrow(() -> new EntityNotFoundException("Disegno non trovato"));
+
+        Materiale materiale = disegno.getSessione().getMateriale();
+
+        if (materiale == null) {
+            throw new EntityNotFoundException("Materiale associato al disegno non trovato");
+        }
+
+        // Legge il contenuto del file
+        byte[] fileBytes;
+        try {
+            fileBytes = getByteArray(materiale.getPath()).getByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+        }
+
+        // Mappa l'entità Materiale a MaterialeDTO
+        return new MaterialeDTOResponse(
+                materiale.getId(),
+                materiale.getNome(),
+                materiale.getTipo(),
+                Base64.getEncoder().encodeToString(fileBytes)
+        );
     }
 }

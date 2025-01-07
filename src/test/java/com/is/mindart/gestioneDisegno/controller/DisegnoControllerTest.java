@@ -17,24 +17,69 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DisegnoControllerTest {
+/**
+ * Classe di test per DisegnoController.
+ */
+public final class DisegnoControllerTest {
 
+    /**
+     * Mock dell'Authentication di Spring Security.
+     */
     @Mock
     private Authentication authentication;
 
+    /**
+     * Mock del servizio per la gestione dei Disegni.
+     */
     @Mock
-    private DisegnoService disegnoService; // Mock the service dependency
+    private DisegnoService disegnoService;
 
+    /**
+     * Controller dei Disegni, iniettato con i mock.
+     */
     @InjectMocks
     private DisegnoController disegnoController;
 
+    /**
+     * Risorsa per chiudere automaticamente i mock.
+     */
     private AutoCloseable closeable;
 
+    /**
+     * Email del terapeuta mockato.
+     */
     private final String terapeutaEmail = "terapeuta@example.com";
 
+    /**
+     * Valutazione non valida.
+     */
+    private static final int INVALID_VALUTAZIONE = 12;
+
+    /**
+     * Identificativo di un disegno non esistente.
+     */
+    private static final long DISEGNO_NON_ESISTENTE = 999L;
+
+    /**
+     * Valutazioni valide per i test.
+     */
+    private static final int VALUTAZIONE_CINQUE = 5;
+
+    /**
+     * Valutazioni valide per i test.
+     */
+    private static final int VALUTAZIONE_OTTO = 8;
+
+    /**
+     * Inizializza i mock e configura l'autenticazione prima di ogni test.
+     */
     @BeforeEach
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
@@ -42,6 +87,11 @@ public class DisegnoControllerTest {
         when(authentication.getPrincipal()).thenReturn(terapeutaEmail);
     }
 
+    /**
+     * Ripulisce il contesto di sicurezza e chiude i mock dopo ogni test.
+     *
+     * @throws Exception se si verifica un problema con la chiusura dei mock
+     */
     @AfterEach
     public void tearDown() throws Exception {
         SecurityContextHolder.clearContext();
@@ -49,55 +99,51 @@ public class DisegnoControllerTest {
     }
 
     /**
-     * Test per verificare il comportamento quando la valutazione supera il limite massimo.
-     * Deve lanciare un'eccezione IllegalArgumentException.
+     * Test per verificare il comportamento quando
+     * la valutazione supera il limite massimo.
      */
     @Test
     @DisplayName("Assegnazione voto oltre limite -> BAD_REQUEST")
-    public void testVota_InvalidValutazione_AboveMax() {
+    public void votaInvalidValutazioneAboveMaxTest() {
         Long disegnoId = 1L;
-        ValutazioneRequest request = new ValutazioneRequest(12); // Assuming 12 is above the max limit
+        ValutazioneRequest request =
+                new ValutazioneRequest(INVALID_VALUTAZIONE);
 
-        // Configura il mock del servizio per lanciare un'eccezione
         doThrow(new IllegalArgumentException("Valutazione non valida"))
                 .when(disegnoService).vota(disegnoId, request.getValutazione());
 
-        // Invoca il metodo del controller e cattura l'eccezione
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            disegnoController.vota(disegnoId, request);
-        });
+        Exception exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> disegnoController.vota(disegnoId, request)
+        );
 
-        // Verifica il messaggio dell'eccezione
         assertEquals("Valutazione non valida", exception.getMessage());
-
-        // Verifica che il servizio sia stato chiamato una volta
-        verify(disegnoService, times(1)).vota(disegnoId, request.getValutazione());
+        verify(disegnoService, times(1))
+                .vota(disegnoId, request.getValutazione());
     }
 
     /**
      * Test per verificare il comportamento quando il disegno non esiste.
-     * Deve lanciare un'eccezione NoSuchElementException.
      */
     @Test
     @DisplayName("Disegno non trovato -> NOT_FOUND")
-    public void testVota_DisegnoNotFound() {
-        Long disegnoId = 999L;
-        ValutazioneRequest request = new ValutazioneRequest(5);
+    public void votaDisegnoNotFoundTest() {
+        Long disegnoId = DISEGNO_NON_ESISTENTE;
+        ValutazioneRequest request = new ValutazioneRequest(VALUTAZIONE_CINQUE);
 
-        // Configura il mock del servizio per lanciare un'eccezione
-        doThrow(new NoSuchElementException("Disegno non trovato con id " + disegnoId))
-                .when(disegnoService).vota(disegnoId, request.getValutazione());
+        doThrow(new NoSuchElementException(
+                "Disegno non trovato con id " + disegnoId
+        )).when(disegnoService).vota(disegnoId, request.getValutazione());
 
-        // Invoca il metodo del controller e cattura l'eccezione
-        Exception exception = assertThrows(NoSuchElementException.class, () -> {
-            disegnoController.vota(disegnoId, request);
-        });
+        Exception exception = assertThrows(
+                NoSuchElementException.class,
+                () -> disegnoController.vota(disegnoId, request)
+        );
 
-        // Verifica il messaggio dell'eccezione
-        assertEquals("Disegno non trovato con id " + disegnoId, exception.getMessage());
-
-        // Verifica che il servizio sia stato chiamato una volta
-        verify(disegnoService, times(1)).vota(disegnoId, request.getValutazione());
+        assertEquals("Disegno non trovato con id " + disegnoId,
+                exception.getMessage());
+        verify(disegnoService, times(1))
+                .vota(disegnoId, request.getValutazione());
     }
 
     /**
@@ -106,24 +152,24 @@ public class DisegnoControllerTest {
      */
     @Test
     @DisplayName("Assegnazione voto valida -> 200 OK")
-    public void testVota_ValidValutazione() {
+    public void votaValidValutazioneTest() {
         Long disegnoId = 1L;
-        ValutazioneRequest request = new ValutazioneRequest(8); // Assuming 8 is a valid vote
+        ValutazioneRequest request = new ValutazioneRequest(VALUTAZIONE_OTTO);
 
         Disegno disegno = new Disegno();
         disegno.setId(disegnoId);
         disegno.setVoto(request.getValutazione());
 
-        // Configura il mock del servizio per ritornare il disegno votato
-        when(disegnoService.vota(disegnoId, request.getValutazione())).thenReturn(disegno);
+        when(disegnoService.vota(disegnoId, request.getValutazione()))
+                .thenReturn(disegno);
 
-        // Invoca il metodo del controller
-        ResponseEntity<Object> response = disegnoController.vota(disegnoId, request);
+        ResponseEntity<Object> response = disegnoController.vota(
+                disegnoId,
+                request
+        );
 
-        // Asserisci che lo stato della risposta sia 200 OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        // Verifica che il servizio sia stato chiamato una volta
-        verify(disegnoService, times(1)).vota(disegnoId, request.getValutazione());
+        verify(disegnoService, times(1))
+                .vota(disegnoId, request.getValutazione());
     }
 }

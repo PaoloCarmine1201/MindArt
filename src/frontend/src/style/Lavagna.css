@@ -13,6 +13,15 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+.drawing-container {
+    position: relative;
+    width: 1920px; /* Uguale a STAGE_WIDTH */
+    height: 1080px; /* Uguale a STAGE_HEIGHT */
+    margin: 0 auto; /* Centra il container nella pagina */
+    background-color: #f0f0f0; /* Colore di sfondo */
+    border: 1px solid #ccc; /* Bordo per il debug */
+    overflow: hidden; /* Nasconde eventuali overflow */
+}
 
 /* Stilizza i cerchi dei colori come prima */
 .color-circle {

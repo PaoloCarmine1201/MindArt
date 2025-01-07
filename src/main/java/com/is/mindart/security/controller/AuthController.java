@@ -69,7 +69,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok(token);
-
     }
 
     /**
@@ -93,8 +92,9 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
             @RequestHeader("Authorization") final String authHeader) {
+        final int bearerLength = 7;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+            String token = authHeader.substring(bearerLength);
             tokenBlacklist.addToken(token);
             return ResponseEntity.ok("Logout successful");
         }

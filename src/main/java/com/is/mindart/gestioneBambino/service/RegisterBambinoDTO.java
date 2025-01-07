@@ -3,6 +3,7 @@ import com.is.mindart.gestioneBambino.model.Sesso;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -66,8 +67,7 @@ public class RegisterBambinoDTO {
     /**
      * Email del genitore.
      */
-    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
-            message = "L'email deve essere valida.")
+    @Email(message = "Devi inserire un'email valida")
     private String emailGenitore;
 
     /**

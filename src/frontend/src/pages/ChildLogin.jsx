@@ -18,8 +18,8 @@ function ChildLogin() {
     // Validation schema using Yup
     const validationSchema = Yup.object().shape({
         code: Yup.string()
-            .required("Please enter the code!") // Field is required
-            .matches(/^\w{6}$/, "Invalid code format!"), // Must be exactly 6 alphanumeric characters
+            .required("Per favore, inserisci il codice") // Field is required
+            .matches(/^\w{6}$/, "Formato del codice non valido"), // Must be exactly 6 alphanumeric characters
     });
 
 /*    useEffect(async () => {
@@ -148,7 +148,7 @@ function ChildLogin() {
                         zIndex: '10',
                     }}
                 />
-                <h1 className="text-center mb-4">Join the session!</h1> {/* Title of the form */}
+                <h1 className="text-center mb-4">Partecipa alla sessione!</h1> {/* Title of the form */}
 
                 {/* Formik for form handling with validation */}
                 <Formik
@@ -169,7 +169,7 @@ function ChildLogin() {
                         <Form className="w-100 mx-auto" onSubmit={handleSubmit}>
                             {/* Code input field */}
                             <Form.Group className="mb-3 text-center m-bot m-2">
-                                <FloatingLabel label={'Code'}>
+                                <FloatingLabel label={'Codice'}>
                                     <Form.Control
                                         type="text"
                                         name="code"
@@ -209,7 +209,7 @@ function ChildLogin() {
                                         maxWidth: '300px', // Maximum width for the button
                                     }}
                                 >
-                                    Join
+                                    Partecipa
                                 </Button>
                             </Form.Group>
                         </Form>

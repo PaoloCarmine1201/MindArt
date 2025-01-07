@@ -41,25 +41,10 @@ function ModificaPasswordModal({show, onHide}) {
         onHide(); // Chiama la funzione per chiudere il modale
     };
 
-    const validatePassword = (password) => {
-        // Regex per almeno 8 caratteri, una lettera maiuscola, una minuscola e un numero
-        const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!?_.,:;@#$%^&*])[A-Za-z0-9!?_.,:;@#$%^&*]{8,}$/;
-        return regex.test(password);
-    };
-
     const handleSubmit = async () => {
 
         if (!passwordData.oldPassword || !passwordData.newPassword) {
             toast.error("Compila tutti i campi.");
-            return;
-        }
-
-        if (!validatePassword(passwordData.newPassword)) {
-            toast.error("La nuova password non rispetta i requisiti di sicurezza.");
-            setPasswordData((prevState) => ({
-                ...prevState,
-                newPassword: '',
-            }));
             return;
         }
 

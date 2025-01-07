@@ -1,13 +1,16 @@
 package com.is.mindart.gestioneSessione.service;
 
 import com.is.mindart.configuration.SessioneMapper;
+import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneDisegno.model.Disegno;
 import com.is.mindart.gestioneDisegno.model.DisegnoRepository;
+import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneSessione.model.TipoSessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,16 +18,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.*;
 
 
 class SessioneServiceTest {
@@ -159,4 +161,77 @@ class SessioneServiceTest {
         verify(disegnoRepository, never()).save(any(Disegno.class));
         verify(sessioneRepository, never()).save(any(Sessione.class));
     }
+
+    @Test
+    @DisplayName("Creazione di una sessione con"
+            + "codice non valido -> Errore")
+    void testCreaSessioneConCodiceErrato() {
+        String invalidCode = "INVALID_CODE";
+
+
+        String errorMessage = "Bambino con codice "
+                + invalidCode + " non trovato";
+        // Definizione comportamento dei mock
+        when(sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(invalidCode))
+                .thenReturn(Collections.emptyList());
+
+        // Inizio test e verifica
+        EntityNotFoundException exception =
+                assertThrows(EntityNotFoundException.class, () ->
+                        sessioneService.getSessioneBambino(invalidCode));
+        assertEquals(errorMessage, exception.getMessage());
+
+
+    }
+
+    @Test
+    @DisplayName("Creazione di una sessione " +
+            "con codice e sessione valida -> Successo")
+    void testGetSessioneBambinoTrovato() {
+        // Inizializzazione dati di test
+        String validCode = "VALID_CODE";
+
+        Terapeuta terapeuta = new Terapeuta();
+        terapeuta.setId(1L);
+
+        Sessione sessione = new Sessione();
+        sessione.setId(1L);
+        sessione.setTipo(TipoSessione.DISEGNO);
+        sessione.setTerapeuta(terapeuta);
+        sessione.setTemaAssegnato("Tema Assegnato");
+        sessione.setMateriale(null); // Nessun materiale associato per questo test
+
+        Bambino bambino = new Bambino();
+        bambino.setId(101L);
+        sessione.setBambini(List.of(bambino));
+
+        SessioneDTO expectedDTO = new SessioneDTO(
+                sessione.getId(),
+                sessione.getTipo(),
+                sessione.getTerapeuta().getId(),
+                sessione.getTemaAssegnato(),
+                null, // Nessun materiale associato
+                List.of(bambino.getId())
+        );
+
+        // Definizione comportamento dei mock
+        when(sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(validCode))
+                .thenReturn(List.of(sessione));
+
+        // Esecuzione metodo sotto test
+        SessioneDTO result = sessioneService.getSessioneBambino(validCode);
+
+        // Verifica risultato
+        assertEquals(expectedDTO, result);
+
+        // Verifica interazioni con i mock
+        verify(sessioneRepository, times(1))
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(validCode);
+        verifyNoMoreInteractions(sessioneRepository);
+    }
+
+
+
 }

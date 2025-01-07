@@ -1,5 +1,6 @@
 package com.is.mindart.gestioneSessione.controller;
 
+import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-public class TestCreazioneSessione {
-
+public class TestAccessoBambino {
     @Mock
     private SessioneService sessioneService;
 
@@ -33,23 +33,19 @@ public class TestCreazioneSessione {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        when(authentication.getPrincipal()).thenReturn("terapeuta@example.com");
+        when(authentication.getPrincipal()).thenReturn("1");
     }
 
     @Test
-    @DisplayName("Creazione di una sessione -> 200 OK")
-    public void testCreateSessione() {
+    @DisplayName("Accesso ad una sessione -> 200 OK")
+    public void testAccessoSessione() {
         // Arrange
         SessioneDTO sessioneDTO = new SessioneDTO();
-
-        // Act
-        ResponseEntity<Void> response = sessioneController.create(sessioneDTO);
-
+        sessioneDTO.setBambini(List.of(1L));
+        sessioneService.creaSessione(sessioneDTO, "terapeuta@example.com");
+        ResponseEntity<SessioneDTO> response = sessioneController.getSessioneBambino();
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(sessioneService, times(1))
-                .creaSessione(sessioneDTO, "terapeuta@example.com");
+
     }
-
-
 }

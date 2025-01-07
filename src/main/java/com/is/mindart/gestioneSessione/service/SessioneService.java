@@ -141,7 +141,8 @@ public class SessioneService {
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Bambino con codice " + codice + " non trovato"));
+                        "Bambino con codice " + codice + " non trovato " +
+                                "o sessione non valida"));
         return new SessioneDTO(
                 sessione.getId(),
                 sessione.getTipo(),

@@ -24,5 +24,5 @@ public interface DisegnoRepository extends JpaRepository<Disegno, Long> {
      * Disegni da far valutare al modello
      * @return disegni da far valutare
      */
-    List<Disegno> findAllBySessione_TerminataFalse();
+    List<Disegno> findAllByValutazioneEmotivaIsNullAndSessione_TerminataTrue();
 }

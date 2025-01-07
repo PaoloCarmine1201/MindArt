@@ -49,8 +49,8 @@ const ConfermaDisegno = ({nomeBottone = "Consegna", disegno = null}) => {
             });
             if (response && response.status === 200) {
                 console.log("Disegno consegnato con successo.");
-                //window.location.href = "/childlogin";
-                //localStorage.removeItem("jwtToken");
+                window.location.href = "/childlogin";
+                localStorage.removeItem("jwtToken");
             }
         } catch (error) {
             if (error.response && error.response.status === 404) {

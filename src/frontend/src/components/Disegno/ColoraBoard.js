@@ -375,7 +375,7 @@ const ColoreBoard = () => {
             )}
 
             <div className="drawing-container">
-                <ConfermaDisegno/>
+                <ConfermaDisegno disegno={stageRef}/>
                 <Stage
                     width={STAGE_WIDTH}
                     height={STAGE_HEIGHT}

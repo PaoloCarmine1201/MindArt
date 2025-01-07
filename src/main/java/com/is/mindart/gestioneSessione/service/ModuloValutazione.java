@@ -32,9 +32,9 @@ public class ModuloValutazione {
     /**
      * Metodo pianificato che esegue una richiesta API ogni 5 minuti.
      */
-    @Scheduled(fixedRate = 10000) // 300000 ms = 5 minuti
+    @Scheduled(fixedRate = 40000) // 300000 ms = 5 minuti
     public void triggerApiRequest() {
-        List<Disegno> disegni = disegnoRepository.findAllBySessione_TerminataFalse();
+        List<Disegno> disegni = disegnoRepository.findAllByValutazioneEmotivaIsNullAndSessione_TerminataTrue();
 
         if (disegni.isEmpty()) {
             logger.info("Nessun disegno da valutare.");
@@ -42,6 +42,7 @@ public class ModuloValutazione {
         }
 
         List<DisegnoRequest> disegniRequest = disegni.stream()
+                .filter(disegno -> disegno.getImmagine() != null)
                 .map(disegno -> new DisegnoRequest(
                         disegno.getId(),
                         Base64.getEncoder().encodeToString(disegno.getImmagine())
@@ -71,7 +72,6 @@ public class ModuloValutazione {
                         try {
                             ValutazioneEmotiva valutazioneEnum = ValutazioneEmotiva.valueOf(valutazione.getValutazioneEmotiva().toUpperCase());
                             disegno.setValutazioneEmotiva(valutazioneEnum);
-                            disegno.getSessione().setTerminata(true);
                             disegnoRepository.save(disegno);
                             logger.info("Disegno ID {} valutato con successo.", disegno.getId());
                         } catch (IllegalArgumentException e) {

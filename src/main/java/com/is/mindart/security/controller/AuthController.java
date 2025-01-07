@@ -69,7 +69,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok(token);
-
     }
 
     /**

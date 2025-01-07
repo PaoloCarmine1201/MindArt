@@ -8,10 +8,12 @@ import background from '../assets/ChildLoginBackground.jpg';
 import {toast} from "react-toastify";
 import axiosInstance from "../config/axiosInstance";
 import { useNavigate} from 'react-router-dom';
+import {useAuth} from "../auth/AuthProvider";
 
 
 // Component definition for the child login form
 function ChildLogin() {
+    const { login } = useAuth();
     const navigate = useNavigate(); // For navigation
     // Validation schema using Yup
     const validationSchema = Yup.object().shape({
@@ -57,7 +59,7 @@ function ChildLogin() {
             // Handle successful login
             console.log("Login successful:", response.data);
 
-            localStorage.setItem('jwtToken', response.data);
+            login(response.data);
 
             const sessione = await axiosInstance.get('/api/bambino/sessione/');
             console.log(sessione.data.tipoSessione)

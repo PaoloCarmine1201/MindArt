@@ -12,7 +12,7 @@ const ConfermaDisegno = ({nomeBottone = "Consegna"}) => {
             const response = await axiosInstance.post(`/api/bambino/sessione/consegna`,{});
             if (response && response.status === 200) {
                 console.log("Disegno consegnato con successo.");
-                window.location.href = "/childLogin";
+                window.location.href = "/childlogin";
                 localStorage.removeItem("jwtToken");
             }
         } catch (error) {

@@ -183,14 +183,6 @@ function ProfiloTerapuetaComponent() {
                     <label className="dettaglio-label">Email:</label>
                     <span className="dettaglio-value">{terapeuta.email}</span>
                 </div>
-                <div className="dettaglio-data-row">
-                    <label className="dettaglio-label">Sessioni effettuate:</label>
-                    <span className="dettaglio-value">{terapeuta.numeroSessioni}</span>
-                </div>
-                <div className="dettaglio-data-row">
-                    <label className="dettaglio-label">Bambini seguiti:</label>
-                    <span className="dettaglio-value">{terapeuta.numeroBambini}</span>
-                </div>
             </div>
 
             <div className="dettaglio-button-container">

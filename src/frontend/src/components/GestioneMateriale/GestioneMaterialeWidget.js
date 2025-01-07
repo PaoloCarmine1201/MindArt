@@ -1,6 +1,8 @@
 import React from "react";
 import GestioneMaterialeBase from "./GestioneMaterialeBase";
 import MaterialeCard from "./MaterialeCard";
+import {FaBoxOpen} from "react-icons/fa";
+import {Col, Row} from "react-bootstrap";
 
 class GestioneMaterialeWidget extends GestioneMaterialeBase {
     render() {
@@ -24,7 +26,14 @@ class GestioneMaterialeWidget extends GestioneMaterialeBase {
                             />
                         ))
                     ) : (
-                        <p>Nessun materiale disponibile.</p>
+                        <Row className="text-center">
+                            <Col>
+                                <div className="mb-4" style={{ fontSize: "18px", color: "#6c757d" }}>
+                                    <FaBoxOpen size={50} style={{ color: "#6c757d" }} />
+                                    <p>Nessun materiale trovato</p>
+                                </div>
+                            </Col>
+                        </Row>
                     )}
                 </div>
             </>

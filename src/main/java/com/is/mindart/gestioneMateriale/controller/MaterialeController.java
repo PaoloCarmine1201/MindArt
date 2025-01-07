@@ -278,25 +278,26 @@ public class MaterialeController {
     /**
      * Ottiene il materiale associato a una specifica sessione.
      *
+     * @param id id del disegno.
      * @return ResponseEntity con il MaterialeDTO o un errore.
      */
     @PreAuthorize("hasRole('TERAPEUTA')")
     @GetMapping("/terapeuta/materiale/disegno/{id}")
-    public ResponseEntity<MaterialeDTOResponse> getMaterialeBySessioneTerapeuta(@PathVariable final long id)  {
+    public ResponseEntity<MaterialeDTOResponse> getMaterialeBySessioneTerapeuta(
+            @PathVariable final long id) {
 
         try {
             MaterialeDTOResponse materialeDTO = materialeServiceInjected
                     .getMaterialeByDisegnoId(id);
-            return ResponseEntity.ok(materialeDTO);
+            return ResponseEntity
+                    .ok(materialeDTO);
         } catch (EntityNotFoundException e) {
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(null);
+                    .ok(null);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
     }
-
 }

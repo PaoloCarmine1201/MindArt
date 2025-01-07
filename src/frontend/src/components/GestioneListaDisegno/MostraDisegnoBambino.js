@@ -106,6 +106,7 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
                 setBackgroundImage(imageUrl);
             } catch (error) {
                 console.error('Errore nel caricamento dell\'immagine di sfondo:', error);
+                toast.error("Materiale di sfondo non trovato");
                 imageUrl = EMPTY_IMAGE_BASE64;
 
                 setBackgroundImage(imageUrl);

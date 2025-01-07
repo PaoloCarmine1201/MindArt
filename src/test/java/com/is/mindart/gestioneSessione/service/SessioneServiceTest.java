@@ -170,7 +170,7 @@ class SessioneServiceTest {
 
 
         String errorMessage = "Bambino con codice "
-                + invalidCode + " non trovato";
+                + invalidCode + " non trovato o sessione non valida";
         // Definizione comportamento dei mock
         when(sessioneRepository
                 .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(invalidCode))

@@ -1,7 +1,6 @@
 package com.is.mindart.gestioneBambino.service;
 
 import com.is.mindart.gestioneBambino.model.Sesso;
-import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

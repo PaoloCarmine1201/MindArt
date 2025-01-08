@@ -18,11 +18,11 @@ public class MaterialeMapper {
 
     /**
      * Costruttore.
-     * @param modelMapper -
+     * @param modelMapperParam -
      */
     @Autowired
-    public MaterialeMapper(final ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
+    public MaterialeMapper(final ModelMapper modelMapperParam) {
+        this.modelMapper = modelMapperParam;
     }
 
     /**
@@ -34,7 +34,7 @@ public class MaterialeMapper {
     }
 
     /**
-     * Configura i mapping custom tra le classi:
+     * Configura i mapping custom tra le classi.
      * - {@link Materiale} -> {@link OutputMaterialeDTO}
      * - {@link InputMaterialeDTO} -> {@link Materiale}
      */
@@ -44,17 +44,22 @@ public class MaterialeMapper {
                 .addMappings(mapper -> {
                     mapper.map(Materiale::getId, OutputMaterialeDTO::setId);
                     mapper.map(Materiale::getNome, OutputMaterialeDTO::setNome);
-                    mapper.map(Materiale::getTipo, OutputMaterialeDTO::setTipoMateriale);
+                    mapper.map(Materiale::getTipo,
+                            OutputMaterialeDTO::setTipoMateriale);
                 });
 
         // Mapping da InputMaterialeDTO -> Materiale
         modelMapper.createTypeMap(InputMaterialeDTO.class, Materiale.class)
                 .addMappings(mapper -> {
                     mapper.map(InputMaterialeDTO::getNome, Materiale::setNome);
-                    mapper.map(InputMaterialeDTO::getTipoMateriale, Materiale::setTipo);
-                    mapper.skip(Materiale::setId); // ID gestito dal database
-                    mapper.skip(Materiale::setPath); // Il path è calcolato dal server
-                    mapper.skip(Materiale::setSessioni); // Non gestito nell'input
+                    mapper.map(InputMaterialeDTO::
+                            getTipoMateriale, Materiale::setTipo);
+                    // ID gestito dal database
+                    mapper.skip(Materiale::setId);
+                    // Il path è calcolato dal server
+                    mapper.skip(Materiale::setPath);
+                    // Non gestito nell'input
+                    mapper.skip(Materiale::setSessioni);
                 });
     }
 
@@ -70,10 +75,14 @@ public class MaterialeMapper {
     /**
      * Converte {@link InputMaterialeDTO} in {@link Materiale}.
      * @param inputMaterialeDTO {@link InputMaterialeDTO}
+     * @param path Path del file
      * @return {@link Materiale}
      */
-    public Materiale toEntity(final InputMaterialeDTO inputMaterialeDTO, String path) {
-        Materiale materiale = modelMapper.map(inputMaterialeDTO, Materiale.class);
+    public Materiale toEntity(
+            final InputMaterialeDTO inputMaterialeDTO,
+            final String path) {
+        Materiale materiale =
+                modelMapper.map(inputMaterialeDTO, Materiale.class);
         materiale.setPath(path);
         return materiale;
     }

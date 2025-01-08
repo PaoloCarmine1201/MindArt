@@ -220,17 +220,18 @@ public class BambinoService {
     }
     // Genera un codice univoco per il bambino
     private String generateRandomCode() {
+        final int codeLength = 6;
         String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         String numbers = "0123456789";
         Random random = new Random();
         StringBuilder newCodice = new StringBuilder();
         // Genera 3 lettere casuali
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < codeLength / 2; i++) {
             newCodice.append(letters.charAt(random.nextInt(letters.length())));
         }
 
         // Genera 3 numeri casuali
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < codeLength / 2; i++) {
             newCodice.append(numbers.charAt(random.nextInt(numbers.length())));
         }
 

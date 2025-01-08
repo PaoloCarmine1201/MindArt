@@ -9,11 +9,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class TerapeutaCambioPasswordDTO {
+    /**
+     * Identificativo univoco del terapeuta.
+     */
     @NotNull
-    Long id;
+    private Long id;
+
+    /**
+     * Vecchia password del terapeuta.
+     */
     @NotNull
-    String oldPassword;
+    private String  oldPassword;
+
+    /**
+     * Nuova password del terapeuta.
+     */
     @NotNull
-    String newPassword;
+    private String newPassword;
 
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Stage, Layer, Line } from 'react-konva';
+import { Stage, Layer, Line, Image as KonvaImage } from 'react-konva';
 import axiosInstance from "../../config/axiosInstance";
 import "../../style/Lavagna.css";
 import "../../style/LavagnaVisualizzaDisegni.css";
@@ -7,6 +7,22 @@ import "../../style/Button.css";
 import { Button } from "react-bootstrap";
 import ValutazionePopup from "./ValutazionePopup";
 import { toast } from "react-toastify";
+import useImage from "use-image";
+
+// Helper function to map file extensions to MIME types
+const getMimeType = (filename) => {
+    const extension = filename.split('.').pop().toLowerCase();
+    const mimeTypes = {
+        'png': 'image/png',
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'gif': 'image/gif',
+        'svg': 'image/svg+xml',
+        'bmp': 'image/bmp',
+        'webp': 'image/webp',
+    };
+    return mimeTypes[extension] || 'image/png';
+};
 
 const MostraDisegnoBambino = ({ disegnoId, tema }) => {
     const [actions, setActions] = useState([]);
@@ -14,16 +30,31 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
     const [showValutazione, setShowValutazione] = useState(false);
     const [valutazione, setValutazione] = useState("");
     const [commento, setCommento] = useState("");
-    const [dimensions, setDimensions] = useState({
-        width: window.innerWidth * 0.8,
-        height: window.innerHeight * 0.6,
+
+    const EMPTY_IMAGE_BASE64 = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+
+    const [dimensions] = useState({
+        width: 1920,
+        height: 1080,
     });
-    const [drawingBounds, setDrawingBounds] = useState({
-        minX: 0,
-        minY: 0,
-        maxX: window.innerWidth * 0.8,
-        maxY: window.innerHeight * 0.6,
-    });
+
+    const [scaleFactor, setScaleFactor] = useState(1);
+    const [backgroundImage, setBackgroundImage] = useState(null);
+    const [bgImage] = useImage(backgroundImage);
+
+    useEffect(() => {
+        const updateScaleFactor = () => {
+            const maxWidth = window.innerWidth - 40;
+            const maxHeight = window.innerHeight - 100;
+            const widthScale = maxWidth / dimensions.width;
+            const heightScale = maxHeight / dimensions.height;
+            setScaleFactor(Math.min(widthScale, heightScale, 1));
+        };
+
+        updateScaleFactor();
+        window.addEventListener("resize", updateScaleFactor);
+        return () => window.removeEventListener("resize", updateScaleFactor);
+    }, [dimensions]);
 
     useEffect(() => {
         const loadActions = async () => {
@@ -45,43 +76,71 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
 
                 const initialActions = [...initialStrokes, ...initialFilledAreas];
                 setActions(initialActions);
-
-                // Calcola i limiti del disegno
-                const allPoints = initialActions.flatMap(action => action.points);
-                const minX = Math.min(...allPoints.filter((_, index) => index % 2 === 0));
-                const minY = Math.min(...allPoints.filter((_, index) => index % 2 === 1));
-                const maxX = Math.max(...allPoints.filter((_, index) => index % 2 === 0));
-                const maxY = Math.max(...allPoints.filter((_, index) => index % 2 === 1));
-
-                setDrawingBounds({
-                    minX: Math.min(minX, 0),
-                    minY: Math.min(minY, 0),
-                    maxX: Math.max(maxX, dimensions.width),
-                    maxY: Math.max(maxY, dimensions.height),
-                });
             } catch (error) {
                 console.error('Errore nel caricamento del disegno:', error);
             }
         };
 
+        const loadBackground = async () => {
+            let imageUrl;
+            try {
+                // Carica l'immagine di sfondo associata alla sessione
+                const materialeResponse = await axiosInstance.get(`/api/terapeuta/materiale/disegno/${disegnoId}`, {
+                    responseType: 'json',
+                });
+                console.log('Materiale caricato:', materialeResponse.data);
+                if (materialeResponse.data && materialeResponse.data.file && materialeResponse.data.nome) {
+                    const base64Image = materialeResponse.data.file;
+                    const nomeFile = materialeResponse.data.nome;
+
+                    // Ottieni il tipo MIME basato sull'estensione del nome del file
+                    const mimeType = getMimeType(nomeFile);
+
+                    // Costruisci il data URL
+                    imageUrl = `data:${mimeType};base64,${base64Image}`;
+                    console.log('URL dell\'immagine di sfondo:', imageUrl);
+                }
+                else{
+                    imageUrl = EMPTY_IMAGE_BASE64;
+                }
+                setBackgroundImage(imageUrl);
+            } catch (error) {
+                console.error('Errore nel caricamento dell\'immagine di sfondo:', error);
+                toast.error("Materiale di sfondo non trovato");
+                imageUrl = EMPTY_IMAGE_BASE64;
+
+                setBackgroundImage(imageUrl);
+            }
+        }
+
         if (disegnoId) {
             loadActions();
+            loadBackground();
         }
-    }, [disegnoId, dimensions.width, dimensions.height]);
+    }, [disegnoId]);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setDimensions({
-                width: window.innerWidth * 0.8,
-                height: window.innerHeight * 0.6,
-            });
+    const handleWheel = (e) => {
+        e.evt.preventDefault();
+        const stage = stageRef.current;
+        const scaleBy = 1.1;
+        const oldScale = stage.scaleX();
+        const pointer = stage.getPointerPosition();
+
+        const mousePointTo = {
+            x: (pointer.x - stage.x()) / oldScale,
+            y: (pointer.y - stage.y()) / oldScale,
         };
 
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
+        const newScale = e.evt.deltaY > 0 ? oldScale / scaleBy : oldScale * scaleBy;
+        stage.scale({ x: newScale, y: newScale });
+
+        const newPos = {
+            x: pointer.x - mousePointTo.x * newScale,
+            y: pointer.y - mousePointTo.y * newScale,
         };
-    }, []);
+        stage.position(newPos);
+        stage.batchDraw();
+    };
 
     const handleSubmitValutazione = async () => {
         try {
@@ -91,16 +150,11 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
 
             toast.success("Valutazione inviata con successo!");
             setShowValutazione(false);
-            window.location.reload(); // Ricarica la pagina per visualizzare la valutazione
+            window.location.reload();
         } catch (error) {
             console.error("Errore nell'invio della valutazione:", error);
             toast.error("Errore nell'invio della valutazione.");
         }
-    };
-
-    const drawingStyle = {
-        width: Math.max(drawingBounds.maxX - drawingBounds.minX, dimensions.width),
-        height: Math.max(drawingBounds.maxY - drawingBounds.minY, dimensions.height),
     };
 
     return (
@@ -111,10 +165,13 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
                 marginRight: 'auto',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
-                width: dimensions.width, // Imposta la larghezza dinamicamente
+                overflow: 'auto',
+                maxWidth: '100%',
+                maxHeight: '100vh',
+                width: dimensions.width * scaleFactor,
+                height: dimensions.height * scaleFactor,
             }}
         >
-            {/* Riga superiore */}
             <div
                 style={{
                     display: 'flex',
@@ -124,7 +181,6 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
                     backgroundColor: '#f1f1f1',
                     borderBottom: '1px solid #ccc',
                     borderRadius: '8px 8px 0 0',
-                    width: '100%', // La larghezza è al 100% del contenitore padre
                 }}
             >
                 <h5 style={{ margin: 0 }}>{tema || "Nessun tema assegnato"}</h5>
@@ -141,61 +197,71 @@ const MostraDisegnoBambino = ({ disegnoId, tema }) => {
                 </Button>
             </div>
 
-            {/* Board */}
             <div
                 className="lavagna-container"
                 style={{
                     overflow: 'auto',
-                    width: dimensions.width,
-                    height: dimensions.height,
                     position: 'relative',
                     margin: '0 auto',
                 }}
             >
-                <div style={{ ...drawingStyle, position: 'relative' }}>
-                    <Stage
-                        width={drawingStyle.width}
-                        height={drawingStyle.height}
-                        ref={stageRef}
-                        style={{
-                            backgroundColor: "transparent",
-                            cursor: "default",
-                        }}
-                    >
-                        <Layer name="drawing-layer">
-                            {actions.map((action, index) => {
-                                if (action.type === "lasso") {
-                                    return (
-                                        <Line
-                                            key={`action-${index}`}
-                                            points={action.points}
-                                            closed={true}
-                                            fill={action.color}
-                                            stroke={action.color}
-                                            strokeWidth={1}
-                                            opacity={0.5}
-                                        />
-                                    );
-                                } else if (action.type === "stroke") {
-                                    return (
-                                        <Line
-                                            key={`action-${index}`}
-                                            points={action.points}
-                                            stroke={action.color}
-                                            strokeWidth={action.strokeWidth}
-                                            lineCap="round"
-                                            lineJoin="round"
-                                            tension={0.5}
-                                            globalCompositeOperation={action.color === "white" ? 'destination-out' : 'source-over'}
-                                        />
-                                    );
-                                } else {
-                                    return null;
-                                }
-                            })}
+                <Stage
+                    width={dimensions.width * scaleFactor}
+                    height={dimensions.height * scaleFactor}
+                    scaleX={scaleFactor}
+                    scaleY={scaleFactor}
+                    ref={stageRef}
+                    onWheel={handleWheel}
+                    style={{
+                        backgroundColor: "transparent",
+                        cursor: "default",
+                    }}
+                >
+                    {bgImage && (
+                        <Layer name="background-layer">
+                            <KonvaImage
+                                image={bgImage}
+                                x={0}
+                                y={0}
+                                width={dimensions.width}
+                                height={dimensions.height}
+                                listening={false}
+                            />
                         </Layer>
-                    </Stage>
-                </div>
+                    )}
+                    <Layer name="drawing-layer">
+                        {actions.map((action, index) => {
+                            if (action.type === "lasso") {
+                                return (
+                                    <Line
+                                        key={`action-${index}`}
+                                        points={action.points}
+                                        closed={true}
+                                        fill={action.color}
+                                        stroke={action.color}
+                                        strokeWidth={1}
+                                        opacity={0.5}
+                                    />
+                                );
+                            } else if (action.type === "stroke") {
+                                return (
+                                    <Line
+                                        key={`action-${index}`}
+                                        points={action.points}
+                                        stroke={action.color}
+                                        strokeWidth={action.strokeWidth}
+                                        lineCap="round"
+                                        lineJoin="round"
+                                        tension={0.5}
+                                        globalCompositeOperation={action.color === "white" ? 'destination-out' : 'source-over'}
+                                    />
+                                );
+                            } else {
+                                return null;
+                            }
+                        })}
+                    </Layer>
+                </Stage>
 
                 <ValutazionePopup
                     show={showValutazione}

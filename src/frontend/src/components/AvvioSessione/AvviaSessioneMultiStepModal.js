@@ -5,7 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
     stepOneSchema,
     stepTwoSchema,
-    stepThreeSchema, stepFourSchema
+    stepFourSchema, stepThreeSchemaMult, stepThreeSchemaSingle
 } from './SchemaValidazione';
 import SelezioneTipo from './SelezioneTipo';
 import SelezioneMateriale from './SelezioneMateriale';
@@ -30,6 +30,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
     const [loadingChildren, setLoadingChildren] = useState(false);
     const [childrenError, setChildrenError] = useState(null);
 
+    const [singleSession, setSingleSession] = useState(false);
      // 'forward' o 'backward'
     const [direction, setDirection] = useState("forward");
 
@@ -47,7 +48,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
             case 2:
                 return stepTwoSchema;
             case 3:
-                return stepThreeSchema;
+                return singleSession ?
+                    stepThreeSchemaSingle : stepThreeSchemaMult;
             case 4:
                 return stepFourSchema;
             default:
@@ -72,7 +74,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
         }
         else if (currentStep === 3) {
             setLoadingChildren(true);
-            setChildrenError(null);
+            setChildrenError('');
 
             axiosInstance.get('http://localhost:8080/api/terapeuta/bambino/getallbyterapeuta')
                 .then(response => {
@@ -99,9 +101,13 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
 
         const currentErrors = Object.keys(errs).filter(key => errs[key] !== undefined);
 
+        if(values.tipoSessione === 'COLORE'){
+            setSingleSession(true);
+        }else{
+            setSingleSession(false);
+        }
         if (currentErrors.length === 0) {
             setDirection('forward');
-
             if (currentStep === 1 && values.tipoSessione === 'DISEGNO'){
                 setCurrentStep(prev => prev + 2);
             } else {
@@ -152,7 +158,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
                     <SelezioneBambino
                         childrenList={childrenList}
                         loading={loadingChildren}
-                        error={childrenError}
+                        errorState={childrenError}
                     />
                 );
             case 4:

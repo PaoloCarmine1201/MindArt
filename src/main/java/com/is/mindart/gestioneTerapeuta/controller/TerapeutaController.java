@@ -17,14 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/terapeuta")
@@ -32,9 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @AllArgsConstructor
 public class TerapeutaController {
 
-    /**
-     * Servizio per la gestione del terapeuta.
-     */
     /**
      * Il servizio per la gestione dei terapeuti.
      */
@@ -54,11 +45,7 @@ public class TerapeutaController {
         TerapeutaDTOStat terapeuta = terapeutaService.getTerapeuta(email);
         return ResponseEntity.ok(terapeuta);
     }
-    /**
-     * Aggiorna le informazioni del terapeuta.
-     * @param terapeutaDTO TerapeutaDTOSimple
-     * @return TerapeutaDTOSimple
-     */
+
     /**
      *  Provvede ad accedere al database per l'entità Terapeuta.
      */
@@ -69,6 +56,11 @@ public class TerapeutaController {
      */
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     *  Provvede a mappare l'entità Terapeuta con TerapeutaDTO.
+     * @param request richiesta
+     * @return ResponseEntity
+     */
     @PostMapping("/cambia-password")
     public ResponseEntity<String> cambiaPassword(
             @RequestBody final TerapeutaCambioPasswordDTO request) {
@@ -78,9 +70,12 @@ public class TerapeutaController {
                 .getAuthentication();
         String principal = (String) authentication.getPrincipal();
 
-        Terapeuta terapeuta = terapeutaRepository.findById(request.getId()).orElseThrow();
+        Terapeuta terapeuta = terapeutaRepository.
+                findByEmail(principal).orElseThrow();
 
-        if (passwordEncoder.matches(request.getOldPassword(), terapeuta.getPassword())) {
+        if (passwordEncoder.matches(
+                request.getOldPassword(),
+                terapeuta.getPassword())) {
             // Hash the password
             String hashedPassword = passwordEncoder.encode(request
                     .getNewPassword());
@@ -93,6 +88,11 @@ public class TerapeutaController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
+    /**
+     * Aggiorna le informazioni del terapeuta.
+     * @param terapeutaDTO TerapeutaDTOSimple
+     * @return TerapeutaDTOSimple
+     */
     @PreAuthorize("hasRole('TERAPEUTA')")
     @PostMapping("/update")
     public ResponseEntity<TerapeutaDTOSimple> updateTerapeuta(

@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import axiosInstance from "../../config/axiosInstance";
 import Modal from "react-bootstrap/Modal";
 import '../../style/Modal.css'
-import {ModalBody, ModalFooter, Form, FloatingLabel, ModalTitle} from "react-bootstrap";
+import {ModalBody, ModalFooter, Form, FloatingLabel, } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {toast} from "react-toastify";
 import { Formik } from "formik";
@@ -78,6 +78,7 @@ function ModificaPasswordModal({show, onHide}) {
                     }
                 );
                 setTimeout(() => {
+                    logout();
                     window.location.href = "/login";
                 }, 2000);
 

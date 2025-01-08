@@ -60,7 +60,14 @@ public class MaterialeService {
     private final Logger logger = Logger.getLogger(
             MaterialeService.class.getName()
     );
+
+    /**
+     * Repository della sessione.
+     */
     private final SessioneRepository sessioneRepository;
+    /**
+     * Repository del disegno.
+     */
     private final DisegnoRepository disegnoRepository;
 
     /**
@@ -78,7 +85,8 @@ public class MaterialeService {
             final MaterialeRepository paramMaterialeRepository,
             final MaterialeMapper paramMaterialeMapper,
             final TerapeutaRepository paramTerapeutaRepository,
-            SessioneRepository sessioneRepository, DisegnoRepository disegnoRepository) {
+            final SessioneRepository sessioneRepository,
+            final DisegnoRepository disegnoRepository) {
         // Assegniamo alle variabili di istanza per evitare campi nascosti
         this.materialeRepositoryInjected = paramMaterialeRepository;
         this.materialeMapperInjected = paramMaterialeMapper;
@@ -182,7 +190,14 @@ public class MaterialeService {
         return this.materialeMapperInjected.toDTO(materiale);
     }
 
-    public ByteArrayResource getByteArray(final String path) throws IOException {
+    /**
+     * Recupera un file dal filesystem e lo converte in una risorsa.
+     * @param path percorso del file
+     * @return ByteArrayResource contenente il file
+     * @throws IOException se si verifica un errore durante la lettura
+     */
+    public ByteArrayResource getByteArray(final String path)
+            throws IOException {
         // Creazione del file dal percorso
         File file = new File(path);
         // Lettura del contenuto del file
@@ -209,7 +224,7 @@ public class MaterialeService {
         Path filePath = Path.of(materiale.getPath());
         try {
             // Recupera il nome del file da cancellare
-            String fileName = materiale.getNome();
+            //String fileName = materiale.getNome();
             this.logger.log(
                     Level.INFO,
                     "Cancellazione del file {0}",
@@ -283,18 +298,21 @@ public class MaterialeService {
      *
      * @param codice codice del bambino associato alla sessione.
      * @return MaterialeDTO contenente i dettagli del materiale.
-     * @throws EntityNotFoundException se la sessione o il materiale non esistono.
+     * @throws EntityNotFoundException se la sessione o il
+     * materiale non esistono.
      */
     public MaterialeDTOResponse getMaterialeByCodice(final String codice) {
         Sessione sessione = sessioneRepository
                 .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Sessione non trovata"));
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Sessione non trovata"));
 
         Materiale materiale = sessione.getMateriale();
         if (materiale == null) {
-            throw new EntityNotFoundException("Materiale associato alla sessione non trovato");
+            throw new EntityNotFoundException(
+                    "Materiale associato alla sessione non trovato");
         }
 
         // Legge il contenuto del file
@@ -302,7 +320,8 @@ public class MaterialeService {
         try {
             fileBytes = getByteArray(materiale.getPath()).getByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+            throw new RuntimeException(
+                    "Errore nella lettura del file: " + e.getMessage());
         }
 
         // Mappa l'entità Materiale a MaterialeDTO
@@ -319,18 +338,21 @@ public class MaterialeService {
      *
      * @param email email del terapeuta associato alla sessione.
      * @return MaterialeDTO contenente i dettagli del materiale.
-     * @throws EntityNotFoundException se la sessione o il materiale non esistono.
+     * @throws EntityNotFoundException se la sessione o il materiale
+     * non esistono.
      */
     public MaterialeDTOResponse getMaterialeByEmail(final String email) {
         Sessione sessione = sessioneRepository
                 .findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Sessione non trovata"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Sessione non trovata"));
 
         Materiale materiale = sessione.getMateriale();
         if (materiale == null) {
-            throw new EntityNotFoundException("Materiale associato alla sessione non trovato");
+            throw new EntityNotFoundException(
+                    "Materiale associato alla sessione non trovato");
         }
 
         // Legge il contenuto del file
@@ -338,7 +360,8 @@ public class MaterialeService {
         try {
             fileBytes = getByteArray(materiale.getPath()).getByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+            throw new RuntimeException(
+                    "Errore nella lettura del file: " + e.getMessage());
         }
 
         // Mappa l'entità Materiale a MaterialeDTO
@@ -357,12 +380,14 @@ public class MaterialeService {
      */
     public MaterialeDTOResponse getMaterialeByDisegnoId(final long disegnoId) {
         Disegno disegno = disegnoRepository.findById(disegnoId)
-                .orElseThrow(() -> new EntityNotFoundException("Disegno non trovato"));
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Disegno non trovato"));
 
         Materiale materiale = disegno.getSessione().getMateriale();
 
         if (materiale == null) {
-            throw new EntityNotFoundException("Materiale associato al disegno non trovato");
+            throw new EntityNotFoundException(
+                    "Materiale associato al disegno non trovato");
         }
 
         // Legge il contenuto del file
@@ -370,7 +395,8 @@ public class MaterialeService {
         try {
             fileBytes = getByteArray(materiale.getPath()).getByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("Errore nella lettura del file: " + e.getMessage());
+            throw new RuntimeException(
+                    "Errore nella lettura del file: " + e.getMessage());
         }
 
         // Mappa l'entità Materiale a MaterialeDTO

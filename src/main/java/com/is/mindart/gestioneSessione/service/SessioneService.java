@@ -22,10 +22,7 @@ import com.is.mindart.gestioneBambino.model.Bambino;
 @AllArgsConstructor
 public class SessioneService {
 
-    /**
-     * Repository della sessione.
-     */
-    private final SessioneRepository repository;
+
     /**
      * Custom mapper della sessione.
      */
@@ -136,13 +133,7 @@ public class SessioneService {
      */
     public SessioneDTO getSessioneBambino(final String codice)
             throws EntityNotFoundException {
-        Sessione sessione = sessioneRepository
-                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Bambino con codice " + codice + " non trovato " +
-                                "o sessione non valida"));
+        Sessione sessione = trovaSessioneDaCodiceBambino(codice);
         return new SessioneDTO(
                 sessione.getId(),
                 sessione.getTipo(),
@@ -167,4 +158,16 @@ public class SessioneService {
         return sessione.getMateriale();
 
     }
+
+    public Sessione trovaSessioneDaCodiceBambino(String codice) {
+        return sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codice)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Bambino con codice " + codice + " non trovato " +
+                                "o sessione non valida"));
+
+    }
+
 }

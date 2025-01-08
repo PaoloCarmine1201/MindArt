@@ -108,7 +108,7 @@ function DettaglioBambinoComponent() {
                 </div>
             </div>
 
-            <div className="dettaglio-button-container">
+            <div className="dettaglio-button-container justify-content-end">
                 {/* Pulsante Modifica */}
                 <EditBambino bambino={bambino}/>
 

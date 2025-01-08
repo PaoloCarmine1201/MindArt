@@ -53,6 +53,11 @@ public class Disegno {
     private int voto;
 
     /**
+     * Immagine per valutazione emotiva
+     */
+    @Lob
+    private byte[] immagine;
+    /**
      * Campo che conterrà l'insieme dei tratti di disegno
      * in formato JSON (es. un array di stroke).
      */

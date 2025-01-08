@@ -19,4 +19,10 @@ public interface DisegnoRepository extends JpaRepository<Disegno, Long> {
      */
     @SuppressWarnings("checkstyle:MethodName")
     List<Disegno> findByBambiniId(Long bambinoId);
+
+    /**
+     * Disegni da far valutare al modello
+     * @return disegni da far valutare
+     */
+    List<Disegno> findAllByValutazioneEmotivaIsNullAndSessione_TerminataTrue();
 }

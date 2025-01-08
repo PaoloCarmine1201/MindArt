@@ -99,6 +99,30 @@ public class TerapeutaService {
         return modelMapper.map(terapeuta, TerapeutaDTOSimple.class);
     }
 
-
+    /**
+     * Cambia la password del terapeuta.
+     * @param email Email del terapeuta
+     * @param oldPassword Vecchia password
+     * @param newPassword Nuova password
+     * @return true se la password è stata cambiata, false altrimenti
+     */
+    public boolean changePassword(
+            final String email,
+            final String oldPassword,
+            final String newPassword) {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Terapeuta non trovato")
+                );
+        if (passwordEncoder.matches(oldPassword, terapeuta.getPassword())) {
+            // Hash the password
+            String hashedPassword = passwordEncoder.encode(newPassword);
+            terapeuta.setPassword(hashedPassword);
+            terapeutaRepository.save(terapeuta);
+            return true;
+        }
+        //else
+        return false;
+    }
 
 }

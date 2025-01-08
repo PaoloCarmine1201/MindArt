@@ -1,23 +1,36 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../config/axiosInstance";
 import '../../style/ProfiloTerapeutaStyle.css';
+import '../../style/Modal.css';
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
-import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
+import { ModalBody, ModalFooter, Form, FloatingLabel } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+import { Formik } from "formik";
+import * as yup from "yup";
+import {useAuth} from "../../auth/AuthProvider";
+import ModificaPasswordButton from "./ModificaPasswordButton";
 
 function ProfiloTerapuetaComponent() {
     const [terapeuta, setTerapeuta] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [confirmMessage, setConfirmMessage] = useState('');
-    const [emailChanged, setEmailChanged] = useState(false);
-    const [formData, setFormData] = useState({
-        id: '',
-        nome: '',
-        cognome: '',
-        email: ''
+
+    const { logout } = useAuth();
+    
+    const validationSchema = yup.object().shape({
+        nome: yup
+            .string()
+            .matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,50}$/, 'formato nome non valido')
+            .required("Il nome è obbligatorio"),
+        cognome: yup
+            .string()
+            .matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,50}$/, 'formato cognome non valido')
+            .required("Il cognome è obbligatorio"),
+        email: yup
+            .string()
+            .email("Email non valida")
+            .required("L'email è obbligatoria"),
     });
 
     useEffect(() => {
@@ -30,40 +43,38 @@ function ProfiloTerapuetaComponent() {
             });
     }, []);
 
-    useEffect(() => {
-        if (terapeuta) {
-            setFormData({
-                id: terapeuta.id,
-                nome: terapeuta.nome,
-                cognome: terapeuta.cognome,
-                dataDiNascita: terapeuta.dataDiNascita,
-                email: terapeuta.email
-            });
-        }
-    }, [terapeuta]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
     const handleClick = () => {
-        console.log("Modifica profilo terapeuta");
         setShowModal(true);
     }
 
-    const handleSubmit = () => {
-        console.log(formData);
-        axiosInstance.post(`api/terapeuta/update`, formData)
+    const handleSubmit = (values) => {
+        axiosInstance.post(`api/terapeuta/update`, values)
             .then(response => {
-                console.log("Modifiche salvate con successo:", response.data);
                 setShowModal(false);
-                terapeuta.email !== formData.email ? setEmailChanged(true) : setEmailChanged(false);
-                setConfirmMessage(emailChanged ? "Modifiche salvate con successo. E' necessario effettuare nuovamente il login." : "Modifiche salvate con successo.");
-                setShowConfirmModal(true);
+
+                if (values.email !== terapeuta.email) {
+                    toast.info("Sarai reindirizzato al login.",
+                        {
+                            autoClose: 2000
+                        }
+                    );
+                    setTimeout(() => {
+                        // Reindirizza al login
+                        logout()
+                        window.location.href = "/login";
+                    }, 2000);
+                }
+                else{
+                    toast.success('Modifiche avvenute con successo.',
+                        {
+                            autoClose: 1000
+                        }
+                    );
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+
             })
             .catch(error => {
                 console.error("Errore durante il salvataggio delle modifiche:", error);
@@ -71,14 +82,6 @@ function ProfiloTerapuetaComponent() {
             });
     };
 
-    const handleChiudi = () => {
-        setShowConfirmModal(false);
-        if (emailChanged) {
-            window.location.href = '/login';
-        }else{
-            window.location.reload();
-        }
-    }
 
     if (!terapeuta) {
         return <p>Caricamento in corso...</p>;
@@ -87,28 +90,6 @@ function ProfiloTerapuetaComponent() {
     return (
         <div className="dettaglio-container">
             <Modal
-                show={showConfirmModal}
-                backdropClassName="custom-backdrop"
-                keyboard={false}
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                dialogClassName="custom-modal"
-            >
-                <ModalBody>
-                    <ModalTitle>
-                        {confirmMessage}
-                    </ModalTitle>
-                    <ModalFooter>
-                        <Button
-                            onClick={() => handleChiudi()}
-                            className={"btn-conferma btn-conferma-in"}
-                        >
-                            {emailChanged ? "Effettua il login" : "Chiudi"}
-                        </Button>
-                    </ModalFooter>
-                </ModalBody>
-            </Modal>
-            <Modal
                 show={showModal}
                 backdropClassName="custom-backdrop"
                 keyboard={false}
@@ -116,60 +97,93 @@ function ProfiloTerapuetaComponent() {
                 centered
                 dialogClassName="custom-modal"
             >
+                <Modal.Header className="border-0">
+                    <Modal.Title className="text-center w-100 fw-bold">Modifica i tuoi dati</Modal.Title>
+                </Modal.Header>
                 <ModalBody>
-                    <ModalTitle>Modifica i tuoi dati</ModalTitle>
-                    {/*Form per modificare i dati del terapeuta*/}
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="nome">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="nome"
-                                name="nome"
-                                value={formData.nome}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="cognome">Cognome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="cognome"
-                                name="cognome"
-                                value={formData.cognome}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </form>
+                    {/* Form per modificare i dati del terapeuta */}
+                    <Formik
+                        initialValues={{
+                            nome: terapeuta.nome,
+                            cognome: terapeuta.cognome,
+                            email: terapeuta.email,
+                            dataDiNascita: terapeuta.dataDiNascita
+                        }}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
+                    >
+                        {({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (
+                            <Form id="formTerapeuta" noValidate onSubmit={handleSubmit}>
+                                <Form.Group controlId="formNome">
+                                    <FloatingLabel controlId="formNome" label="Nome">
+                                        <Form.Control
+                                            name="nome"
+                                            type="text"
+                                            placeholder="Inserisci il nome"
+                                            value={values.nome}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            isInvalid={touched.nome && !!errors.nome}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.nome}
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
+                                </Form.Group>
+
+                                <Form.Group controlId="formCognome">
+                                    <FloatingLabel controlId="formCognome" label="Cognome">
+                                        <Form.Control
+                                            name="cognome"
+                                            type="text"
+                                            placeholder="Inserisci il cognome"
+                                            value={values.cognome}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            isInvalid={touched.cognome && !!errors.cognome}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.cognome}
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
+                                </Form.Group>
+
+
+                                <Form.Group controlId="formEmail">
+                                    <FloatingLabel controlId="formEmail" label="Email">
+                                        <Form.Control
+                                            name="email"
+                                            type="email"
+                                            placeholder="Inserisci l'email"
+                                            value={values.email}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            isInvalid={touched.email && !!errors.email}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.email}
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
+                                </Form.Group>
+
+                                <ModalFooter>
+                                    <Button
+                                        onClick={() => setShowModal(false)}
+                                        className="btn-cancella"
+                                    >
+                                        Annulla
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        className="btn-conferma"
+                                    >
+                                        Salva
+                                    </Button>
+                                </ModalFooter>
+                            </Form>
+                        )}
+                    </Formik>
                 </ModalBody>
-                <ModalFooter>
-                    <Button
-                        onClick={() => setShowModal(false)}
-                        className="btn-cancella"
-                    >
-                        Annulla
-                    </Button>
-                    <Button
-                        type="button"
-                        className="btn-conferma"
-                        onClick={handleSubmit}
-                    >
-                        Salva
-                    </Button>
-                </ModalFooter>
             </Modal>
             <h2 className="dettaglio-header">{terapeuta.nome} {terapeuta.cognome}</h2>
             <div className="dettaglio-section">
@@ -185,14 +199,16 @@ function ProfiloTerapuetaComponent() {
                 </div>
             </div>
 
-            <div className="dettaglio-button-container">
+            <div className="dettaglio-button-container text-end justify-content-end">
                 {/* Pulsante Modifica */}
                 <Button
                     onClick={handleClick}
                     className="btn-all"
                 >
-                    Modifica
+                    Modifica i tuoi dati
                 </Button>
+
+                <ModificaPasswordButton/>
             </div>
 
             {/* Pulsante Indietro */}

@@ -312,6 +312,23 @@ const BoardDisegno = () => {
         }
     };
 
+    const exportToImage = () => {
+        if (stageRef.current) {
+            const dataURL = stageRef.current.toDataURL({ pixelRatio: 1, mimeType: 'image/jpeg',
+                quality: 0.8  }); // Aumenta pixelRatio per migliore qualità
+            // Crea un elemento di ancoraggio temporaneo per il download
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'disegno.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert('Stage non disponibile per l\'esportazione.');
+        }
+    };
+
+
     // Gestione del cambio strumento
     const handleToolChange = (tool) => {
         setSelectedTool(tool);
@@ -324,7 +341,7 @@ const BoardDisegno = () => {
 
 
             <div className="drawing-container">
-                <ConfermaDisegno/>
+                <ConfermaDisegno  disegno={stageRef}/>
                 <Stage
                     width={STAGE_WIDTH}
                     height={STAGE_HEIGHT}
@@ -493,6 +510,22 @@ const BoardDisegno = () => {
                             }}
                         >
                             <FaSlash size={20}/>
+                        </button>
+
+                        {/* Pulsante Esporta Immagine */}
+                        <button
+                            onClick={exportToImage}
+                            style={{
+                                backgroundColor: "#fff",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                padding: "6px 12px",
+                                cursor: "pointer",
+                                marginLeft: "20px"
+                            }}
+                            title="Esporta come Immagine"
+                        >
+                            Esporta Immagine
                         </button>
                     </div>
                 </div>

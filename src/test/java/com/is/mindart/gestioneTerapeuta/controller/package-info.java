@@ -15,6 +15,14 @@
     controller del login del terapeuta,
     sia in caso di successo che in caso di credenziali errate.
 </li>
+ <li>
+ {@link
+ com.is.mindart.gestioneTerapeuta.controller.TestModificaPassword
+ }:
+ Classe di test che verifica il corretto funzionamento del
+ controller del login del terapeuta,
+ sia in caso di successo che in caso di credenziali errate.
+ </li>
  </ul>
  <p>
  Il package utilizza le librerie di testing

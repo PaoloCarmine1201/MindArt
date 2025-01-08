@@ -1,7 +1,5 @@
 package com.is.mindart.gestioneTerapeuta.controller;
 
-import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaCambioPasswordDTO;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOSimple;
 import com.is.mindart.gestioneTerapeuta.service.TerapeutaDTOStat;
@@ -11,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,34 +42,9 @@ public class TerapeutaController {
         TerapeutaDTOStat terapeuta = terapeutaService.getTerapeuta(email);
         return ResponseEntity.ok(terapeuta);
     }
-
     /**
-     *  Provvede ad accedere al database per l'entità Terapeuta.
-     */
-    private final TerapeutaRepository terapeutaRepository;
-
-    /**
-     * Metodo per validare una password rispetto a determinati criteri.
-     * @param password la password da validare
-     * @return true se la password è valida, false altrimenti.
-     */
-    private boolean isPasswordValid(String password) {
-        if (password == null) {
-            return false;
-        }
-        // Regex per verificare i criteri
-        String passwordPattern = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!?_.,:;@#$%^&*]).{8,}$";
-        return password.matches(passwordPattern);
-    }
-
-    /**
-     *  Provvede a criptare la password.
-     */
-    private final PasswordEncoder passwordEncoder;
-
-    /**
-     *  Provvede a mappare l'entità Terapeuta con TerapeutaDTO.
-     * @param request richiesta
+     * Gestisce le richieste per il cambio della password.
+     * @param request richiesta in forma di {@link TerapeutaCambioPasswordDTO}
      * @return ResponseEntity
      */
     @PostMapping("/cambia-password")
@@ -83,31 +55,23 @@ public class TerapeutaController {
                 .getContext()
                 .getAuthentication();
         String principal = (String) authentication.getPrincipal();
-
-        Terapeuta terapeuta = terapeutaRepository.
-                findByEmail(principal).orElseThrow();
-
-        if (passwordEncoder.matches(
-                request.getOldPassword(),
-                terapeuta.getPassword())) {
-            if (!isPasswordValid(request.getNewPassword())){
-                throw new IllegalArgumentException("Password non conforme");
-            }
-            // Hash the password
-            String hashedPassword = passwordEncoder.encode(request
-                    .getNewPassword());
-            terapeuta.setPassword(hashedPassword);
-            terapeutaRepository.save(terapeuta);
-            return ResponseEntity.ok("SUCCESS");
-        }
-
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        // Chiamata al service per cambiare la password
+        // Se la password non è valida, ritorna BadRequest
+        return
+                terapeutaService.changePassword(
+                        principal,
+                        request.getOldPassword(),
+                        request.getNewPassword()
+                )
+                        ?
+                ResponseEntity.ok().build()
+                        :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     /**
      * Aggiorna le informazioni del terapeuta.
-     * @param terapeutaDTO TerapeutaDTOSimple
+     * @param terapeutaDTO in forma di {@link TerapeutaDTOSimple}
      * @return TerapeutaDTOSimple
      */
     @PreAuthorize("hasRole('TERAPEUTA')")

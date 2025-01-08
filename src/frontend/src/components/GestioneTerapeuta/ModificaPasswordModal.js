@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import axiosInstance from "../../config/axiosInstance";
 import Modal from "react-bootstrap/Modal";
 import '../../style/Modal.css'
@@ -10,7 +10,6 @@ import * as yup from "yup";
 import {useAuth} from "../../auth/AuthProvider";
 
 function ModificaPasswordModal({show, onHide}) {
-    const [terapeuta, setTerapeuta] = useState(null);
     const validationSchema = yup.object().shape({
         oldPassword: yup
             .string()
@@ -32,15 +31,15 @@ function ModificaPasswordModal({show, onHide}) {
 
 
 
-    useEffect(() => {
-        axiosInstance.get('api/terapeuta/get')
-            .then(response => {
-                setTerapeuta(response.data);
-            })
-            .catch(error => {
-                console.error("Errore durante il recupero dei dati del terapeuta:", error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     axiosInstance.get('api/terapeuta/get')
+    //         .then(response => {
+    //             setTerapeuta(response.data);
+    //         })
+    //         .catch(error => {
+    //             console.error("Errore durante il recupero dei dati del terapeuta:", error);
+    //         });
+    // }, []);
 
     const handlePasswordChange = (newPassword) => {
         setPasswordCriteria({
@@ -66,12 +65,11 @@ function ModificaPasswordModal({show, onHide}) {
 
         try {
             const response = await axiosInstance.post('api/terapeuta/cambia-password', {
-                id: terapeuta.id,
                 oldPassword: oldPassword,
                 newPassword: newPassword,
             });
 
-            if (response.status === 200 && response.data === "SUCCESS") {
+            if (response && response.status === 200) {
                 toast.success("Password modificata con successo, sarai indirizzato al login.",
                     {
                         autoClose: 2000
@@ -94,10 +92,11 @@ function ModificaPasswordModal({show, onHide}) {
                 } else {
                     toast.error("Errore durante il cambio della password.");
                 }
+            }else{
+                toast.error("Errore durante il cambio della password.");
             }
         }
     };
-
 
     return (
         <>

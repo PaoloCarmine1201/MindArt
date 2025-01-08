@@ -4,7 +4,19 @@ package com.is.mindart.gestioneDisegno.model;
 import com.is.mindart.gestioneBambino.model.Bambino;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
+import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,6 +52,11 @@ public class Disegno {
      */
     private int voto;
 
+    /**
+     * Immagine per valutazione emotiva
+     */
+    @Lob
+    private byte[] immagine;
     /**
      * Campo che conterrà l'insieme dei tratti di disegno
      * in formato JSON (es. un array di stroke).

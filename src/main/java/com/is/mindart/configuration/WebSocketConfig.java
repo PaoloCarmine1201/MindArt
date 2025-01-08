@@ -46,7 +46,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      * @param registration
      */
     @Override
-    public void configureClientInboundChannel(final ChannelRegistration registration) {
+    public void configureClientInboundChannel(
+            final ChannelRegistration registration) {
         registration.interceptors(new JwtChannelInterceptor(jwtTokenProvider));
     }
 }

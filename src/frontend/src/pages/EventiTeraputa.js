@@ -7,7 +7,7 @@ import React from "react";
 function GestioneEventiTerapeuta() {
     return (
         <>
-            <NavBar name="Dashboard"/>
+            <NavBar name="I tuoi eventi"/>
             <TerapeutaEventiComponent/>
         </>
     );

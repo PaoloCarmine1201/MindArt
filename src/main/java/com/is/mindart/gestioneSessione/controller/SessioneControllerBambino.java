@@ -3,20 +3,15 @@ package com.is.mindart.gestioneSessione.controller;
 import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.service.MaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
-import com.is.mindart.gestioneMateriale.service.OutputMaterialeDTO;
 import com.is.mindart.gestioneSessione.model.Sessione;
 import com.is.mindart.gestioneSessione.model.SessioneRepository;
-import com.is.mindart.gestioneSessione.service.SessioneDTO;
 import com.is.mindart.gestioneSessione.service.SessioneService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.ResponseEntity;
 
@@ -53,7 +48,10 @@ public class SessioneControllerBambino {
         Authentication authentication = SecurityContextHolder
                 .getContext().getAuthentication();
         String codiceBambino = (String) authentication.getPrincipal();
-        Sessione sessione = sessioneRepository.findByTerminataFalseAndBambini_CodiceOrderByDataAsc(codiceBambino).getFirst();
+        Sessione sessione = sessioneRepository
+                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(
+                        codiceBambino)
+                .getFirst();
         Materiale materiale = sessione.getMateriale();
 
         String path = materiale.getPath();
@@ -70,7 +68,7 @@ public class SessioneControllerBambino {
                     .ok()
                     .body(materialeDTO);
 
-        }catch (IOException e){
+        } catch (IOException e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);

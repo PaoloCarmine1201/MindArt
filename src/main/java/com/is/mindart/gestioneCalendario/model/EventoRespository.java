@@ -38,6 +38,7 @@ public interface EventoRespository extends JpaRepository<Evento, Long> {
     /**
      * Trova un evento specifico tramite il suo ID.
      * @param id l'identificativo dell'evento
+     * @param email l'email del terapeuta
      * @return un oggetto {@link Evento} rappresentante l'evento
      */
     Optional<Evento> findByIdAndTerapeutaEmail(Long id, String email);

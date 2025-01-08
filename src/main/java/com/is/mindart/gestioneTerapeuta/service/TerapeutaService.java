@@ -1,7 +1,6 @@
 package com.is.mindart.gestioneTerapeuta.service;
 
-import com.is.mindart.gestioneSessione.model.Sessione;
-import com.is.mindart.gestioneSessione.model.SessioneRepository;
+
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import com.is.mindart.security.jwt.JwtUtil;
@@ -9,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @AllArgsConstructor
@@ -32,7 +32,6 @@ public class TerapeutaService {
      *  Provvede a generare il token JWT.
      */
     private final JwtUtil jwtUtil;
-    private final SessioneRepository sessioneRepository;
 
     /**
      * Provvede alla registrazione del terapeuta.
@@ -50,14 +49,26 @@ public class TerapeutaService {
     }
 
     /**
+     * Provvede a recuperare il terapeuta.
+     * @param email email del terapeuta
+     * @return {@link TerapeutaDTOStat}
+     */
+    public TerapeutaDTOStat getTerapeuta(final String email) {
+        Terapeuta terapeuta = terapeutaRepository
+                .findByEmail(email).orElseThrow(() ->
+                new IllegalArgumentException("Terapeuta non trovato"));
+        return modelMapper.map(terapeuta, TerapeutaDTOStat.class);
+    }
+
+    /**
      * Provvede a verificare se il terapeuta esiste.
      * @param email Email del terapeuta
+     * @param rawPassword Password in chiaro
      * @return true se il terapeuta esiste, false altrimenti
      */
     public String loginTerapeuta(final String email, final String rawPassword) {
         Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
                 .orElse(null);
-        Sessione sessione = sessioneRepository.findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(email).getFirst();
         if (terapeuta != null) {
             if (passwordEncoder.matches(rawPassword, terapeuta.getPassword())) {
                 return jwtUtil.generateToken(terapeuta.getEmail(), "TERAPEUTA");
@@ -66,6 +77,52 @@ public class TerapeutaService {
         return null;
     }
 
+    /**
+     * Aggiorna il profile del terapeuta.
+     * @param terapeutaDTO TerapeutaDTO con i nuovi
+     *                     dati del terapeuta da aggiornare
+     * @param email Email del terapeuta
+     * @return TerapeutaDTO con i nuovi dati del terapeuta aggiornato
+     */
+    public TerapeutaDTOSimple updateTerapeuta(
+            final TerapeutaDTOSimple terapeutaDTO,
+            final String email
+    ) {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Terapeuta non trovato")
+                );
+        terapeuta.setNome(terapeutaDTO.getNome());
+        terapeuta.setCognome(terapeutaDTO.getCognome());
+        terapeuta.setEmail(terapeutaDTO.getEmail());
+        terapeutaRepository.save(terapeuta);
+        return modelMapper.map(terapeuta, TerapeutaDTOSimple.class);
+    }
 
+    /**
+     * Cambia la password del terapeuta.
+     * @param email Email del terapeuta
+     * @param oldPassword Vecchia password
+     * @param newPassword Nuova password
+     * @return true se la password è stata cambiata, false altrimenti
+     */
+    public boolean changePassword(
+            final String email,
+            final String oldPassword,
+            final String newPassword) {
+        Terapeuta terapeuta = terapeutaRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Terapeuta non trovato")
+                );
+        if (passwordEncoder.matches(oldPassword, terapeuta.getPassword())) {
+            // Hash the password
+            String hashedPassword = passwordEncoder.encode(newPassword);
+            terapeuta.setPassword(hashedPassword);
+            terapeutaRepository.save(terapeuta);
+            return true;
+        }
+        //else
+        return false;
+    }
 
 }

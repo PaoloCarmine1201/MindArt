@@ -4,9 +4,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,52 +28,56 @@ public class RegisterBambinoDTO {
     /**
      * Codice univoco del bambino.
      */
-    @NotBlank(message = "Il codice non può essere vuoto")
     private String codice;
 
     /**
      * Nome del bambino.
      */
-    @NotBlank(message = "Il nome non può essere vuoto")
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s'-]{2,50}$",
+            message = "Il nome deve contenere solo lettere e spazi e "
+                    + "deve essere lungo tra i 2 e i 50 caratteri.")
     private String nome;
 
     /**
      * Cognome del bambino.
      */
-    @NotBlank(message = "Il cognome non può essere vuoto")
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s'-]{2,50}$",
+            message = "Il cognome deve contenere solo lettere e spazi e "
+                    + "deve essere lungo tra i 2 e i 50 caratteri.")
     private String cognome;
-
-    /**
-     * Data di nascita del bambino.
-     */
-    @NotNull(message = "La data di nascita non può essere vuota")
-    @Past(message = "La data di nascita deve essere nel passato")
-    private Date dataDiNascita;
 
     /**
      * Sesso del bambino.
      */
-    @NotNull(message = "Il sesso non può essere vuoto")
     private Sesso sesso;
+
+    /**
+     * Data di nascita del bambino.
+     */
+    @Past(message = "La data di nascita deve essere nel passato.")
+    private Date dataDiNascita;
 
     /**
      * Codice fiscale del bambino.
      */
-    @NotBlank(message = "Il codice fiscale non può essere vuoto")
+    @Pattern(regexp = "^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$",
+            message = "Il codice fiscale deve essere composto da 16 caratteri.")
     private String codiceFiscale;
-
-    /**
-     * Numero del telefono del genitore.
-     */
-    @NotBlank(message = "Il telefono del genitore non può essere vuoto")
-    private String telefonoGenitore;
 
     /**
      * Email del genitore.
      */
-    @NotBlank(message = "L'email del genitore non può essere vuoto")
     @Email(message = "Devi inserire un'email valida")
     private String emailGenitore;
+
+    /**
+     * Telefono del genitore.
+     */
+    @Pattern(regexp =
+            "^(\\+\\d{1,2}\\s?)?1?-?\\.?\\s?\\("
+                    + "?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$",
+            message = "Il numero di telefono deve essere valido.")
+    private String telefonoGenitore;
 
 
     /**

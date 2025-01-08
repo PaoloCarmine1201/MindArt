@@ -5,7 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
     stepOneSchema,
     stepTwoSchema,
-    stepThreeSchema, stepFourSchema
+    stepFourSchema, stepThreeSchemaMult, stepThreeSchemaSingle
 } from './SchemaValidazione';
 import SelezioneTipo from './SelezioneTipo';
 import SelezioneMateriale from './SelezioneMateriale';
@@ -16,9 +16,10 @@ import '../../style/Modal.css';
 import '../../style/Transition.css';
 import axiosInstance from "../../config/axiosInstance";
 import InserimentoAssegnazione from "./InserimentoAssegnazione"; // Stile per le animazioni
+import { toast } from 'react-toastify';
 
 
-const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
+const AvviaSessioneMultiStepModal = ({ show, onHide, onSessionCreated }) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     const [materialList, setMaterialList] = useState([]);
@@ -29,10 +30,9 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
     const [loadingChildren, setLoadingChildren] = useState(false);
     const [childrenError, setChildrenError] = useState(null);
 
+    const [singleSession, setSingleSession] = useState(false);
      // 'forward' o 'backward'
-    const [errorMessage, setErrorMessage] = useState('');
     const [direction, setDirection] = useState("forward");
-
 
     const initialValues = {
         tipoSessione: '',
@@ -48,7 +48,8 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
             case 2:
                 return stepTwoSchema;
             case 3:
-                return stepThreeSchema;
+                return singleSession ?
+                    stepThreeSchemaSingle : stepThreeSchemaMult;
             case 4:
                 return stepFourSchema;
             default:
@@ -66,14 +67,14 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                     setMaterialList(response.data);
                     setLoadingMaterial(false);
                 })
-                .catch(error => {
+                .catch(() => {
                     setMaterialError('Errore nel caricamento dei materiali.');
                     setLoadingMaterial(false);
                 });
         }
         else if (currentStep === 3) {
             setLoadingChildren(true);
-            setChildrenError(null);
+            setChildrenError('');
 
             axiosInstance.get('http://localhost:8080/api/terapeuta/bambino/getallbyterapeuta')
                 .then(response => {
@@ -87,7 +88,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
         }
     }, [currentStep]);
 
-    const handleNext = async (validateForm, touched, setTouched, values, errors) => {
+    const handleNext = async (validateForm, touched, setTouched, values) => {
 
         const errs = await validateForm()
 
@@ -100,21 +101,20 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
 
         const currentErrors = Object.keys(errs).filter(key => errs[key] !== undefined);
 
+        if(values.tipoSessione === 'COLORE'){
+            setSingleSession(true);
+        }else{
+            setSingleSession(false);
+        }
         if (currentErrors.length === 0) {
             setDirection('forward');
-
             if (currentStep === 1 && values.tipoSessione === 'DISEGNO'){
                 setCurrentStep(prev => prev + 2);
             } else {
                 setCurrentStep(prev => prev + 1);
             }
-            setErrorMessage('');
         } else {
-            const errorMessages = Object.keys(errs)
-                .map(key => `${errs[key]}`) // Concatena i campi con i messaggi di errore
-                .join(' | '); // Unisci i messaggi con un separatore (es. "|")
-
-            setErrorMessage(errorMessages); // Imposta i messaggi di errore nello stato
+            toast.error('Compila correttamente i campi obbligatori.');
         }
     };
 
@@ -129,7 +129,12 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
 
     const handleSubmit = (values, { resetForm }) => {
         axiosInstance.post('/api/terapeuta/sessione/create', values)
-            .then(r => alert('Sessione creata con successo'))
+            .then(r => {
+                toast.success("Sessione creata con successo!");
+                setTimeout(() => {
+                    onSessionCreated(); // Chiama il callback dopo un breve ritardo
+                }, 300);
+            })
             .catch(r => console.log(r));
 
         resetForm();
@@ -153,7 +158,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                     <SelezioneBambino
                         childrenList={childrenList}
                         loading={loadingChildren}
-                        error={childrenError}
+                        errorState={childrenError}
                     />
                 );
             case 4:
@@ -179,7 +184,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                   values,
                   errors,
                   resetForm
-              }) => (
+            }) => (
                 <Modal
                     show={show}
                     dialogClassName='custom-modal tall-modal-dialog'
@@ -243,6 +248,7 @@ const AvviaSessioneMultiStepModal = ({ show, onHide }) => {
                 </Modal>
             )}
         </Formik>
+
     );
 };
 

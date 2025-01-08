@@ -4,7 +4,6 @@ import axiosInstance from "../../config/axiosInstance";
 
 function VisualizzaEventiComponent() {
     const [events, setEvents] = useState({});
-    const [eventError, setEventError] = useState(null);
 
 
     /*
@@ -67,7 +66,6 @@ function VisualizzaEventiComponent() {
             })
             .catch(error => {
                 console.error(error);
-                setEventError('Errore nel caricamento degli eventi');
             });
     }, []);
 

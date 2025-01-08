@@ -10,12 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/api")
@@ -36,14 +34,14 @@ public class SessioneController {
      * @return 200 OK
      */
     @PostMapping("/terapeuta/sessione/create")
-    public ResponseEntity<SessioneDTO> create(
+    public ResponseEntity<Void> create(
             @Valid @RequestBody final SessioneDTO sessioneDTO) {
         Authentication authentication = SecurityContextHolder
                 .getContext().getAuthentication();
         String principal = (String) authentication.getPrincipal();
 
         sessioneService.creaSessione(sessioneDTO, principal);
-        return ResponseEntity.ok(sessioneDTO);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -64,18 +62,23 @@ public class SessioneController {
     }
     /**
      * Endpoint per la consegna di un disegno.
+     * @param immagine che verrà valutatada IA
      * @return 200 OK oppure 404 Not Found
      */
     @PostMapping("/bambino/sessione/consegna")
-    public ResponseEntity<Void> consegnaDisegno() {
+    public ResponseEntity<Void> consegnaDisegno(
+            @RequestParam("image") final MultipartFile immagine
+    ) {
         try {
             Authentication authentication = SecurityContextHolder
                     .getContext().getAuthentication();
             String principal = (String) authentication.getPrincipal();
-            sessioneService.consegnaDisegno(principal);
+            sessioneService.consegnaDisegno(principal, immagine.getBytes());
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -95,5 +98,18 @@ public class SessioneController {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Terapeuta con email " + principal + " non trovato"));
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Endpoint che restiuisce la descrizione della sessione del bambino.
+     * @return 200 OK
+     */
+    @GetMapping("/bambino/sessione/")
+    public ResponseEntity<SessioneDTO> getSessioneBambino() {
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        String principal = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(sessioneService.getSessioneBambino(principal));
+
     }
 }

@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import MiniVideoPlayer from './MiniVideoPlayer';
 import PDFViewer from './PDFViewer';
-import PPTXViewer from "./PPTXViewer";
 
 // Esempio con lo switch case
 const FileViewer = ({ fileUrl, fileType }) => {
@@ -11,14 +10,12 @@ const FileViewer = ({ fileUrl, fileType }) => {
     // Per i video
     const [showVideoPlayer, setShowVideoPlayer] = useState(true);
 
-    const [showPPTXPlayer, setShowPPTXPlayer] = useState(true);
-
     switch (fileType) {
         case 'PDF':
             return showPdfViewer ? (
                 <PDFViewer
                     file={fileUrl}
-                    //onClose={() => setShowPdfViewer(false)}
+                    onClose={() => setShowPdfViewer(false)}
                 />
             ) : (
                 <p>PDF chiuso</p>

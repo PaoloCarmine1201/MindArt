@@ -3,14 +3,17 @@ package com.is.mindart.gestioneCalendario.service;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.util.Date;
 import jakarta.validation.constraints.AssertTrue;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventDto {
     /**
      * Identificativo univoco dell'evento.
@@ -30,21 +33,14 @@ public class EventDto {
      * La data di inizio non può essere nel passato.
      */
     @NotNull(message = "La data di inizio non può essere nulla")
-    @FutureOrPresent(message = "La data di inizio non può essere nel passato")
     private Date inizio;
 
     /**
      * Data e ora di fine dell'evento.
      */
     @NotNull(message = "La data di fine non può essere nulla")
-    @FutureOrPresent(message = "La data di fine non può essere nel passato")
     private Date fine;
 
-    /**
-     * Il terapeuta associato all'evento.
-     */
-    @NotNull(message = "Il terapeuta non può essere nullo")
-    private Long terapeuta;
 
     /**
      * Validazione per assicurarsi che
@@ -57,6 +53,6 @@ public class EventDto {
         if (inizio != null && fine != null) {
             return inizio.before(fine);
         }
-        return true;
+        return false;
     }
 }

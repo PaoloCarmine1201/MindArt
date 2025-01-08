@@ -16,19 +16,34 @@ import java.util.Collections;
 @AllArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor {
 
+    /**
+     * JwtUtil.
+     */
     private final JwtUtil jwtUtil;
 
 
+    /**
+     * Interceptor che si occupa di estrarre il token JWT
+     * dall'header di una richiesta di connessione e di
+     * autenticare l'utente ad un socket.
+     * @param message Il messaggio
+     * @param channel Il canale di comunicazione
+     * @return Il messaggio
+     */
     @Override
-    public Message<?> preSend(final Message<?> message, final MessageChannel channel) {
+    public Message<?> preSend(
+            final Message<?> message,
+            final MessageChannel channel) {
+        final int bearerLength = 7;
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(
                 message, StompHeaderAccessor.class);
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            String authorization = accessor.getFirstNativeHeader("Authorization");
+            String authorization =
+                    accessor.getFirstNativeHeader("Authorization");
             if (authorization != null && authorization.startsWith("Bearer ")) {
 
-                String token = authorization.substring(7);
+                String token = authorization.substring(bearerLength);
                 String subject = jwtUtil.getUsernameFromToken(token);
                 String role = jwtUtil.extractClaim(token, "role");
                 if (role.contains("TERAPEUTA") || role.contains("BAMBINO")) {

@@ -19,14 +19,16 @@ public interface SessioneRepository extends JpaRepository<Sessione, Long> {
      * di un bambino ordinate per data.
      * @param codiceBambino codice del bambino
      */
-     List<Sessione> findByTerminataFalseAndBambini_CodiceOrderByDataAsc(String codiceBambino);
+    @SuppressWarnings("checkstyle:MethodName")
+    List<Sessione> findByTerminataFalseAndBambini_CodiceOrderByDataAsc(String codiceBambino);
 
     /**
      * Restituisce le sessioni non terminate
      * di un terapeuta ordinate per data.
-     * @param codiceBambino codice del bambino
+     * @param emailTerapeuta email del terapeuta
      */
-    List<Sessione> findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(String codiceBambino);
+    @SuppressWarnings("checkstyle:MethodName")
+    List<Sessione> findByTerminataFalseAndTerapeuta_EmailOrderByDataAsc(String emailTerapeuta);
     /**
      * Imposta il campo "terminata" della sessione.
      * @param id id della sessione
@@ -35,4 +37,6 @@ public interface SessioneRepository extends JpaRepository<Sessione, Long> {
     @Modifying
     @Query("UPDATE Sessione s SET s.terminata = true WHERE s.id = :id AND s.terminata = false")
     int terminaSessione(@Param("id") Long id);
+
+
 }

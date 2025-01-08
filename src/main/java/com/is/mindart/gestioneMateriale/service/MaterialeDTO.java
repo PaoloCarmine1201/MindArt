@@ -4,8 +4,6 @@ import com.is.mindart.gestioneMateriale.model.TipoMateriale;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +25,9 @@ public class MaterialeDTO {
     @NotNull
     private TipoMateriale tipoMateriale;
 
+    /**
+     * File in ByteArrayResource.
+     */
     @NotNull
     private byte[] file;
 

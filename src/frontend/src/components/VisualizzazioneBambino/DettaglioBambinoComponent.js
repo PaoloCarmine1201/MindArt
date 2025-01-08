@@ -1,56 +1,77 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import {useParams, Link, useNavigate} from "react-router-dom";
 import '../../style/DettaglioBambinoStyle.css';
 import axiosInstance from "../../config/axiosInstance";
+import {Button} from "react-bootstrap";
+import "../../style/Button.css";
+import EditBambino from "../GestioneInformazioniBambino/EditBambino";
+import {toast} from "react-toastify";
 
-/**
- * @autor gabrieleristallo
- * componente utilizzata per visualizzare i dettagli di un bambino
- * grazie ad useParams si ottiene l'id del bambino passato tramite url
- */
 function DettaglioBambinoComponent() {
     const { id } = useParams();
+    const navigate = useNavigate();  // <--- Hook per navigare
     const [bambino, setBambino] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 console.log(id);
-                const result = await fetch('http://localhost:8080/api/terapeuta/bambino/get/' + id);
+                const result = await fetch(
+                    "http://localhost:8080/api/terapeuta/bambino/get/" + id
+                );
 
                 if (!result.ok) {
-                    throw new Error('Errore nella risposta del server: ' + result.status);
+                    throw new Error(
+                        "Errore nella risposta del server: " + result.status
+                    );
                 }
 
                 const data = await result.json();
                 console.log(data);
                 setBambino(data);
             } catch (error) {
-                console.error('Errore nel recupero dei dati:', error);
+                console.error("Errore nel recupero dei dati:", error);
             }
         };
 
         fetchData();
-    }, []);
+    }, [id]);
 
     useEffect(() => {
-        axiosInstance.get("api/terapeuta/bambino/get/" + id)
-            .then(response => {
+        axiosInstance
+            .get("api/terapeuta/bambino/get/" + id)
+            .then((response) => {
                 setBambino(response.data);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
             });
-    }, []);
-
+    }, [id]);
 
     if (!bambino) {
         return <p>Caricamento in corso...</p>;
     }
 
+    const handleElimina = () => {
+        axiosInstance
+            .delete(`http://localhost:8080/api/terapeuta/bambino/${bambino.id}`)
+            .then((response) => {
+                console.log(response);
+                toast.success("Bambino eliminato con successo!");
+                // Dopo l’eliminazione, torniamo alla pagina precedente
+                navigate(-1);
+            })
+            .catch((error) => {
+                console.error(error);
+                toast.error("Errore nell'eliminazione del bambino");
+            });
+    };
+
     return (
         <div className="dettaglio-container">
-            <h2 className="dettaglio-header">{bambino.nome} {bambino.cognome}</h2>
+            <h2 className="dettaglio-header">
+                {bambino.nome} {bambino.cognome}
+            </h2>
 
             <div className="dettaglio-section">
                 <div className="dettaglio-data-row">
@@ -60,14 +81,17 @@ function DettaglioBambinoComponent() {
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Sesso:</label>
                     <span className="dettaglio-value">
-                        {bambino.sesso === null ? 'Sesso non disponibile' : bambino.sesso === 'MASCHIO' ?
-                            'Maschio' : 'Femmina'}
+                        {bambino.sesso === null
+                            ? "Sesso non disponibile"
+                            : bambino.sesso === "MASCHIO"
+                                ? "Maschio"
+                                : "Femmina"}
                     </span>
                 </div>
                 <div className="dettaglio-data-row">
                     <label className="dettaglio-label">Data di Nascita:</label>
                     <span className="dettaglio-value">
-                        {new Date(bambino.dataDiNascita).toLocaleDateString('it-IT')}
+                        {new Date(bambino.dataDiNascita).toLocaleDateString("it-IT")}
                     </span>
                 </div>
                 <div className="dettaglio-data-row">
@@ -84,16 +108,18 @@ function DettaglioBambinoComponent() {
                 </div>
             </div>
 
-            <div className="dettaglio-button-container">
+            <div className="dettaglio-button-container justify-content-end">
                 {/* Pulsante Modifica */}
-                <Link to={`/modifica/${id}`} className="dettaglio-button-link-modifica">
-                    Modifica
-                </Link>
+                <EditBambino bambino={bambino}/>
 
                 {/* Pulsante Elimina */}
-                <Link to={`/elimina/${id}`} className="dettaglio-button-link-elimina">
+                <Button
+                    className="btn-cancella"
+                    style={{ marginLeft: "10px" }}
+                    onClick={handleElimina}
+                >
                     Elimina
-                </Link>
+                </Button>
             </div>
 
             <Link to={'/gestioneBambini'} className="dettaglio-button-link">

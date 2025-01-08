@@ -1,11 +1,9 @@
 package com.is.mindart.gestioneDisegno.service;
 
 
-import com.is.mindart.gestioneDisegno.model.ValutazioneEmotiva;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,12 +16,18 @@ import java.util.List;
 @AllArgsConstructor
 public class DisegnoDTO {
 
+    /**
+     * L'identificativo del disegno.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * La valutazione emotiva associata al disegno.
+     */
     @NotNull
-    List<StrokeDTO> strokes;
+    private List<StrokeDTO> strokes;
 
 }
 

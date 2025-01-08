@@ -4,15 +4,52 @@ import axiosInstance from "../../config/axiosInstance";
 import {Button, Modal} from "react-bootstrap";
 import "../../style/Modal.css"
 
-const ConfermaDisegno = ({nomeBottone = "Consegna"}) => {
+const ConfermaDisegno = ({nomeBottone = "Consegna", disegno = null}) => {
     const [showModal, setShowModal] = useState(false);
 
+    // All'interno del tuo componente BoardDisegno.jsx
+
+    const dataURLtoBlob = (dataurl) => {
+        const arr = dataurl.split(',');
+        const mimeMatch = arr[0].match(/:(.*?);/);
+        if (!mimeMatch) {
+            throw new Error('Invalid data URL');
+        }
+        const mime = mimeMatch[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
+    };
+
     const handleSubmit = async () => {
+        const formData = new FormData();
+
+
         try {
-            const response = await axiosInstance.post(`/api/bambino/sessione/consegna`,{});
+            if(disegno.current){
+
+                const dataURL = disegno.current.toDataURL({
+                    pixelRatio: 3,
+                    mimeType: 'image/jpeg',
+                    quality: 0.8
+                });
+
+                const imageBlob = dataURLtoBlob(dataURL);
+                formData.append('image', imageBlob, 'disegno.jpeg');
+            }
+
+            const response = await axiosInstance.post(`/api/bambino/sessione/consegna`,formData, disegno,{
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             if (response && response.status === 200) {
                 console.log("Disegno consegnato con successo.");
-                window.location.href = "/childLogin";
+                window.location.href = "/childlogin";
                 localStorage.removeItem("jwtToken");
             }
         } catch (error) {
@@ -34,8 +71,8 @@ const ConfermaDisegno = ({nomeBottone = "Consegna"}) => {
     };
 
     return (
-        <div className="container text-center mt-5">
-            <Button className="btn-conferma" onClick={handleOpenModal}>
+        <div className="">
+            <Button className="btn-conferma consegna" onClick={handleOpenModal}>
                 {nomeBottone}
             </Button>
 

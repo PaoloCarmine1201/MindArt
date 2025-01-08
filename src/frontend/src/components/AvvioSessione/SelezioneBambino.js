@@ -1,23 +1,24 @@
 // Step3SelezioneBambino.jsx
 import React from 'react';
-import { FormGroup, FormLabel, Form} from 'react-bootstrap';
+import { FormGroup, Form} from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import BambinoLista from './BambinoLista';
 
-const SelezioneBambino = ({ childrenList, loading, error }) => {
-    const { values, setFieldValue, errors, touched } = useFormikContext();
+const SelezioneBambino = ({childrenList, loading, errorState}) => {
+    const { values, setFieldValue, errors } = useFormikContext();
 
     return (
         <FormGroup>
             <BambinoLista
                 childrenList={childrenList}
                 loading={loading}
-                error={error}
+                error={errorState}
                 selectedChildren={values.bambini}
                 setFieldValue={setFieldValue}
+                isInvalid={!!errors.bambini}
             />
             <Form.Control.Feedback type="invalid">
-                {typeof errors.bambini === 'string'? errors.bambini : ''}
+                {(typeof errors.bambini) === 'string'? errors.bambini : ''}
             </Form.Control.Feedback>
         </FormGroup>
     );

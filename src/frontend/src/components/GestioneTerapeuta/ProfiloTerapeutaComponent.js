@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import {useAuth} from "../../auth/AuthProvider";
+import ModificaPasswordButton from "./ModificaPasswordButton";
 
 function ProfiloTerapuetaComponent() {
     const [terapeuta, setTerapeuta] = useState(null);
@@ -206,6 +207,8 @@ function ProfiloTerapuetaComponent() {
                 >
                     Modifica i tuoi dati
                 </Button>
+
+                <ModificaPasswordButton/>
             </div>
 
             {/* Pulsante Indietro */}

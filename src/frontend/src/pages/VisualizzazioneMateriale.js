@@ -27,12 +27,14 @@ const App = () => {
             }
         };
 
-        fetchMateriale();
+        if(materiale == null){
+            fetchMateriale();
+        }
     }, []); // Array di dipendenze vuoto per eseguire solo una volta
 
     // Effetto per creare e revocare l'URL del blob
     useEffect(() => {
-        if (materiale && materiale.file) {
+        if (materiale && materiale.file && fileURL == null) {
             try {
                 // Decodifica base64 in byte
                 const byteCharacters = atob(materiale.file);

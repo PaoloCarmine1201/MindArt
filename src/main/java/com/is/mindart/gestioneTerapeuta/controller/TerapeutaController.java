@@ -52,6 +52,20 @@ public class TerapeutaController {
     private final TerapeutaRepository terapeutaRepository;
 
     /**
+     * Metodo per validare una password rispetto a determinati criteri.
+     * @param password la password da validare
+     * @return true se la password è valida, false altrimenti.
+     */
+    private boolean isPasswordValid(String password) {
+        if (password == null) {
+            return false;
+        }
+        // Regex per verificare i criteri
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!?_.,:;@#$%^&*]).{8,}$";
+        return password.matches(passwordPattern);
+    }
+
+    /**
      *  Provvede a criptare la password.
      */
     private final PasswordEncoder passwordEncoder;
@@ -76,6 +90,9 @@ public class TerapeutaController {
         if (passwordEncoder.matches(
                 request.getOldPassword(),
                 terapeuta.getPassword())) {
+            if (!isPasswordValid(request.getNewPassword())){
+                throw new IllegalArgumentException("Password non conforme");
+            }
             // Hash the password
             String hashedPassword = passwordEncoder.encode(request
                     .getNewPassword());

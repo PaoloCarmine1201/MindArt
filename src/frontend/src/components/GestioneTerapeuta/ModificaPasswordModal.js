@@ -1,18 +1,36 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../../config/axiosInstance";
 import Modal from "react-bootstrap/Modal";
-import {ModalBody, ModalFooter, ModalTitle} from "react-bootstrap";
+import '../../style/Modal.css'
+import {ModalBody, ModalFooter, Form, FloatingLabel, ModalTitle} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {toast} from "react-toastify";
+import { Formik } from "formik";
+import * as yup from "yup";
+import {useAuth} from "../../auth/AuthProvider";
 
 function ModificaPasswordModal({show, onHide}) {
     const [terapeuta, setTerapeuta] = useState(null);
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [passwordChanged, setPasswordChanged] = useState(false);
-    const [passwordData, setPasswordData] = useState({
-        oldPassword: '',
-        newPassword: ''
+    const validationSchema = yup.object().shape({
+        oldPassword: yup
+            .string()
+            .required("Vecchia password richiesta"),
+        newPassword: yup
+            .string()
+            .required("Nuova password richiesta")
+
     });
+
+    const [passwordCriteria, setPasswordCriteria] = useState({
+        length: false,
+        uppercase: false,
+        number: false,
+        specialChar: false,
+    });
+
+    const { logout } = useAuth();
+
+
 
     useEffect(() => {
         axiosInstance.get('api/terapeuta/get')
@@ -24,98 +42,65 @@ function ModificaPasswordModal({show, onHide}) {
             });
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setPasswordData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
-    const handleClose = () => {
-        // Resetta i campi password
-        setPasswordData({
-            oldPassword: '',
-            newPassword: '',
+    const handlePasswordChange = (newPassword) => {
+        setPasswordCriteria({
+            length: newPassword.length >= 8,
+            uppercase: /[A-Z]/.test(newPassword),
+            number: /[0-9]/.test(newPassword),
+            specialChar: /[!?_.,:;@#$%^&*]/.test(newPassword),
         });
-        onHide(); // Chiama la funzione per chiudere il modale
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (values) => {
+        const {oldPassword, newPassword} = values;
 
-        if (!passwordData.oldPassword || !passwordData.newPassword) {
+        if (!oldPassword || !newPassword){
             toast.error("Compila tutti i campi.");
             return;
         }
 
-        if (passwordData.newPassword === passwordData.oldPassword) {
+        if (newPassword === oldPassword){
             toast.error("La nuova password deve essere diversa dalla vecchia.");
-            setPasswordData((prevState) => ({
-                ...prevState,
-                newPassword: '',
-            }));
             return;
         }
 
         try {
             const response = await axiosInstance.post('api/terapeuta/cambia-password', {
                 id: terapeuta.id,
-                oldPassword: passwordData.oldPassword,
-                newPassword: passwordData.newPassword,
+                oldPassword: oldPassword,
+                newPassword: newPassword,
             });
 
             if (response.status === 200 && response.data === "SUCCESS") {
-                toast.success("Password modificata con successo.");
-                setPasswordChanged(true);
-                onHide();
-                setShowConfirmModal(true);
-            }
-        } catch(error) {
-            console.error("Errore durante il cambio password:", error);
-            if (error.response && error.response.status === 400) {
-                toast.error("Vecchia password errata.");
-                setPasswordData((prevState) => ({
-                    ...prevState,
-                    oldPassword: '',
-                }));
-            }
-            else {
+                toast.success("Password modificata con successo, sarai indirizzato al login.",
+                    {
+                        autoClose: 2000
+                    }
+                );
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 2000);
+
+            } else {
                 toast.error("Errore durante il cambio della password.");
+            }
+        } catch (error) {
+            console.error("Errore durante il cambio della password.");
+
+            if (error.response) {
+                if (error.response.status === 400) {
+                    toast.error("Vecchia password errata.");
+                } else {
+                    toast.error("Errore durante il cambio della password.");
+                }
             }
         }
     };
 
-    const handleConfirmClose = () => {
-        setShowConfirmModal(false);
-        if (passwordChanged) {
-            window.location.href = '/login';
-        }
-    };
 
     return (
         <>
 
-            <Modal
-                show={showConfirmModal}
-                backdropClassName="custom-backdrop"
-                keyboard={false}
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                dialogClassName="custom-modal"
-            >
-                <ModalBody>
-                    <ModalTitle>Password Modificata</ModalTitle>
-                    <p>{passwordChanged ? "Reinserisci le credenziali per continuare." : "Operazione annullata."}</p>
-                    <ModalFooter>
-                        <Button
-                            onClick={handleConfirmClose}
-                            className="btn-conferma btn-conferma-in"
-                        >
-                            {passwordChanged ? "Effettua il login" : "Chiudi"}
-                        </Button>
-                    </ModalFooter>
-                </ModalBody>
-            </Modal>
             {/* Modal di modifica */}
             <Modal
                 show={show}
@@ -126,49 +111,91 @@ function ModificaPasswordModal({show, onHide}) {
                 centered
                 dialogClassName="custom-modal"
             >
+                <Modal.Header className="border-0">
+                    <Modal.Title className="text-center w-100 fw-bold">Modifica Password</Modal.Title>
+                </Modal.Header>
                 <ModalBody>
-                    <ModalTitle>Modifica la tua password</ModalTitle>
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="oldPassword">Vecchia Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                id="oldPassword"
-                                name="oldPassword"
-                                value={passwordData.oldPassword}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="newPassword">Nuova Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                id="newPassword"
-                                name="newPassword"
-                                value={passwordData.newPassword}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </form>
-                </ModalBody>
-                <ModalFooter>
-                    <Button
-                        onClick={handleClose}
-                        className="btn-cancella"
+                    <Formik
+                        initialValues={{
+                            oldPassword: '',
+                            newPassword: '',
+                        }}
+                        validationSchema={validationSchema}
+                        onSubmit={(values) => handleSubmit(values)}>
 
-                    >
-                        Annulla
-                    </Button>
-                    <Button
-                        type="button"
-                        className="btn-conferma"
-                        onClick={handleSubmit}
-                    >
-                        Salva
-                    </Button>
-                </ModalFooter>
+                        {({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (
+                            <Form id="oldPassword" noValidate onSubmit={handleSubmit}>
+                                <Form.Group controlId="formOldPassword">
+                                    <FloatingLabel controlId="formOldPassword" label="Vecchia Password">
+                                        <Form.Control
+                                            name = "oldPassword"
+                                            type = "password"
+                                            placeholder= "Inserisci la vecchia password"
+                                            value={values.oldPassword}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            isInvalid={touched.oldPassword && !!errors.oldPassword}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.oldPassword}
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
+                                </Form.Group>
+
+                                <Form.Group controlId="formNewPassword">
+                                    <FloatingLabel controlId="formNewPassword" label="Nuova Password">
+                                        <Form.Control
+                                            name="newPassword"
+                                            type="password"
+                                            placeholder="Inserisci la nuova password"
+                                            value={values.newPassword}
+                                            onChange={(e) => {
+                                                handlePasswordChange(e.target.value); // Aggiorna i criteri
+                                                handleChange(e); // Aggiorna il valore di Formik
+                                            }}
+                                            onBlur={handleBlur}
+                                            isInvalid={touched.newPassword && !!errors.newPassword}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.newPassword}
+                                        </Form.Control.Feedback>
+                                        <ul>
+                                            <li className={passwordCriteria.length ? "text-success" : "text-danger"}>
+                                                Almeno 8 caratteri
+                                            </li>
+                                            <li className={passwordCriteria.uppercase ? "text-success" : "text-danger"}>
+                                                Almeno una lettera maiuscola
+                                            </li>
+                                            <li className={passwordCriteria.number ? "text-success" : "text-danger"}>
+                                                Almeno un numero
+                                            </li>
+                                            <li className={passwordCriteria.specialChar ? "text-success" : "text-danger"}>
+                                                Almeno un carattere speciale (!?_.,:;@#$%^&*)
+                                            </li>
+                                        </ul>
+
+                                    </FloatingLabel>
+                                </Form.Group>
+
+                                <ModalFooter>
+                                    <Button
+                                        onClick={onHide}
+                                        className="btn-cancella"
+
+                                    >
+                                        Annulla
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        className="btn-conferma"
+                                    >
+                                        Salva
+                                    </Button>
+                                </ModalFooter>
+                            </Form>
+                        )}
+                    </Formik>
+                </ModalBody>
             </Modal>
         </>
     );

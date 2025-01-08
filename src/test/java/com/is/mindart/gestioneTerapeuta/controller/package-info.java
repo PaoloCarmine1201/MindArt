@@ -17,11 +17,11 @@
 </li>
  <li>
  {@link
- com.is.mindart.gestioneTerapeuta.controller.TestModificaPassword
+ com.is.mindart.gestioneTerapeuta.controller.TestModificaPasswordController
  }:
  Classe di test che verifica il corretto funzionamento del
- controller del login del terapeuta,
- sia in caso di successo che in caso di credenziali errate.
+ controller del cambio password del terapeuta,
+ sia in caso di successo che in caso di input errati.
  </li>
  </ul>
  <p>

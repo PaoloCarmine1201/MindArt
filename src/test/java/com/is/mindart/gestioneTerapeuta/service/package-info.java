@@ -9,7 +9,7 @@
  * La classe inclusa in questo package:
  * </p>
  * <ul>
- *     <li>
+ * <li>
  * {@link com.is.mindart.gestioneTerapeuta.service.LoginTerapeutaServiceTest}:
  *     Classe di test che verifica il corretto
  *     funzionamento del metodo di login per il terapeuta,
@@ -19,7 +19,15 @@
  *         <li>Login con password errata.</li>
  *         <li>Login con email inesistente.</li>
  *     </ul>
- *     </li>
+ * </li>
+ * <li>
+ *  {@link
+ *  com.is.mindart.gestioneTerapeuta.service.TestModificaPasswordService
+ *  }:
+ *  Classe di test che verifica il corretto funzionamento del
+ *  controller del cambio password del terapeuta,
+ *  sia in caso di successo che in caso di input errati.
+ *  </li>
  * </ul>
  * <p>
  *     Il package utilizza JUnit 5 e Mockito per

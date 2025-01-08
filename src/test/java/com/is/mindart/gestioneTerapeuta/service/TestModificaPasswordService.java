@@ -1,7 +1,5 @@
-package com.is.mindart.gestioneTerapeuta.controller;
+package com.is.mindart.gestioneTerapeuta.service;
 
-import com.is.mindart.gestioneTerapeuta.service.TerapeutaService;
-import com.is.mindart.gestioneTerapeuta.service.TerapeutaCambioPasswordDTO;
 import com.is.mindart.gestioneTerapeuta.model.Terapeuta;
 import com.is.mindart.gestioneTerapeuta.model.TerapeutaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,29 +8,44 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ConstraintViolation;
-import java.util.Set;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
 
-class TestModificaPassword {
+class TestModificaPasswordService {
 
+    /**
+     * Mock del repository per la gestione dei terapeuti.
+     */
     @Mock
     private TerapeutaRepository terapeutaRepository;
-
+    /**
+     * Mock del PasswordEncoder di Spring Security.
+     */
     @Mock
     private PasswordEncoder passwordEncoder;
-
+    /**
+     * Servizio per la gestione dei terapeuti, iniettato con i mock.
+     */
     @InjectMocks
     private TerapeutaService terapeutaService;
 
+    /**
+     * Terapeuta di test.
+     */
     private Terapeuta terapeuta;
 
+    /**
+     * Inizializza i mock prima di ogni test.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -41,8 +54,11 @@ class TestModificaPassword {
         terapeuta.setPassword("hashedOldPassword");
     }
 
+    /**
+     * Test per il cambio della password con successo.
+     */
     @Test
-    void testChangePassword_Success() {
+    void testChangePasswordServiceSuccess() {
         when(terapeutaRepository.findByEmail("test@terapeuta.com"))
                 .thenReturn(Optional.of(terapeuta));
         when(passwordEncoder.matches("oldPassword", "hashedOldPassword"))
@@ -58,18 +74,27 @@ class TestModificaPassword {
         assertEquals("hashedNewPassword", terapeuta.getPassword());
     }
 
+    /**
+     * Test per il cambio della password senza input.
+     */
     @Test
-    void testChangePassword_NoInput() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                terapeutaService.changePassword("test@terapeuta.com", null, null)
-        );
+    void testChangePasswordServiceNoInput() {
+        IllegalArgumentException exception =
+                assertThrows(IllegalArgumentException.class, () ->
+                    terapeutaService.changePassword(
+                            "test@terapeuta.com", null, null
+                    )
+                );
 
         assertEquals("Terapeuta non trovato", exception.getMessage());
         verify(terapeutaRepository, never()).save(any());
     }
 
+    /**
+     * Test per il cambio della password con vecchia password errata.
+     */
     @Test
-    void testChangePassword_OldPasswordIncorrect() {
+    void testChangePasswordServiceOldPasswordIncorrect() {
         when(terapeutaRepository.findByEmail("test@terapeuta.com"))
                 .thenReturn(Optional.of(terapeuta));
         when(passwordEncoder.matches("wrongOldPassword", "hashedOldPassword"))
@@ -80,25 +105,5 @@ class TestModificaPassword {
 
         assertFalse(result);
         verify(terapeutaRepository, never()).save(any());
-    }
-
-    @Test
-    void testChangePassword_NewPasswordNotCompliant() {
-        // Inizializza un Validator
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-        // Crea il DTO con una nuova password non conforme
-        TerapeutaCambioPasswordDTO dto = new TerapeutaCambioPasswordDTO(
-                1L, "oldPassword", "NewPassword123" // Password non conforme
-        );
-
-        // Valida il DTO
-        Set<ConstraintViolation<TerapeutaCambioPasswordDTO>> violations = validator.validate(dto);
-
-        // Assert che ci siano violazioni
-        assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getMessage().contains(
-                "La password deve contenere almeno una lettera maiuscola, un numero e un carattere speciale."
-        )));
     }
 }

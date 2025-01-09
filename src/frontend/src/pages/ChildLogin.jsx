@@ -75,7 +75,7 @@ function ChildLogin() {
                         navigate('/child/colore');
                         break;
                     case "APPRENDIMENTO":
-                        navigate('/visualizzazioneMateriale');
+                        navigate('/child/materiale');
                         break;
                     default:
                         throw Error("Invalid session type");

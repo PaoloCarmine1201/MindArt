@@ -79,11 +79,11 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/visualizzazioneMateriale",
+                path: "/child/materiale",
                 element: (
-                    <ProtectedRoute>
+                    <ProtectedRouteChild>
                         <VisualizzazioneMateriale />
-                    </ProtectedRoute>
+                    </ProtectedRouteChild>
                 )
             },
             {

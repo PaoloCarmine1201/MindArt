@@ -5,7 +5,8 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 import "./PDFViewer.css";
 
 // Configurazione del worker locale
-pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.min.mjs`;
+//${process.env.PUBLIC_URL}
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 const PDFViewer = ({ file }) => {
     const [numPages, setNumPages] = useState(null);

@@ -4,7 +4,6 @@ import com.is.mindart.gestioneMateriale.model.Materiale;
 import com.is.mindart.gestioneMateriale.service.MaterialeDTO;
 import com.is.mindart.gestioneMateriale.service.MaterialeService;
 import com.is.mindart.gestioneSessione.model.Sessione;
-import com.is.mindart.gestioneSessione.model.SessioneRepository;
 import com.is.mindart.gestioneSessione.service.SessioneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,15 +28,6 @@ public class SessioneControllerBambino {
      */
     private final SessioneService sessioneService;
 
-    /**
-     * Servizio per la gestione delle materiale.
-     */
-    private final MaterialeService materialeService;
-
-    /**
-     *  Provvede ad accedere al database per l'entità Sessione.
-     */
-    private final SessioneRepository sessioneRepository;
 
     /**
      *
@@ -48,10 +38,8 @@ public class SessioneControllerBambino {
         Authentication authentication = SecurityContextHolder
                 .getContext().getAuthentication();
         String codiceBambino = (String) authentication.getPrincipal();
-        Sessione sessione = sessioneRepository
-                .findByTerminataFalseAndBambini_CodiceOrderByDataAsc(
-                        codiceBambino)
-                .getFirst();
+        Sessione sessione = sessioneService
+                .trovaSessioneDaCodiceBambino(codiceBambino);
         Materiale materiale = sessione.getMateriale();
 
         String path = materiale.getPath();
